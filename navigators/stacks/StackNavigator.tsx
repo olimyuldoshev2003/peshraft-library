@@ -1,4 +1,4 @@
-import SignIn from "@/screens/auth/SignIn";
+import SignUp from "@/screens/auth/SignUp";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -12,7 +12,7 @@ const StackNavigator = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="SignUp" component={SignUp} />
     </Stack.Navigator>
   );
 };
