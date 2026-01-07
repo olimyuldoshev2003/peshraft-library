@@ -23,13 +23,14 @@ const SignUp = () => {
   const [showAndHidePassword, setShowAndHidePassword] = useState(false);
   const [showAndHideConfirmPassword, setShowAndHideConfirmPassword] =
     useState(false);
-  const [checked, setChecked] = useState(false);
+  const [isTheVolunteerOfPeshraft, setisTheVolunteerOfPeshraft] =
+    useState(false);
 
   return (
     <KeyboardAvoidingView
       style={styles.containerSignUpComponent}
       behavior={Platform.OS === "ios" ? "padding" : "position"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : -90}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : -72}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -120,9 +121,9 @@ const SignUp = () => {
                 </View>
                 <View style={styles.checkboxOfIsPeshraftVolunteer}>
                   <AdvancedCheckbox
-                    value={checked}
+                    value={isTheVolunteerOfPeshraft}
                     onValueChange={(value) =>
-                      setChecked(typeof value === "boolean" ? value : false)
+                      setisTheVolunteerOfPeshraft(typeof value === "boolean" ? value : false)
                     }
                     label="I'm a volunteer of Peshraft"
                     checkedColor="#007AFF"
