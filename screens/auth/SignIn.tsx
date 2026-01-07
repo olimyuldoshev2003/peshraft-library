@@ -79,7 +79,7 @@ const SignIn = () => {
             </View>
             <View style={styles.btnSignInBlock}>
               <Pressable style={styles.btnSignIn}>
-                <Text style={styles.btnTextSignIn}>Sign In</Text>
+                <Text style={styles.btnTextSignIn}>Sign in</Text>
               </Pressable>
             </View>
             <View style={styles.anotherWaysToSignUpBlock}>
