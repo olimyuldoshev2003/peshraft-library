@@ -13,10 +13,13 @@ import {
   View,
 } from "react-native";
 
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
+import { useNavigation } from "expo-router";
 import { AdvancedCheckbox } from "react-native-advanced-checkbox";
 
 const SignUp = () => {
+  const navigation: any = useNavigation();
+
   const [showAndHidePassword, setShowAndHidePassword] = useState(false);
   const [showAndHideConfirmPassword, setShowAndHideConfirmPassword] =
     useState(false);
@@ -26,7 +29,7 @@ const SignUp = () => {
     <KeyboardAvoidingView
       style={styles.containerSignUpComponent}
       behavior={Platform.OS === "ios" ? "padding" : "position"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 :-90}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : -90}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
@@ -97,15 +100,15 @@ const SignUp = () => {
                       autoComplete="password-new"
                     />
                     {showAndHidePassword ? (
-                      <AntDesign
-                        name="eye-invisible"
+                      <Entypo
+                        name="eye-with-line"
                         size={30}
                         color="black"
                         style={styles.showAndHidePasswordIcon}
                         onPress={() => setShowAndHidePassword(false)}
                       />
                     ) : (
-                      <AntDesign
+                      <Entypo
                         name="eye"
                         size={30}
                         color="black"
@@ -127,16 +130,21 @@ const SignUp = () => {
                     size={22}
                   />
                 </View>
-                <View style={styles.btnSignUpAndSignUpNavBlock}>
+                <View style={styles.btnSignUpAndSignInNavBlock}>
                   <Pressable style={styles.btnSignUp}>
                     <Text style={styles.btnTextSignUp}>Sign Up</Text>
                   </Pressable>
-                  <View style={styles.blockTitleAndBtnNavSignUp}>
-                    <Text style={styles.titleAndBtnNavSignUp}>
+                  <View style={styles.blockTitleAndBtnNavSignIn}>
+                    <Text style={styles.titleAndBtnNavSignIn}>
                       Already have an account?
                     </Text>
-                    <Pressable style={styles.btnNavSignUp}>
-                      <Text style={styles.btnTextNavSignUp}> Sign In</Text>
+                    <Pressable
+                      style={styles.btnNavSignIn}
+                      onPress={() => {
+                        navigation.navigate("SignIn");
+                      }}
+                    >
+                      <Text style={styles.btnTextNavSignIn}> Sign in</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -176,7 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // This is KEY
   },
   titleFormSignUp: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "700",
     marginBottom: 10,
   },
@@ -218,21 +226,21 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  blockTitleAndBtnNavSignUp: {
+  blockTitleAndBtnNavSignIn: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 8,
   },
 
-  titleAndBtnNavSignUp: {
+  titleAndBtnNavSignIn: {
     textAlign: "center",
     fontSize: 18,
     fontWeight: "400",
     color: "#8E8E8E",
   },
-  btnNavSignUp: {},
-  btnTextNavSignUp: {
+  btnNavSignIn: {},
+  btnTextNavSignIn: {
     fontSize: 18,
     fontWeight: "400",
     color: "#3A65FF",
@@ -255,10 +263,10 @@ const styles = StyleSheet.create({
   },
   showAndHidePasswordIcon: {
     position: "absolute",
-    top: 5,
+    top: 3.5,
     right: 12,
   },
-  btnSignUpAndSignUpNavBlock: {
+  btnSignUpAndSignInNavBlock: {
     paddingBottom: 40, // Increased
     paddingTop: 10,
   },

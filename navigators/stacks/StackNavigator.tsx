@@ -1,3 +1,4 @@
+import SignIn from "@/screens/auth/SignIn";
 import SignUp from "@/screens/auth/SignUp";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
@@ -12,7 +13,20 @@ const StackNavigator = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
     </Stack.Navigator>
   );
 };
