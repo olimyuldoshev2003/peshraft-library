@@ -1,17 +1,17 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "expo-router";
+import { Formik } from "formik";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-  Alert,
-  ActivityIndicator,
 } from "react-native";
-import { Formik } from "formik";
 import * as Yup from "yup";
 
 // Define types for form values
@@ -111,8 +111,7 @@ const mockAuthenticate = async (
 
   // This is where you would call your actual authentication API
   // For demo purposes, we'll accept a specific test account
-  const validCredentials =
-    email === "o@gmail.com" && password === "Olim2003$";
+  const validCredentials = email === "o@gmail.com" && password === "Olim2003$";
 
   return validCredentials;
 };
@@ -153,13 +152,11 @@ const SignIn = () => {
         trimmedValues.password
       );
 
-      
-
       if (isAuthenticated) {
         // Reset login attempts on successful login
         setLoginAttempts(0);
         Alert.alert("Success", "Login successful!");
-        navigation.replace("IntroductionAboutBook");
+        // navigation.replace("IntroductionAboutBook");
       } else {
         const newAttempts = loginAttempts + 1;
         setLoginAttempts(newAttempts);
@@ -593,8 +590,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  anotherWaysToSignUpBlock: {
-  },
+  anotherWaysToSignUpBlock: {},
   lineWithTextBlock: {
     paddingVertical: 12,
     flexDirection: "row",
