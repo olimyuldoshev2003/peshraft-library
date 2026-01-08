@@ -23,7 +23,7 @@ const SignUp = () => {
   const [showAndHidePassword, setShowAndHidePassword] = useState(false);
   const [showAndHideConfirmPassword, setShowAndHideConfirmPassword] =
     useState(false);
-  const [isTheVolunteerOfPeshraft, setisTheVolunteerOfPeshraft] =
+  const [isTheVolunteerOfPeshraft, setIsTheVolunteerOfPeshraft] =
     useState(false);
 
   return (
@@ -123,7 +123,9 @@ const SignUp = () => {
                   <AdvancedCheckbox
                     value={isTheVolunteerOfPeshraft}
                     onValueChange={(value) =>
-                      setisTheVolunteerOfPeshraft(typeof value === "boolean" ? value : false)
+                      setIsTheVolunteerOfPeshraft(
+                        typeof value === "boolean" ? value : false
+                      )
                     }
                     label="I'm a volunteer of Peshraft"
                     checkedColor="#007AFF"
