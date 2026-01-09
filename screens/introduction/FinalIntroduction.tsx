@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 
 const FinalIntroduction = () => {
   return (
-    <View>
-      <Text>FinalIntroduction</Text>
-    </View>
-  )
-}
+    <ImageBackground>
+      <View>
+        <Text>FinalIntroduction</Text>
+      </View>
+    </ImageBackground>
+  );
+};
 
-export default FinalIntroduction
+export default FinalIntroduction;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
