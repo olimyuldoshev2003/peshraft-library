@@ -1,6 +1,5 @@
 import SignIn from "@/screens/auth/SignIn";
 import SignUp from "@/screens/auth/SignUp";
-import IntroductionAboutBook from "@/screens/introduction/IntroductionAboutBook";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";

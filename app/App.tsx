@@ -1,4 +1,5 @@
 import StackNavigator from "@/navigators/stacks/StackNavigator";
+import StackNavigatorIntroduction from "@/navigators/stacks/StackNavigatorIntroduction";
 import {
   NavigationContainer,
   NavigationIndependentTree,
@@ -10,7 +11,7 @@ const App = () => {
   return (
     <NavigationIndependentTree>
       <NavigationContainer>
-        <StackNavigator />
+        <StackNavigatorIntroduction />
       </NavigationContainer>
     </NavigationIndependentTree>
   );
