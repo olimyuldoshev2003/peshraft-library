@@ -747,7 +747,7 @@ const SignUp = () => {
 
   const handleSubmit = (values: any) => {
     console.log("Form submitted:", values);
-    // Handle form submission here
+    
   };
 
   return (
