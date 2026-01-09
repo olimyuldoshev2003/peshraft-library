@@ -1,4 +1,13 @@
-import React, { useState, useEffect } from "react";
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useNavigation } from "expo-router";
+import { Formik } from "formik";
+import {
+  AsYouType,
+  CountryCode,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
+import React, { useState } from "react";
 import {
   Image,
   Keyboard,
@@ -12,18 +21,9 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import Entypo from "@expo/vector-icons/Entypo";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useNavigation } from "expo-router";
 import { AdvancedCheckbox } from "react-native-advanced-checkbox";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import {
-  AsYouType,
-  CountryCode,
-  parsePhoneNumberFromString,
-} from "libphonenumber-js";
 import { Selector } from "rn-selector";
+import * as Yup from "yup";
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
 import { allCountries } from "country-telephone-data";
 
@@ -143,12 +143,177 @@ const validateDateOfBirth = (date: string): boolean => {
   return inputDate <= today;
 };
 
+// Enhanced password validation for 8-character minimum
+const validatePasswordStrength = (
+  password: string
+): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+
+  // Basic requirements - 8 characters minimum
+  if (!password || password.length < 8) {
+    errors.push("Password must be at least 8 characters long");
+    return { isValid: false, errors };
+  }
+
+  if (password.length > 128) {
+    errors.push("Password must not exceed 128 characters");
+    return { isValid: false, errors };
+  }
+
+  // Character type requirements - MUST HAVE ALL 4 TYPES for maximum strength
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
+    password
+  );
+
+  if (!hasUpperCase)
+    errors.push("Must contain at least one uppercase letter (A-Z)");
+  if (!hasLowerCase)
+    errors.push("Must contain at least one lowercase letter (a-z)");
+  if (!hasNumbers) errors.push("Must contain at least one number (0-9)");
+  if (!hasSpecialChar)
+    errors.push("Must contain at least one special character (!@#$%^&* etc.)");
+
+  // Advanced security checks
+  // For 8-char passwords, we require ALL 4 character types
+  const hasAllTypes =
+    hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
+  if (!hasAllTypes) {
+    errors.push("For maximum security, include all character types");
+  }
+
+  // Check for sequential characters (keyboard patterns) - simplified for 8 chars
+  const sequentialPatterns = [
+    "12345678",
+    "87654321",
+    "23456789",
+    "98765432",
+    "qwertyui",
+    "iuytrewq",
+    "asdfghjk",
+    "kjhgfdsa",
+    "zxcvbnm",
+    "mnbvcxz",
+    "password",
+    "admin123",
+    "letmein1",
+    "welcome1",
+    "monkey12",
+    "dragon12",
+  ];
+
+  const lowerPassword = password.toLowerCase();
+  for (const pattern of sequentialPatterns) {
+    if (lowerPassword.includes(pattern)) {
+      errors.push("Contains common sequential pattern");
+      break;
+    }
+  }
+
+  // Check for repeated characters (more strict for short passwords)
+  const hasRepeatedChars = /(.)\1{3,}/.test(password); // More than 3 same characters in a row
+  if (hasRepeatedChars) {
+    errors.push("Too many repeated characters in sequence");
+  }
+
+  // Check for common number sequences
+  const commonSequences = [
+    "12345678",
+    "87654321",
+    "11111111",
+    "22222222",
+    "33333333",
+    "44444444",
+    "55555555",
+    "66666666",
+    "77777777",
+    "88888888",
+    "99999999",
+    "00000000",
+    "11223344",
+    "22334455",
+    "33445566",
+    "44556677",
+    "55667788",
+    "66778899",
+  ];
+
+  if (commonSequences.includes(password)) {
+    errors.push("Password is too predictable");
+  }
+
+  // Check for personal data patterns
+  const emailPattern = /@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  if (emailPattern.test(password)) {
+    errors.push("Avoid using email patterns in passwords");
+  }
+
+  // Entropy calculation for short passwords
+  const characterSetSize =
+    (hasUpperCase ? 26 : 0) +
+    (hasLowerCase ? 26 : 0) +
+    (hasNumbers ? 10 : 0) +
+    (hasSpecialChar ? 32 : 0);
+
+  const entropy = Math.log2(Math.pow(characterSetSize, password.length));
+  if (entropy < 40) {
+    errors.push("Password is not complex enough");
+  }
+
+  // Check for dictionary words (simplified)
+  const dictionaryWords = [
+    "password",
+    "admin",
+    "welcome",
+    "qwerty",
+    "letmein",
+    "monkey",
+    "dragon",
+    "sunshine",
+    "princess",
+    "football",
+    "baseball",
+    "mustang",
+    "superman",
+    "trustno1",
+    "master",
+    "hello123",
+    "secret",
+    "abcd1234",
+    "passw0rd",
+    "admin123",
+  ];
+
+  const normalizedPass = password.toLowerCase();
+  for (const word of dictionaryWords) {
+    if (normalizedPass.includes(word)) {
+      errors.push("Contains common dictionary word");
+      break;
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors: errors.slice(0, 3), // Limit to 3 most critical errors
+  };
+};
+
 // Validation schema
 const SignUpSchema = Yup.object().shape({
   fullName: Yup.string()
     .required("Full Name is required")
     .min(3, "Full Name must be at least 3 characters")
-    .max(50, "Full Name must be at most 50 characters"),
+    .max(50, "Full Name must be at most 50 characters")
+    .test(
+      "no-special-chars",
+      "Full Name can only contain letters, spaces, and basic punctuation",
+      (value) => {
+        if (!value) return true;
+        return /^[a-zA-Z\s\-'.]*$/.test(value);
+      }
+    ),
   dateOfBirth: Yup.string()
     .required("Date of Birth is required")
     .test(
@@ -157,6 +322,23 @@ const SignUpSchema = Yup.object().shape({
       function (value) {
         if (!value) return false;
         return validateDateOfBirth(value);
+      }
+    )
+    .test(
+      "is-adult",
+      "You must be at least 13 years old to sign up",
+      function (value) {
+        if (!value) return false;
+        const birthDate = new Date(value);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          return age - 1 >= 13;
+        }
+        return age >= 13;
       }
     ),
   phoneNumber: Yup.string()
@@ -201,13 +383,41 @@ const SignUpSchema = Yup.object().shape({
     }),
   email: Yup.string()
     .required("Email is required")
-    .email("Invalid email format"),
+    .email("Invalid email format")
+    .max(254, "Email must not exceed 254 characters")
+    .test("email-domain", "Please use a valid email domain", (value) => {
+      if (!value) return true;
+      const domain = value.split("@")[1];
+      const invalidDomains = [
+        "tempmail.com",
+        "temp-mail.org",
+        "guerrillamail.com",
+        "mailinator.com",
+        "yopmail.com",
+        "10minutemail.com",
+      ];
+      return !invalidDomains.includes(domain?.toLowerCase() || "");
+    }),
   password: Yup.string()
     .required("Password is required")
     .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    .max(128, "Password must not exceed 128 characters")
+    .test(
+      "password-strength",
+      "Password is not strong enough",
+      function (value) {
+        if (!value) return false;
+
+        const validation = validatePasswordStrength(value);
+        if (!validation.isValid) {
+          return this.createError({
+            message:
+              validation.errors[0] ||
+              "Password does not meet security requirements",
+          });
+        }
+        return true;
+      }
     ),
   confirmPassword: Yup.string()
     .required("Confirm Password is required")
@@ -224,6 +434,10 @@ const SignUp = () => {
   const [phoneError, setPhoneError] = useState("");
   const [detectedOperator, setDetectedOperator] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string>("tj");
+  const [passwordStrength, setPasswordStrength] = useState<{
+    score: number;
+    feedback: string[];
+  }>({ score: 0, feedback: [] });
 
   // Detect Tajik mobile operator from phone number
   const detectTajikOperator = (phoneNumber: string): string => {
@@ -430,31 +644,135 @@ const SignUp = () => {
     setFieldValue("dateOfBirth", formatted);
   };
 
+  // Password strength analyzer for 8-character passwords
+  const analyzePasswordStrength = (password: string) => {
+    if (!password) {
+      setPasswordStrength({ score: 0, feedback: [] });
+      return;
+    }
+
+    let score = 0;
+    const feedback: string[] = [];
+
+    // Length score
+    if (password.length >= 12) score += 3;
+    else if (password.length >= 10) score += 2;
+    else if (password.length >= 8) score += 1;
+    else feedback.push("❌ Minimum 8 characters required");
+
+    // Character diversity
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
+      password
+    );
+
+    const typeCount = [
+      hasUpperCase,
+      hasLowerCase,
+      hasNumbers,
+      hasSpecialChar,
+    ].filter(Boolean).length;
+
+    // More points for more character types
+    if (typeCount === 4) score += 3;
+    else if (typeCount === 3) score += 2;
+    else if (typeCount === 2) score += 1;
+    else feedback.push("❌ Include multiple character types");
+
+    // Check for all character types
+    if (!hasUpperCase) feedback.push("⚠️ Add uppercase letters");
+    if (!hasLowerCase) feedback.push("⚠️ Add lowercase letters");
+    if (!hasNumbers) feedback.push("⚠️ Add numbers");
+    if (!hasSpecialChar) feedback.push("⚠️ Add special characters");
+
+    // Pattern detection
+    const commonPatterns = [
+      "12345678",
+      "87654321",
+      "password",
+      "qwertyui",
+      "admin123",
+      "letmein1",
+      "11111111",
+      "22222222",
+    ];
+
+    const lowerPassword = password.toLowerCase();
+    let hasCommonPattern = false;
+    for (const pattern of commonPatterns) {
+      if (lowerPassword.includes(pattern)) {
+        hasCommonPattern = true;
+        feedback.push("⚠️ Avoid common patterns");
+        break;
+      }
+    }
+
+    if (!hasCommonPattern) score += 2;
+
+    // Entropy calculation
+    const charSetSize =
+      (hasUpperCase ? 26 : 0) +
+      (hasLowerCase ? 26 : 0) +
+      (hasNumbers ? 10 : 0) +
+      (hasSpecialChar ? 32 : 0);
+
+    const entropy = Math.log2(Math.pow(charSetSize, password.length));
+    if (entropy > 60) score += 3;
+    else if (entropy > 45) score += 2;
+    else if (entropy > 30) score += 1;
+    else if (password.length > 0) feedback.push("⚠️ Increase complexity");
+
+    // Update strength
+    const maxScore = 9;
+    const strengthPercentage = Math.min(
+      100,
+      Math.round((score / maxScore) * 100)
+    );
+
+    // Filter out duplicate feedback
+    const uniqueFeedback = [...new Set(feedback)];
+
+    setPasswordStrength({
+      score: strengthPercentage,
+      feedback: uniqueFeedback.slice(0, 3),
+    });
+  };
+
+  const handlePasswordChange = (text: string, setFieldValue: any) => {
+    setFieldValue("password", text);
+    analyzePasswordStrength(text);
+  };
+
   const handleSubmit = (values: any) => {
     console.log("Form submitted:", values);
     // Handle form submission here
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.containerSignUpComponent}
-      behavior={Platform.OS === "ios" ? "padding" : "position"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : -72}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainerSignUpComponent}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={false}
-        >
-          <View style={styles.signUpComponent}>
-            <View style={styles.headerSignUpComponent}>
-              <Image
-                source={require("../../assets/peshraft-library/auth/signUpImg.jpg")}
-                style={styles.imgHeaderSignUpComponent}
-              />
-            </View>
+    <View style={styles.containerSignUpComponent}>
+      {/* Header - Fixed at top */}
+      <View style={styles.headerSignUpComponent}>
+        <Image
+          source={require("../../assets/peshraft-library/auth/signUpImg.jpg")}
+          style={styles.imgHeaderSignUpComponent}
+        />
+      </View>
 
+      {/* Scrollable Section - Only this part scrolls */}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            style={styles.sectionSignUpComponent}
+            contentContainerStyle={styles.sectionSignUpComponentScrollView}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
             <View style={styles.formSignUp}>
               <Text style={styles.titleFormSignUp}>Create account</Text>
 
@@ -470,7 +788,7 @@ const SignUp = () => {
                 }}
                 validationSchema={SignUpSchema}
                 onSubmit={handleSubmit}
-                validateOnChange={false}
+                validateOnChange={true}
                 validateOnBlur={true}
               >
                 {({
@@ -497,14 +815,21 @@ const SignUp = () => {
                           errors.fullName &&
                             touched.fullName &&
                             styles.inputError,
+                          touched.fullName &&
+                            !errors.fullName &&
+                            styles.inputSuccess,
                         ]}
                         onChangeText={handleChange("fullName")}
                         onBlur={handleBlur("fullName")}
                         value={values.fullName}
                         placeholder="Enter your full name"
+                        returnKeyType="next"
                       />
                       {errors.fullName && touched.fullName && (
                         <Text style={styles.errorText}>{errors.fullName}</Text>
+                      )}
+                      {touched.fullName && !errors.fullName && (
+                        <Text style={styles.successText}>✓ Valid name</Text>
                       )}
                     </View>
 
@@ -522,6 +847,9 @@ const SignUp = () => {
                           errors.dateOfBirth &&
                             touched.dateOfBirth &&
                             styles.inputError,
+                          touched.dateOfBirth &&
+                            !errors.dateOfBirth &&
+                            styles.inputSuccess,
                         ]}
                         onChangeText={(text) =>
                           handleDateOfBirthChange(text, setFieldValue)
@@ -530,11 +858,15 @@ const SignUp = () => {
                         value={values.dateOfBirth}
                         placeholder="YYYY-MM-DD"
                         keyboardType="numeric"
+                        returnKeyType="next"
                       />
                       {errors.dateOfBirth && touched.dateOfBirth && (
                         <Text style={styles.errorText}>
                           {errors.dateOfBirth}
                         </Text>
+                      )}
+                      {touched.dateOfBirth && !errors.dateOfBirth && (
+                        <Text style={styles.successText}>✓ Valid date</Text>
                       )}
                     </View>
 
@@ -592,6 +924,10 @@ const SignUp = () => {
                             phoneError
                               ? styles.inputError
                               : null,
+                            touched.phoneNumber &&
+                              !errors.phoneNumber &&
+                              !phoneError &&
+                              styles.inputSuccess,
                           ]}
                           onChangeText={(text) =>
                             handlePhoneChange(text, setFieldValue)
@@ -600,6 +936,7 @@ const SignUp = () => {
                           value={values.phoneNumber}
                           placeholder="+992 93 123 4567"
                           keyboardType="phone-pad"
+                          returnKeyType="next"
                         />
                       </View>
 
@@ -609,7 +946,15 @@ const SignUp = () => {
                         </Text>
                       ) : phoneError ? (
                         <Text style={styles.errorText}>{phoneError}</Text>
-                      ) : null}
+                      ) : (
+                        touched.phoneNumber &&
+                        !errors.phoneNumber &&
+                        !phoneError && (
+                          <Text style={styles.successText}>
+                            ✓ Valid phone number
+                          </Text>
+                        )
+                      )}
 
                       {detectedOperator && (
                         <Text style={styles.operatorText}>
@@ -636,6 +981,7 @@ const SignUp = () => {
                         style={[
                           styles.input,
                           errors.email && touched.email && styles.inputError,
+                          touched.email && !errors.email && styles.inputSuccess,
                         ]}
                         onChangeText={handleChange("email")}
                         onBlur={handleBlur("email")}
@@ -643,9 +989,13 @@ const SignUp = () => {
                         placeholder="example@email.com"
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        returnKeyType="next"
                       />
                       {errors.email && touched.email && (
                         <Text style={styles.errorText}>{errors.email}</Text>
+                      )}
+                      {touched.email && !errors.email && (
+                        <Text style={styles.successText}>✓ Valid email</Text>
                       )}
                     </View>
 
@@ -665,13 +1015,19 @@ const SignUp = () => {
                             errors.password &&
                               touched.password &&
                               styles.inputError,
+                            touched.password &&
+                              !errors.password &&
+                              styles.inputSuccess,
                           ]}
-                          onChangeText={handleChange("password")}
+                          onChangeText={(text) =>
+                            handlePasswordChange(text, setFieldValue)
+                          }
                           onBlur={handleBlur("password")}
                           value={values.password}
                           secureTextEntry={!showAndHidePassword}
                           autoComplete="password-new"
-                          placeholder="At least 8 characters"
+                          placeholder="At least 8 characters with mixed types"
+                          returnKeyType="next"
                         />
                         {showAndHidePassword ? (
                           <Entypo
@@ -691,13 +1047,139 @@ const SignUp = () => {
                           />
                         )}
                       </View>
+
+                      {/* Password Strength Indicator */}
+                      {values.password.length > 0 && (
+                        <View style={styles.passwordStrengthContainer}>
+                          <View style={styles.strengthBarContainer}>
+                            <View
+                              style={[
+                                styles.strengthBar,
+                                {
+                                  width: `${passwordStrength.score}%`,
+                                  backgroundColor:
+                                    passwordStrength.score >= 80
+                                      ? "#34C759"
+                                      : passwordStrength.score >= 60
+                                      ? "#FF9500"
+                                      : passwordStrength.score >= 40
+                                      ? "#FFCC00"
+                                      : "#FF3B30",
+                                },
+                              ]}
+                            />
+                          </View>
+                          <Text style={styles.strengthText}>
+                            Strength: {passwordStrength.score}%
+                            {passwordStrength.score >= 80
+                              ? " (Strong)"
+                              : passwordStrength.score >= 60
+                              ? " (Good)"
+                              : passwordStrength.score >= 40
+                              ? " (Fair)"
+                              : " (Weak)"}
+                          </Text>
+
+                          {/* Password Requirements */}
+                          <View style={styles.passwordRequirements}>
+                            <Text style={styles.requirementsTitle}>
+                              Requirements:
+                            </Text>
+                            <View style={styles.requirementItem}>
+                              <Text
+                                style={[
+                                  styles.requirementText,
+                                  values.password.length >= 8 &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {values.password.length >= 8 ? "✓" : "•"} At
+                                least 8 characters
+                              </Text>
+                            </View>
+                            <View style={styles.requirementItem}>
+                              <Text
+                                style={[
+                                  styles.requirementText,
+                                  /[A-Z]/.test(values.password) &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {/[A-Z]/.test(values.password) ? "✓" : "•"} One
+                                uppercase letter
+                              </Text>
+                            </View>
+                            <View style={styles.requirementItem}>
+                              <Text
+                                style={[
+                                  styles.requirementText,
+                                  /[a-z]/.test(values.password) &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {/[a-z]/.test(values.password) ? "✓" : "•"} One
+                                lowercase letter
+                              </Text>
+                            </View>
+                            <View style={styles.requirementItem}>
+                              <Text
+                                style={[
+                                  styles.requirementText,
+                                  /\d/.test(values.password) &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {/\d/.test(values.password) ? "✓" : "•"} One
+                                number
+                              </Text>
+                            </View>
+                            <View style={styles.requirementItem}>
+                              <Text
+                                style={[
+                                  styles.requirementText,
+                                  /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
+                                    values.password
+                                  ) && styles.requirementMet,
+                                ]}
+                              >
+                                {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
+                                  values.password
+                                )
+                                  ? "✓"
+                                  : "•"}{" "}
+                                One special character
+                              </Text>
+                            </View>
+
+                            {/* Advanced feedback */}
+                            {passwordStrength.feedback.length > 0 && (
+                              <View style={styles.feedbackContainer}>
+                                <Text style={styles.feedbackTitle}>
+                                  Tips to improve:
+                                </Text>
+                                {passwordStrength.feedback.map(
+                                  (item, index) => (
+                                    <Text
+                                      key={index}
+                                      style={styles.feedbackItem}
+                                    >
+                                      {item}
+                                    </Text>
+                                  )
+                                )}
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      )}
+
                       {errors.password && touched.password && (
                         <Text style={styles.errorText}>{errors.password}</Text>
                       )}
                     </View>
 
                     {/* Confirm Password */}
-                    {/* <View
+                    <View
                       style={[
                         styles.labelAndInputConfirmPasswordBlock,
                         styles.labelAndInputBlock,
@@ -712,13 +1194,17 @@ const SignUp = () => {
                             errors.confirmPassword &&
                               touched.confirmPassword &&
                               styles.inputError,
+                            touched.confirmPassword &&
+                              !errors.confirmPassword &&
+                              styles.inputSuccess,
                           ]}
                           onChangeText={handleChange("confirmPassword")}
                           onBlur={handleBlur("confirmPassword")}
                           value={values.confirmPassword}
                           secureTextEntry={!showAndHideConfirmPassword}
                           autoComplete="password-new"
-                          placeholder="Confirm your password"
+                          placeholder="Re-enter your password"
+                          returnKeyType="done"
                         />
                         {showAndHideConfirmPassword ? (
                           <Entypo
@@ -743,7 +1229,14 @@ const SignUp = () => {
                           {errors.confirmPassword}
                         </Text>
                       )}
-                    </View> */}
+                      {touched.confirmPassword &&
+                        !errors.confirmPassword &&
+                        values.confirmPassword === values.password && (
+                          <Text style={styles.successText}>
+                            ✓ Passwords match
+                          </Text>
+                        )}
+                    </View>
 
                     {/* Volunteer Checkbox */}
                     <View style={styles.checkboxOfIsPeshraftVolunteer}>
@@ -789,10 +1282,10 @@ const SignUp = () => {
                 )}
               </Formik>
             </View>
-          </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -803,24 +1296,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  scrollContainerSignUpComponent: {
-    // flexGrow: 1,
-  },
-  signUpComponent: {
-    flex: 1,
-  },
   headerSignUpComponent: {
-    height: 240,
+    height: 283,
   },
   imgHeaderSignUpComponent: {
     width: "100%",
     height: "100%",
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  sectionSignUpComponent: {
+    flex: 1,
+  },
+  sectionSignUpComponentScrollView: {
+    flexGrow: 1,
+    paddingBottom: 30,
+  },
   formSignUp: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 13,
-    justifyContent: "space-between",
   },
   titleFormSignUp: {
     fontSize: 24,
@@ -829,7 +1325,6 @@ const styles = StyleSheet.create({
   },
   blockLabelsAndInputs: {
     flex: 1,
-    justifyContent: "space-between",
     gap: 8,
   },
   labelAndInputFullNameBlock: {},
@@ -901,10 +1396,19 @@ const styles = StyleSheet.create({
   inputError: {
     borderBottomColor: "#FF0000",
   },
+  inputSuccess: {
+    borderBottomColor: "#34C759",
+  },
   errorText: {
     color: "#FF0000",
     fontSize: 12,
     marginTop: 2,
+  },
+  successText: {
+    color: "#34C759",
+    fontSize: 12,
+    marginTop: 2,
+    fontWeight: "500",
   },
   showAndHidePasswordIcon: {
     position: "absolute",
@@ -943,7 +1447,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#fff",
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    marginTop: 5,
   },
   optionStyle: {
     paddingVertical: 12,
@@ -973,5 +1477,68 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     paddingLeft: 30,
+  },
+  // Password Strength Styles
+  passwordStrengthContainer: {
+    marginTop: 10,
+  },
+  strengthBarContainer: {
+    height: 6,
+    backgroundColor: "#E9ECEF",
+    borderRadius: 3,
+    overflow: "hidden",
+    marginBottom: 6,
+  },
+  strengthBar: {
+    height: "100%",
+    borderRadius: 3,
+  },
+  strengthText: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  passwordRequirements: {
+    backgroundColor: "#F8F9FA",
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: "#E9ECEF",
+  },
+  requirementsTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#495057",
+  },
+  requirementItem: {
+    marginBottom: 4,
+  },
+  requirementText: {
+    fontSize: 12,
+    color: "#6C757D",
+  },
+  requirementMet: {
+    color: "#34C759",
+    fontWeight: "500",
+  },
+  feedbackContainer: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#DEE2E6",
+  },
+  feedbackTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 6,
+    color: "#6C757D",
+  },
+  feedbackItem: {
+    fontSize: 11,
+    color: "#FF9500",
+    marginBottom: 3,
+    fontStyle: "italic",
   },
 });
