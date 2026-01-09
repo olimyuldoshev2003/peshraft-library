@@ -1,3 +1,4 @@
+import FinalIntroduction from "@/screens/introduction/FinalIntroduction";
 import IntroductionAboutApp from "@/screens/introduction/IntroductionAboutApp";
 import IntroductionAboutBook from "@/screens/introduction/IntroductionAboutBook";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -22,6 +23,13 @@ const StackNavigatorIntroduction = () => {
       <Stack.Screen
         name="IntroductionAboutBook"
         component={IntroductionAboutBook}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="FinalIntroduction"
+        component={FinalIntroduction}
         options={{
           animation: "ios_from_right",
         }}

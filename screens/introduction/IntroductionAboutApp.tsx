@@ -36,13 +36,13 @@ const IntroductionAboutApp = () => {
   ];
 
   const onDone = () => {
-    setShowRealApp(true);
-    navigation.navigate("SignUp" as never);
+    // setShowRealApp(true);
+    navigation.navigate("FinalIntroduction" as never);
   };
 
   const onSkip = () => {
-    setShowRealApp(true);
-    navigation.navigate("SignUp" as never);
+    // setShowRealApp(true);
+    navigation.navigate("FinalIntroduction" as never);
   };
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
