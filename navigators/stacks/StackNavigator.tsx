@@ -4,6 +4,7 @@ import IntroductionAboutBook from "@/screens/introduction/IntroductionAboutBook"
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
+import StackNavigatorIntroduction from "./StackNavigatorIntroduction";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -29,12 +30,13 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="IntroductionAboutBook"
-        component={IntroductionAboutBook}
+        name="Introduction"
+        component={StackNavigatorIntroduction}
         options={{
           animation: "ios_from_right",
         }}
       />
+      
     </Stack.Navigator>
   );
 };

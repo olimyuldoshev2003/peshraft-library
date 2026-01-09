@@ -9,6 +9,8 @@ import {
 } from "libphonenumber-js";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -300,6 +302,30 @@ const validatePasswordStrength = (
   };
 };
 
+// Mock signup API function (replace with your actual API call)
+const mockSignUp = async (
+  userData: any
+): Promise<{ success: boolean; message: string }> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  // This is where you would call your actual signup API
+  // For demo purposes, we'll simulate a successful signup
+  const success = Math.random() > 0.2; // 80% success rate for demo
+
+  if (success) {
+    return {
+      success: true,
+      message: "Account created successfully!",
+    };
+  } else {
+    return {
+      success: false,
+      message: "Email already exists. Please use a different email.",
+    };
+  }
+};
+
 // Validation schema
 const SignUpSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -438,6 +464,7 @@ const SignUp = () => {
     score: number;
     feedback: string[];
   }>({ score: 0, feedback: [] });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Detect Tajik mobile operator from phone number
   const detectTajikOperator = (phoneNumber: string): string => {
@@ -745,9 +772,47 @@ const SignUp = () => {
     analyzePasswordStrength(text);
   };
 
-  const handleSubmit = (values: any) => {
-    console.log("Form submitted:", values);
-    
+  const handleSubmit = async (values: any) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // Prepare user data for API
+      const userData = {
+        fullName: values.fullName.trim(),
+        dateOfBirth: values.dateOfBirth,
+        phoneNumber: values.phoneNumber.trim(),
+        email: values.email.trim().toLowerCase(),
+        password: values.password,
+        isVolunteer: values.isVolunteer,
+      };
+
+      // Call signup API
+      const result = await mockSignUp(userData);
+
+      if (result.success) {
+        Alert.alert("Success", result.message, [
+          {
+            text: "Continue",
+            onPress: () => {
+              navigation.replace("Introduction");
+            },
+          },
+        ]);
+      } else {
+        Alert.alert("Sign Up Failed", result.message, [{ text: "OK" }]);
+      }
+    } catch (error) {
+      Alert.alert(
+        "Connection Error",
+        "Unable to connect to server. Please check your internet connection and try again.",
+        [{ text: "OK" }]
+      );
+      console.error("Signup error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -799,6 +864,8 @@ const SignUp = () => {
                   values,
                   errors,
                   touched,
+                  isValid,
+                  dirty,
                 }) => (
                   <View style={styles.blockLabelsAndInputs}>
                     {/* Full Name */}
@@ -824,6 +891,7 @@ const SignUp = () => {
                         value={values.fullName}
                         placeholder="Enter your full name"
                         returnKeyType="next"
+                        editable={!isSubmitting}
                       />
                       {errors.fullName && touched.fullName && (
                         <Text style={styles.errorText}>{errors.fullName}</Text>
@@ -859,6 +927,7 @@ const SignUp = () => {
                         placeholder="YYYY-MM-DD"
                         keyboardType="numeric"
                         returnKeyType="next"
+                        editable={!isSubmitting}
                       />
                       {errors.dateOfBirth && touched.dateOfBirth && (
                         <Text style={styles.errorText}>
@@ -906,6 +975,7 @@ const SignUp = () => {
                           optionStyle={styles.optionStyle}
                           dropdownStyle={styles.dropdownStyle}
                           searchInputStyle={styles.searchInputStyle}
+                          disabled={isSubmitting}
                         />
                       </View>
 
@@ -937,6 +1007,7 @@ const SignUp = () => {
                           placeholder="+992 93 123 4567"
                           keyboardType="phone-pad"
                           returnKeyType="next"
+                          editable={!isSubmitting}
                         />
                       </View>
 
@@ -990,6 +1061,7 @@ const SignUp = () => {
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
+                        editable={!isSubmitting}
                       />
                       {errors.email && touched.email && (
                         <Text style={styles.errorText}>{errors.email}</Text>
@@ -1028,6 +1100,7 @@ const SignUp = () => {
                           autoComplete="password-new"
                           placeholder="At least 8 characters with mixed types"
                           returnKeyType="next"
+                          editable={!isSubmitting}
                         />
                         {showAndHidePassword ? (
                           <Entypo
@@ -1035,7 +1108,9 @@ const SignUp = () => {
                             size={30}
                             color="black"
                             style={styles.showAndHidePasswordIcon}
-                            onPress={() => setShowAndHidePassword(false)}
+                            onPress={() =>
+                              !isSubmitting && setShowAndHidePassword(false)
+                            }
                           />
                         ) : (
                           <Entypo
@@ -1043,7 +1118,9 @@ const SignUp = () => {
                             size={30}
                             color="black"
                             style={styles.showAndHidePasswordIcon}
-                            onPress={() => setShowAndHidePassword(true)}
+                            onPress={() =>
+                              !isSubmitting && setShowAndHidePassword(true)
+                            }
                           />
                         )}
                       </View>
@@ -1205,6 +1282,7 @@ const SignUp = () => {
                           autoComplete="password-new"
                           placeholder="Re-enter your password"
                           returnKeyType="done"
+                          editable={!isSubmitting}
                         />
                         {showAndHideConfirmPassword ? (
                           <Entypo
@@ -1212,7 +1290,10 @@ const SignUp = () => {
                             size={30}
                             color="black"
                             style={styles.showAndHideConfirmPasswordIcon}
-                            onPress={() => setShowAndHideConfirmPassword(false)}
+                            onPress={() =>
+                              !isSubmitting &&
+                              setShowAndHideConfirmPassword(false)
+                            }
                           />
                         ) : (
                           <Entypo
@@ -1220,7 +1301,10 @@ const SignUp = () => {
                             size={30}
                             color="black"
                             style={styles.showAndHideConfirmPasswordIcon}
-                            onPress={() => setShowAndHideConfirmPassword(true)}
+                            onPress={() =>
+                              !isSubmitting &&
+                              setShowAndHideConfirmPassword(true)
+                            }
                           />
                         )}
                       </View>
@@ -1252,16 +1336,26 @@ const SignUp = () => {
                         checkedColor="#007AFF"
                         uncheckedColor="#ccc"
                         size={22}
+                        disabled={isSubmitting}
                       />
                     </View>
 
                     {/* Submit Button */}
                     <View style={styles.btnSignUpAndSignInNavBlock}>
                       <Pressable
-                        style={styles.btnSignUp}
+                        style={[
+                          styles.btnSignUp,
+                          (!isValid || !dirty || isSubmitting) &&
+                            styles.btnSignUpDisabled,
+                        ]}
                         onPress={() => handleSubmit()}
+                        disabled={!isValid || !dirty || isSubmitting}
                       >
-                        <Text style={styles.btnTextSignUp}>Sign up</Text>
+                        {isSubmitting ? (
+                          <ActivityIndicator color="#fff" size="small" />
+                        ) : (
+                          <Text style={styles.btnTextSignUp}>Sign up</Text>
+                        )}
                       </Pressable>
 
                       <View style={styles.blockTitleAndBtnNavSignIn}>
@@ -1271,10 +1365,21 @@ const SignUp = () => {
                         <Pressable
                           style={styles.btnNavSignIn}
                           onPress={() => {
-                            navigation.navigate("SignIn");
+                            if (!isSubmitting) {
+                              navigation.navigate("SignIn");
+                            }
                           }}
+                          disabled={isSubmitting}
                         >
-                          <Text style={styles.btnTextNavSignIn}> Sign in</Text>
+                          <Text
+                            style={[
+                              styles.btnTextNavSignIn,
+                              isSubmitting && styles.disabledNavText,
+                            ]}
+                          >
+                            {" "}
+                            Sign in
+                          </Text>
                         </Pressable>
                       </View>
                     </View>
@@ -1355,6 +1460,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginTop: 5,
   },
+  btnSignUpDisabled: {
+    backgroundColor: "#CCCCCC",
+    opacity: 0.6,
+  },
   btnTextSignUp: {
     textAlign: "center",
     color: "#fff",
@@ -1378,6 +1487,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "400",
     color: "#3A65FF",
+  },
+  disabledNavText: {
+    color: "#CCCCCC",
   },
   labelAndInputBlock: {},
   label: {

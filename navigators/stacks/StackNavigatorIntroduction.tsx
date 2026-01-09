@@ -1,14 +1,35 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import IntroductionAboutApp from "@/screens/introduction/IntroductionAboutApp";
+import IntroductionAboutBook from "@/screens/introduction/IntroductionAboutBook";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import { StyleSheet } from "react-native";
 
 const StackNavigatorIntroduction = () => {
+  const Stack = createNativeStackNavigator();
   return (
-    <View>
-      <Text>StackNavigatorIntroduction</Text>
-    </View>
-  )
-}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="IntroductionAboutApp"
+        component={IntroductionAboutApp}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="IntroductionAboutBook"
+        component={IntroductionAboutBook}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
-export default StackNavigatorIntroduction
+export default StackNavigatorIntroduction;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
