@@ -1,17 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const StackNavigatorHomePage = () => {
-
-  
-  
+const Save = () => {
   return (
     <View>
-      <Text>StackNavigatorHomePage</Text>
+      <Text>Save</Text>
     </View>
   )
 }
 
-export default StackNavigatorHomePage
+export default Save
 
 const styles = StyleSheet.create({})

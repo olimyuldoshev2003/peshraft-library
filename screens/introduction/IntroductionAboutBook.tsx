@@ -1,3 +1,4 @@
+import { useNavigation } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -9,6 +10,8 @@ import {
 } from "react-native";
 
 const IntroductionAboutBook = () => {
+  const navigation: any = useNavigation();
+
   return (
     <View style={styles.introductionAboutBookComponent}>
       <ImageBackground
@@ -78,7 +81,12 @@ const IntroductionAboutBook = () => {
                 power to chnage yourself and make you more valueable.
               </Text>
               <View style={styles.blockBtnGetStarted}>
-                <Pressable style={styles.btnGetStarted}>
+                <Pressable
+                  style={styles.btnGetStarted}
+                  onPress={() => {
+                    navigation.replace("Application");
+                  }}
+                >
                   <Text style={styles.btnTextGetStarted}>Get Started Now</Text>
                 </Pressable>
               </View>

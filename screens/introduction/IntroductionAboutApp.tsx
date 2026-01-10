@@ -1,22 +1,34 @@
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
+  Easing,
   Image,
+  ImageBackground,
+  Modal,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import AppIntroSlider from "react-native-app-intro-slider";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const { width, height } = Dimensions.get("window");
 
 const IntroductionAboutApp = () => {
-  const navigation = useNavigation();
-  const [showRealApp, setShowRealApp] = useState(false);
+  const navigation: any = useNavigation();
+  const [modalAnimationFinalIntroduction, setModalAnimationFinalIntroduction] =
+    useState<boolean>(false);
+  // const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  // Animation values for modal fade
+  const modalFadeAnim = useRef(new Animated.Value(0)).current;
+  const modalBackgroundFadeAnim = useRef(new Animated.Value(0)).current;
+  const contentScaleAnim = useRef(new Animated.Value(0.8)).current;
+  const contentFadeAnim = useRef(new Animated.Value(0)).current;
 
   const slides = [
     {
@@ -35,14 +47,116 @@ const IntroductionAboutApp = () => {
     },
   ];
 
+  // Open modal with custom fade animation
+  const openModalWithAnimation = () => {
+    setModalAnimationFinalIntroduction(true);
+
+    // Reset animations
+    modalFadeAnim.setValue(0);
+    modalBackgroundFadeAnim.setValue(0);
+    contentScaleAnim.setValue(0.8);
+    contentFadeAnim.setValue(0);
+
+    // Animate modal background fade (400ms duration)
+    Animated.timing(modalBackgroundFadeAnim, {
+      toValue: 1,
+      duration: 400, // Control modal fade duration here
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+
+    // Animate modal content after a small delay
+    setTimeout(() => {
+      Animated.parallel([
+        // Modal fade animation (500ms duration)
+        Animated.timing(modalFadeAnim, {
+          toValue: 1,
+          duration: 500, // Control modal content fade duration here
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        // Content scale animation (600ms duration)
+        Animated.timing(contentScaleAnim, {
+          toValue: 1,
+          duration: 600, // Control scale animation duration here
+          easing: Easing.out(Easing.back(1.2)),
+          useNativeDriver: true,
+        }),
+        // Content fade animation (500ms duration)
+        Animated.timing(contentFadeAnim, {
+          toValue: 1,
+          duration: 500, // Control content fade duration here
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, 200);
+  };
+
+  // Close modal with custom fade animation
+  const closeModalWithAnimation = () => {
+    // Animate out
+    Animated.parallel([
+      // Content fade out (400ms duration)
+      Animated.timing(contentFadeAnim, {
+        toValue: 0,
+        duration: 400, // Control fade-out duration here
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      // Content scale out (400ms duration)
+      Animated.timing(contentScaleAnim, {
+        toValue: 0.8,
+        duration: 400, // Control scale-out duration here
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      // Modal fade out (300ms duration)
+      Animated.timing(modalFadeAnim, {
+        toValue: 0,
+        duration: 300, // Control modal fade-out duration here
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Animate background fade out (200ms duration)
+      Animated.timing(modalBackgroundFadeAnim, {
+        toValue: 0,
+        duration: 200, // Control background fade-out duration here
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }).start(() => {
+        setModalAnimationFinalIntroduction(false);
+        setModalAnimationFinalIntroduction(false);
+      });
+    });
+  };
+
   const onDone = () => {
-    // setShowRealApp(true);
-    navigation.navigate("FinalIntroduction" as never);
+    setModalAnimationFinalIntroduction(true);
+    openModalWithAnimation();
+
+    // Keep modal visible for 3 seconds before closing
+    setTimeout(() => {
+      closeModalWithAnimation();
+    }, 3000); // Total display time
+
+    setTimeout(() => {
+      navigation.replace("IntroductionAboutBook" as never);
+    }, 2990);
   };
 
   const onSkip = () => {
-    // setShowRealApp(true);
-    navigation.navigate("FinalIntroduction" as never);
+    setModalAnimationFinalIntroduction(true);
+    openModalWithAnimation();
+
+    // Keep modal visible for 3 seconds before closing
+    setTimeout(() => {
+      closeModalWithAnimation();
+    }, 3000);
+    setTimeout(() => {
+      navigation.replace("IntroductionAboutBook" as never);
+    }, 2990);
   };
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
@@ -111,10 +225,6 @@ const IntroductionAboutApp = () => {
     );
   };
 
-  if (showRealApp) {
-    return null;
-  }
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="transparent" translucent />
@@ -129,6 +239,54 @@ const IntroductionAboutApp = () => {
         dotStyle={styles.hiddenDot}
         activeDotStyle={styles.hiddenDot}
       />
+
+      {/* Custom Modal with controlled animation */}
+      <Modal
+        visible={modalAnimationFinalIntroduction}
+        onRequestClose={closeModalWithAnimation}
+        animationType="fade" // Disable default animation
+        transparent
+      >
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            {
+              opacity: modalBackgroundFadeAnim,
+            },
+          ]}
+        >
+          <ImageBackground
+            source={require("../../assets/peshraft-library/introduction/img-bg-final-intro.jpg")}
+            style={styles.bgImgModalAnimationFinalIntroduction}
+            resizeMode="cover"
+          >
+            <Animated.View
+              style={[
+                styles.modalContentContainer,
+                {
+                  opacity: modalFadeAnim,
+                },
+              ]}
+            >
+              <Animated.View
+                style={[
+                  styles.modalAnimationFinalIntroductionMainBlock,
+                  {
+                    opacity: contentFadeAnim,
+                    transform: [{ scale: contentScaleAnim }],
+                  },
+                ]}
+              >
+                <Text style={styles.titleInsideBg}>Thank you</Text>
+                <Text style={styles.descriptionInsideBg}>
+                  May your first step into the library open the door to endless
+                  knowledge.
+                </Text>
+              </Animated.View>
+            </Animated.View>
+          </ImageBackground>
+        </Animated.View>
+      </Modal>
     </View>
   );
 };
@@ -253,5 +411,45 @@ const styles = StyleSheet.create({
   },
   hiddenDot: {
     display: "none",
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  bgImgModalAnimationFinalIntroduction: {
+    flex: 1,
+  },
+  modalContentContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Semi-transparent overlay
+  },
+  modalAnimationFinalIntroductionMainBlock: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  titleInsideBg: {
+    textAlign: "center",
+    fontSize: 42,
+    fontWeight: "700",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.7)",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
+    marginBottom: 10,
+  },
+  descriptionInsideBg: {
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "400",
+    paddingHorizontal: 30,
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.7)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    lineHeight: 32,
   },
 });
