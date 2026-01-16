@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   receivedBooksBlockScrollView: {
     gap: 15,
-    paddingRight: 435,
+    paddingRight: 440,
     paddingVertical: 10,
   },
   receivedBooksBlock: {},
