@@ -11,112 +11,186 @@ import {
   View,
 } from "react-native";
 
-const Home = () => {
-  return (
-    <View style={styles.homeComponent}>
-      <View style={styles.homeComponentBlock}>
-        <View style={styles.headerHomeComponent}>
-          <View style={styles.headerBlock1}>
-            <View style={styles.logoAndAppNameBlock}>
-              <Image
-                source={require("../../assets/peshraft-library/introduction/Logo.png")}
-                style={styles.logo}
-              />
-              <Text style={styles.nameOfApp}>Peshraft Library</Text>
-            </View>
-            <MaterialIcons name="notifications-none" size={41} color="black" />
-          </View>
-          <View style={styles.headerBlock2}>
-            <Ionicons
-              name="search"
-              size={30}
-              color="black"
-              style={styles.searchIconOpenModal}
+const Home = () => (
+  <View style={styles.homeComponent}>
+    <View style={styles.homeComponentBlock}>
+      <View style={styles.headerHomeComponent}>
+        <View style={styles.headerBlock1}>
+          <View style={styles.logoAndAppNameBlock}>
+            <Image
+              source={require("../../assets/peshraft-library/introduction/Logo.png")}
+              style={styles.logo}
             />
+            <Text style={styles.nameOfApp}>Peshraft Library</Text>
+          </View>
+          <MaterialIcons name="notifications-none" size={41} color="black" />
+        </View>
+        <View style={styles.headerBlock2}>
+          <Ionicons
+            name="search"
+            size={30}
+            color="black"
+            style={styles.searchIconOpenModal}
+          />
 
-            <TextInput
-              style={styles.inputOpenModalSearch}
-              placeholder="Search Here"
-            />
-          </View>
+          <TextInput
+            style={styles.inputOpenModalSearch}
+            placeholder="Search Here"
+          />
+        </View>
+        <ScrollView
+          contentContainerStyle={styles.headerBlock3ScrollView}
+          style={styles.headerBlock3}
+          horizontal
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
+          <Pressable style={[styles.filterBtn, styles.filterBtnActive]}>
+            <Text style={[styles.filterBtnText, styles.filterBtnTextActive]}>
+              All
+            </Text>
+          </Pressable>
+          <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
+            <Text style={[styles.filterBtnText, styles.filterBtnTextInactive]}>
+              Best book
+            </Text>
+          </Pressable>
+          <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
+            <Text style={[styles.filterBtnText, styles.filterBtnTextInactive]}>
+              Classics
+            </Text>
+          </Pressable>
+          <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
+            <Text style={[styles.filterBtnText, styles.filterBtnTextInactive]}>
+              Fantasy
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </View>
+      <ScrollView
+        contentContainerStyle={styles.sectionHomeComponentScrollView}
+        style={styles.sectionHomeComponent}
+      >
+        <View style={styles.receivedBooks}>
+          <Text style={styles.receivedBookTitle}>Received books</Text>
           <ScrollView
-            contentContainerStyle={styles.headerBlock3ScrollView}
-            style={styles.headerBlock3}
+            contentContainerStyle={styles.receivedBooksBlockScrollView}
+            style={styles.receivedBooksBlock}
             horizontal
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
           >
-            <Pressable style={[styles.filterBtn, styles.filterBtnActive]}>
-              <Text style={[styles.filterBtnText, styles.filterBtnTextActive]}>
-                All
-              </Text>
-            </Pressable>
-            <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
-              <Text
-                style={[styles.filterBtnText, styles.filterBtnTextInactive]}
-              >
-                Best book
-              </Text>
-            </Pressable>
-            <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
-              <Text
-                style={[styles.filterBtnText, styles.filterBtnTextInactive]}
-              >
-                Classics
-              </Text>
-            </Pressable>
-            <Pressable style={[styles.filterBtn, styles.filterBtnInactive]}>
-              <Text
-                style={[styles.filterBtnText, styles.filterBtnTextInactive]}
-              >
-                Fantasy
-              </Text>
-            </Pressable>
-          </ScrollView>
-        </View>
-        <ScrollView
-          contentContainerStyle={styles.sectionHomeComponentScrollView}
-          style={styles.sectionHomeComponent}
-        >
-          <View style={styles.receivedBooks}>
-            <Text style={styles.receivedBookTitle}>Received books</Text>
-            <ScrollView
-              contentContainerStyle={styles.receivedBooksBlockScrollView}
-              style={styles.receivedBooksBlock}
-              horizontal
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            >
-              {/* Received Book 1 */}
-              <View style={styles.receivedBookContainer}>
-                <View style={styles.receivedBookContainerBlock1}>
-                  <Image
-                    source={require("../../assets/peshraft-library/home/tojikon.jpg")}
-                    style={styles.imgReceivedBook}
-                  />
+            {/* Received Book 1 */}
+            <View style={styles.receivedBookContainer}>
+              <View style={styles.receivedBookContainerBlock1}>
+                <Image
+                  source={require("../../assets/peshraft-library/home/tojikon.jpg")}
+                  style={styles.imgReceivedBook}
+                />
+              </View>
+              <View style={styles.receivedBookContainerBlock2}>
+                <View style={styles.receivedBookTextBlock}>
+                  <Text style={styles.receivedBookName}>TOJIKON</Text>
+                  <Text style={styles.receivedBookAuthor}>Bobojon Gafurov</Text>
                 </View>
-                <View style={styles.receivedBookContainerBlock2}>
-                  <View style={styles.receivedBookTextBlock}>
-                    <Text style={styles.receivedBookName}></Text>
-                    <Text style={styles.receivedBookAuthor}></Text>
+                <View style={styles.receivedBookLeftDaysWithRangeAndText}>
+                  <View
+                    style={[styles.receivedBookLeftDaysWithRangeFullDaysBlock]}
+                  >
+                    <View
+                      style={[
+                        styles.receivedBookLeftDaysWithRangeLeftDaysBlock,
+                        { width: "60%" },
+                      ]}
+                    ></View>
                   </View>
-                  
+                  <Text style={styles.receivedBookLeftDays}>5 days left</Text>
+                </View>
+                <View style={styles.receivedBookStatus}>
+                  <Text style={styles.receivedBookStatusText}>
+                    Received rejection
+                  </Text>
                 </View>
               </View>
+            </View>
 
-              {/* Received Book 2 */}
-              {/* Received Book 3 */}
-            </ScrollView>
-          </View>
-          <View style={styles.allBooks}>
-            <Text style={styles.allBooksTitle}>All books</Text>
-            <View style={styles.allBooksBlock}></View>
-          </View>
-        </ScrollView>
-      </View>
+            {/* Received Book 2 */}
+            <View style={styles.receivedBookContainer}>
+              <View style={styles.receivedBookContainerBlock1}>
+                <Image
+                  source={require("../../assets/peshraft-library/home/tojikon.jpg")}
+                  style={styles.imgReceivedBook}
+                />
+              </View>
+              <View style={styles.receivedBookContainerBlock2}>
+                <View style={styles.receivedBookTextBlock}>
+                  <Text style={styles.receivedBookName}>TOJIKON</Text>
+                  <Text style={styles.receivedBookAuthor}>Bobojon Gafurov</Text>
+                </View>
+                <View style={styles.receivedBookLeftDaysWithRangeAndText}>
+                  <View
+                    style={[styles.receivedBookLeftDaysWithRangeFullDaysBlock]}
+                  >
+                    <View
+                      style={[
+                        styles.receivedBookLeftDaysWithRangeLeftDaysBlock,
+                        { width: "30%" },
+                      ]}
+                    ></View>
+                  </View>
+                  <Text style={styles.receivedBookLeftDays}>5 days left</Text>
+                </View>
+                <View style={styles.receivedBookStatus}>
+                  <Text style={styles.receivedBookStatusText}>
+                    Received rejection
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Received Book 3 */}
+            <View style={styles.receivedBookContainer}>
+              <View style={styles.receivedBookContainerBlock1}>
+                <Image
+                  source={require("../../assets/peshraft-library/home/tojikon.jpg")}
+                  style={styles.imgReceivedBook}
+                />
+              </View>
+              <View style={styles.receivedBookContainerBlock2}>
+                <View style={styles.receivedBookTextBlock}>
+                  <Text style={styles.receivedBookName}>TOJIKON</Text>
+                  <Text style={styles.receivedBookAuthor}>Bobojon Gafurov</Text>
+                </View>
+                <View style={styles.receivedBookLeftDaysWithRangeAndText}>
+                  <View
+                    style={[styles.receivedBookLeftDaysWithRangeFullDaysBlock]}
+                  >
+                    <View
+                      style={[
+                        styles.receivedBookLeftDaysWithRangeLeftDaysBlock,
+                        { width: `${50}%` },
+                      ]}
+                    ></View>
+                  </View>
+                  <Text style={styles.receivedBookLeftDays}>5 days left</Text>
+                </View>
+                <View style={styles.receivedBookStatus}>
+                  <Text style={styles.receivedBookStatusText}>
+                    Received rejection
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+        <View style={styles.allBooks}>
+          <Text style={styles.allBooksTitle}>All books</Text>
+          <View style={styles.allBooksBlock}></View>
+        </View>
+      </ScrollView>
     </View>
-  );
-};
+  </View>
+);
 
 export default Home;
 
@@ -208,18 +282,115 @@ const styles = StyleSheet.create({
   },
   sectionHomeComponent: {},
   sectionHomeComponentScrollView: {},
-  receivedBooks: {},
-  receivedBookTitle: {},
-  receivedBooksBlockScrollView: {},
+  receivedBooks: {
+    marginTop: 20,
+    paddingHorizontal: 5,
+  },
+  receivedBookTitle: {
+    fontSize: 24,
+    fontWeight: "500",
+    color: "#000",
+    marginBottom: 15,
+  },
+  receivedBooksBlockScrollView: {
+    gap: 15,
+    paddingRight: 435,
+    paddingVertical: 10,
+  },
   receivedBooksBlock: {},
-  receivedBookContainer: {},
-  receivedBookContainerBlock1: {},
-  imgReceivedBook: {},
-  receivedBookContainerBlock2: {},
+
+  // Received Books (Styles with the same name)
+  ////////////////////////////////////////////////
+  receivedBookContainer: {
+    width: "60%",
+    height: 170,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 4,
+    flexDirection: "row",
+  },
+  receivedBookContainerBlock1: {
+    width: "40%",
+    backgroundColor: "#F5EABD",
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+  },
+  imgReceivedBook: {
+    width: "77%",
+    height: "77%",
+    resizeMode: "contain",
+  },
+  receivedBookContainerBlock2: {
+    padding: 10,
+    width: "60%",
+  },
   receivedBookTextBlock: {},
-  receivedBookName:{},
-  receivedBookAuthor:{},
-  allBooks: {},
-  allBooksTitle: {},
-  allBooksBlock: {},
+  receivedBookName: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#000",
+  },
+  receivedBookAuthor: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#515151",
+  },
+  receivedBookLeftDaysWithRangeAndText: {
+    marginTop: 15,
+  },
+  receivedBookLeftDaysWithRangeFullDaysBlock: {
+    height: 10,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 5,
+  },
+  receivedBookLeftDaysWithRangeLeftDaysBlock: {
+    height: 10,
+    backgroundColor: "#7EC7EC",
+    borderRadius: 5,
+  },
+  receivedBookLeftDays: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#515151",
+    marginTop: 4,
+  },
+  receivedBookStatus: {
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: "flex-start",
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: "#404066",
+  },
+  receivedBookStatusText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "##404066",
+  },
+  ////////////////////////////////////////////////
+  allBooks: {
+    marginTop: 30,
+    paddingHorizontal: 10,
+  },
+  allBooksTitle: {
+    fontSize: 24,
+    fontWeight: "500",
+    color: "#000",
+    marginBottom: 15,
+  },
+  allBooksBlock: {
+    height: 400,
+    // backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+  },
 });
