@@ -362,13 +362,14 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#515151",
     marginTop: 4,
+    textAlign: "right"
   },
   receivedBookStatus: {
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 10,
     alignSelf: "flex-start",
-    marginTop: 8,
+    marginTop:22,
     borderWidth: 1,
     borderColor: "#404066",
   },
