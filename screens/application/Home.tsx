@@ -1,3 +1,4 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React from "react";
@@ -185,7 +186,40 @@ const Home = () => (
         </View>
         <View style={styles.allBooks}>
           <Text style={styles.allBooksTitle}>All books</Text>
-          <View style={styles.allBooksBlock}></View>
+          <View style={styles.allBooksBlock}>
+            {/* Book number 1 */}
+            <View style={styles.bookContainer}>
+              <View style={styles.bookContainerBlock1}>
+                <FontAwesome
+                  name="heart-o"
+                  size={23}
+                  color="#939393"
+                  style={styles.heartIcon}
+                />
+                <Image
+                  source={require("../../assets/peshraft-library/home/tojikon.jpg")}
+                  style={styles.bookImg}
+                />
+              </View>
+              <View style={styles.bookContainerBlock2}>
+                <View style={styles.authorAndNameAndRateOfBook}>
+                  <View style={styles.authorAndNameOfBookBlock}></View>
+                  <View style={styles.rateOfBookBlock}></View>
+                </View>
+                <View style={styles.numberOfReadersAndRightIconBlock}>
+                  <View style={styles.userIconNumberOfUsersAndTextBlock}></View>
+                </View>
+              </View>
+            </View>
+
+            {/* Book number 2 */}
+            {/* Book number 3 */}
+            {/* Book number 4 */}
+            {/* Book number 5 */}
+            {/* Book number 6 */}
+            {/* Book number 7 */}
+            {/* Book number 8 */}
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -362,14 +396,14 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#515151",
     marginTop: 4,
-    textAlign: "right"
+    textAlign: "right",
   },
   receivedBookStatus: {
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 10,
     alignSelf: "flex-start",
-    marginTop:22,
+    marginTop: 22,
     borderWidth: 1,
     borderColor: "#404066",
   },
@@ -394,4 +428,27 @@ const styles = StyleSheet.create({
     // backgroundColor: "#f5f5f5",
     borderRadius: 10,
   },
+
+  // All Books (Styles with the same name)
+  ////////////////////////////////////////////////
+  bookContainer: {},
+  bookContainerBlock1: {
+    backgroundColor: "#F5EABD",
+    borderRadius: 4,
+    padding: 30,
+    position: "relative",
+  },
+  heartIcon: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
+  bookImg: {},
+  bookContainerBlock2: {},
+  authorAndNameAndRateOfBook: {},
+  authorAndNameOfBookBlock: {},
+  rateOfBookBlock: {},
+  numberOfReadersAndRightIconBlock: {},
+  userIconNumberOfUsersAndTextBlock: {},
+  ////////////////////////////////////////////////
 });
