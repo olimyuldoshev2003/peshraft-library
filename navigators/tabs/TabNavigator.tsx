@@ -1,5 +1,4 @@
 import Book from "@/screens/application/Book";
-import Home from "@/screens/application/Home";
 import Profile from "@/screens/application/Profile";
 import Save from "@/screens/application/Save";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,6 +10,7 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
+import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -31,12 +31,13 @@ const TabNavigator = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="HomeStack"
+        component={StackNavigatorHomePage}
         options={{
           tabBarIcon: ({ size, color }) => {
             return <Octicons name="home" size={size} color={color} />;
           },
+          title: "Home",
         }}
       />
       <Tab.Screen
@@ -53,7 +54,9 @@ const TabNavigator = () => {
         component={Save}
         options={{
           tabBarIcon: ({ size, color }) => {
-            return <Ionicons name="bookmark-outline" size={size} color={color} />;
+            return (
+              <Ionicons name="bookmark-outline" size={size} color={color} />
+            );
           },
         }}
       />
@@ -62,7 +65,9 @@ const TabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({ size, color }) => {
-            return <FontAwesome6 name="user-circle" size={size} color={color} />;
+            return (
+              <FontAwesome6 name="user-circle" size={size} color={color} />
+            );
           },
         }}
       />

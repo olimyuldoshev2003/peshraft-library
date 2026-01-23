@@ -1,17 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import Home from "@/screens/application/Home";
+import Notifications from "@/screens/application/Notifications";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import { StyleSheet } from "react-native";
 
 const StackNavigatorHomePage = () => {
+  const Stack = createNativeStackNavigator();
 
-  
-  
   return (
-    <View>
-      <Text>StackNavigatorHomePage</Text>
-    </View>
-  )
-}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
-export default StackNavigatorHomePage
+export default StackNavigatorHomePage;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -5,6 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
   Image,
@@ -16,40 +17,36 @@ import {
   View,
 } from "react-native";
 
-// Data arrays
+// Data arrays - Updated daysLeft values to show different scenarios
 const receivedBooksData = [
   {
     id: 1,
     name: "TOJIKON",
     author: "Bobojon Gafurov",
     leftDaysPercentage: 60,
-    leftDaysText: "5 days left",
     status: "Received rejection",
     image: require("../../assets/peshraft-library/home/tojikon.jpg"),
     daysGiven: 14,
-    daysLeft: 5,
+    daysLeft: 1,
   },
   {
     id: 2,
     name: "TOJIKON",
     author: "Bobojon Gafurov",
-    leftDaysPercentage: 30,
-    leftDaysText: "5 days left",
     status: "Received rejection",
     image: require("../../assets/peshraft-library/home/tojikon.jpg"),
     daysGiven: 14,
-    daysLeft: 5,
+    daysLeft: 2,
   },
   {
     id: 3,
     name: "TOJIKON",
     author: "Bobojon Gafurov",
     leftDaysPercentage: 50,
-    leftDaysText: "5 days left",
     status: "Received rejection",
     image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-    daysGiven: 14,
-    daysLeft: 7,
+    daysGiven: 28,
+    daysLeft: 28,
   },
 ];
 
@@ -128,7 +125,21 @@ const filterButtons = [
 ];
 
 const Home = () => {
+  const navigation: any = useNavigation();
+
   const [modalSearch, setModalSearch] = useState<boolean>(false);
+
+  // Function to calculate the width percentage (opposite logic)
+  const calculateProgressWidth = (daysLeft: number, daysGiven: number) => {
+    // Calculate percentage of time REMAINING (not used)
+    const remainingPercentage = (daysLeft * 100) / daysGiven;
+
+    // Calculate percentage of time USED (opposite logic)
+    const usedPercentage = ((daysGiven - daysLeft) * 100) / daysGiven;
+
+    // Or simpler: show how much time has passed rather than how much is left
+    return `${usedPercentage}%`;
+  };
 
   return (
     <View style={styles.homeComponent}>
@@ -142,7 +153,14 @@ const Home = () => {
               />
               <Text style={styles.nameOfApp}>Peshraft Library</Text>
             </View>
-            <MaterialIcons name="notifications-none" size={35} color="black" />
+            <MaterialIcons
+              name="notifications-none"
+              size={35}
+              color="black"
+              onPress={() => {
+                navigation.navigate("Notifications");
+              }}
+            />
           </View>
           <View style={styles.headerBlock2}>
             <Pressable
@@ -230,12 +248,19 @@ const Home = () => {
                         <View
                           style={[
                             styles.receivedBookLeftDaysWithRangeLeftDaysBlock,
-                            { width: `${book.leftDaysPercentage}%` },
+                            {
+                              // REVERSED LOGIC: Show time USED instead of time LEFT
+                              // When daysLeft is 1 (almost finished), width should be large
+                              // When daysLeft is close to daysGiven (just started), width should be small
+                              width: `${((book.daysGiven - book.daysLeft) * 100) / book.daysGiven}%`,
+                            },
                           ]}
                         ></View>
                       </View>
                       <Text style={styles.receivedBookLeftDays}>
-                        {book.leftDaysText}
+                        {book.daysLeft === 1
+                          ? "1 day left"
+                          : `${book.daysLeft} days left`}
                       </Text>
                     </View>
                     <View style={styles.receivedBookStatus}>
@@ -308,7 +333,10 @@ const Home = () => {
             </View>
           </View>
         </ScrollView>
-        <ModalSearch modalSearch={modalSearch} setModalSearch={setModalSearch}/>
+        <ModalSearch
+          modalSearch={modalSearch}
+          setModalSearch={setModalSearch}
+        />
       </View>
     </View>
   );
@@ -503,7 +531,7 @@ const styles = StyleSheet.create({
   receivedBookStatusText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#404066", // Fixed: Removed extra #
+    color: "#404066",
   },
   ////////////////////////////////////////////////
   allBooks: {
