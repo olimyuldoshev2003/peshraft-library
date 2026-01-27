@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Book = () => {
+const Books = () => {
   return (
     <View>
       <Text>Book</Text>
@@ -9,6 +9,6 @@ const Book = () => {
   )
 }
 
-export default Book
+export default Books
 
 const styles = StyleSheet.create({})

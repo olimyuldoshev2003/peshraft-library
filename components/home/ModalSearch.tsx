@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     borderRadius: 24,
     paddingLeft: 55,
+    paddingRight: 42,
   },
   clearTheInputSearchIcon: {},
   closeModalSearchIcon: {},

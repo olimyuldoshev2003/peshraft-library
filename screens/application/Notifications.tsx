@@ -1,11 +1,25 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
+
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import {
+  NavigationContainer,
+  NavigationIndependentTree,
+} from "@react-navigation/native";
+import Duetime from "./Duetime";
+import News from "./News";
 
 const Notifications = () => {
+  const Tab = createMaterialTopTabNavigator();
   return (
-    <View>
-      <Text>Notifications</Text>
-    </View>
+    <NavigationIndependentTree>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="Duetime" component={Duetime} />
+          <Tab.Screen name="News" component={News} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </NavigationIndependentTree>
   );
 };
 

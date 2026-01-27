@@ -1,4 +1,4 @@
-import Book from "@/screens/application/Book";
+import Book from "@/screens/application/Books";
 import Profile from "@/screens/application/Profile";
 import Save from "@/screens/application/Save";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,6 +11,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
 import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
+import Books from "@/screens/application/Books";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -41,9 +42,10 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Book"
-        component={Book}
+        name="Books"
+        component={Books}
         options={{
+          title: "Book",
           tabBarIcon: ({ size, color }) => {
             return <Feather name="book-open" size={size} color={color} />;
           },

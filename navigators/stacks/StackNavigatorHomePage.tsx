@@ -24,6 +24,7 @@ const StackNavigatorHomePage = () => {
         name="Notifications"
         component={Notifications}
         options={{
+          headerShown: true,
           animation: "ios_from_right",
         }}
       />
