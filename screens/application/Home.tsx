@@ -17,7 +17,6 @@ import {
   View,
 } from "react-native";
 
-// Data arrays - Updated daysLeft values to show different scenarios
 const receivedBooksData = [
   {
     id: 1,
@@ -177,8 +176,9 @@ const Home = () => {
               />
               <TextInput
                 style={styles.inputOpenModalSearch}
-                placeholder="Search Here"
+                placeholder="Search"
                 editable={false}
+                placeholderTextColor={"#939393"}
               />
             </Pressable>
           </View>
@@ -249,9 +249,6 @@ const Home = () => {
                           style={[
                             styles.receivedBookLeftDaysWithRangeLeftDaysBlock,
                             {
-                              // REVERSED LOGIC: Show time USED instead of time LEFT
-                              // When daysLeft is 1 (almost finished), width should be large
-                              // When daysLeft is close to daysGiven (just started), width should be small
                               width: `${((book.daysGiven - book.daysLeft) * 100) / book.daysGiven}%`,
                             },
                           ]}
