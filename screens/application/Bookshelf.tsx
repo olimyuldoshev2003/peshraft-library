@@ -163,7 +163,9 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 25,
   },
-  headerBookshelfComponent: {},
+  headerBookshelfComponent: {
+    paddingBottom: 15,
+  },
   titleAndIconNotifications: {
     flexDirection: "row",
     justifyContent: "space-between",

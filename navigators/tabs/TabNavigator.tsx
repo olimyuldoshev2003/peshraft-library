@@ -1,16 +1,17 @@
 import Profile from "@/screens/application/Profile";
-import Save from "@/screens/application/Save";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, usePathname } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
 import Bookshelf from "@/screens/application/Bookshelf";
+import FavoriteBooks from "@/screens/application/FavoriteBooks";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
 import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -51,12 +52,13 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Save"
-        component={Save}
+        name="FavoriteBooks"
+        component={FavoriteBooks}
         options={{
+          title: "Favorite",
           tabBarIcon: ({ size, color }) => {
             return (
-              <Ionicons name="bookmark-outline" size={size} color={color} />
+              <Feather name="heart" size={size} color={color} />
             );
           },
         }}
