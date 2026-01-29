@@ -274,7 +274,13 @@ const Home = () => {
             <Text style={styles.allBooksTitle}>All books</Text>
             <View style={styles.allBooksBlock}>
               {allBooksData.map((book) => (
-                <View key={book.id} style={styles.bookContainer}>
+                <Pressable
+                  key={book.id}
+                  style={styles.bookContainer}
+                  onPress={() => {
+                    navigation.navigate("Book", { id: book.id });
+                  }}
+                >
                   <View style={styles.bookContainerBlock1}>
                     <FontAwesome
                       name="heart-o"
@@ -325,7 +331,7 @@ const Home = () => {
                       </View>
                     </View>
                   </View>
-                </View>
+                </Pressable>
               ))}
             </View>
           </View>

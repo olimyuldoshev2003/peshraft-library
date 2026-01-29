@@ -81,10 +81,12 @@ const styles = StyleSheet.create({
   duetimeComponentBlock: {
     paddingHorizontal: 16,
   },
-  newsBlockScrollView: {},
-  newsBlock: {
+  newsBlockScrollView: {
+
     paddingHorizontal: 7,
     paddingBottom: 55,
+  },
+  newsBlock: {
   },
   newsContainer: {},
   newsSentDay: {

@@ -1,3 +1,4 @@
+import Book from "@/screens/application/Book";
 import Home from "@/screens/application/Home";
 import Notifications from "@/screens/application/Notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -28,6 +29,14 @@ const StackNavigatorHomePage = () => {
           animation: "ios_from_right",
         }}
       />
+      <Stack.Screen
+        name="Book"
+        component={Book}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+
     </Stack.Navigator>
   );
 };

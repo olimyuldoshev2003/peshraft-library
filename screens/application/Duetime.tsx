@@ -26,8 +26,7 @@ const Duetime = () => {
                     Overdue book
                   </Text>
                   <Text style={styles.duetimeNotificationDescription}>
-                    Dear Anisa.
-                    This is a reminder that the deadline to return
+                    Dear Anisa. This is a reminder that the deadline to return
                     the book “Tojikon” ends tomorrow.Please make sure to return
                     the book on time.
                   </Text>
@@ -48,8 +47,7 @@ const Duetime = () => {
                     Overdue book
                   </Text>
                   <Text style={styles.duetimeNotificationDescription}>
-                    Dear Anisa.
-                    This is a reminder that the deadline to return
+                    Dear Anisa. This is a reminder that the deadline to return
                     the book “Tojikon” ends tomorrow.Please make sure to return
                     the book on time.
                   </Text>
@@ -70,8 +68,7 @@ const Duetime = () => {
                     Overdue book
                   </Text>
                   <Text style={styles.duetimeNotificationDescription}>
-                    Dear Anisa.
-                    This is a reminder that the deadline to return
+                    Dear Anisa. This is a reminder that the deadline to return
                     the book “Tojikon” ends tomorrow.Please make sure to return
                     the book on time.
                   </Text>
@@ -96,11 +93,11 @@ const styles = StyleSheet.create({
   duetimeComponentBlock: {
     paddingHorizontal: 16,
   },
-  duetimeNotificationsScrollView: {},
-  duetimeNotifications: {
+  duetimeNotificationsScrollView: {
     paddingHorizontal: 7,
     paddingBottom: 55,
   },
+  duetimeNotifications: {},
   duetimeNotificationsContainer: {},
   duetimeNotificationsSentDay: {
     textAlign: "center",
