@@ -1,5 +1,6 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useNavigation } from "expo-router";
 import React from "react";
 import {
@@ -10,10 +11,11 @@ import {
   Text,
   View,
 } from "react-native";
+import AboutBook from "./AboutBook";
+import ReviewBook from "./ReviewBook";
 
 const Book = ({ route }: { route: any }) => {
-  //   console.log(route.params.id);
-
+  const Tab = createMaterialTopTabNavigator();
   const navigation: any = useNavigation();
 
   return (
@@ -69,6 +71,40 @@ const Book = ({ route }: { route: any }) => {
               <Text style={styles.pageAmountOfBook}>333 pages</Text>
             </View>
           </View>
+
+          {/* Fixed Tab Navigator - Removed NavigationContainer wrapper */}
+          <View style={styles.tabContainer}>
+            <Tab.Navigator
+              // screenOptions={{
+              //   tabBarActiveTintColor: "#00A9FF",
+              //   tabBarInactiveTintColor: "#515151",
+              //   tabBarIndicatorStyle: {
+              //     backgroundColor: "#00A9FF",
+              //     height: 3,
+              //   },
+              //   tabBarLabelStyle: {
+              //     fontSize: 16,
+              //     fontWeight: "600",
+              //   },
+              //   tabBarStyle: {
+              //     backgroundColor: "#fff",
+              //     elevation: 0,
+              //     shadowOpacity: 0,
+              //   },
+              // }}
+            >
+              <Tab.Screen
+                name="AboutBook"
+                component={AboutBook}
+                options={{ title: "About" }}
+              />
+              <Tab.Screen
+                name="ReviewBook"
+                component={ReviewBook}
+                options={{ title: "Review" }}
+              />
+            </Tab.Navigator>
+          </View>
         </View>
         <View style={styles.footerBookComponent}>
           <Pressable style={styles.btnOpenModalReceiveBook}>
@@ -89,7 +125,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  bookComponentBlock: {},
+  bookComponentBlock: {
+    flex: 1,
+  },
   headerBookComponent: {},
   imgBgHeaderBookComponent: {
     width: "100%",
@@ -109,7 +147,9 @@ const styles = StyleSheet.create({
     right: 20,
   },
   heartIcon: {},
-  nameAuthorAndImgOfBook: {},
+  nameAuthorAndImgOfBook: {
+    alignItems: "center",
+  },
   nameOfBook: {
     fontSize: 30,
     fontWeight: "500",
@@ -120,17 +160,24 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#515151",
     textAlign: "center",
+    marginTop: 5,
   },
   imgOfBookBlock: {
     flexDirection: "row",
     justifyContent: "center",
+    marginTop: 20,
   },
   imgOfBook: {
     width: 127,
     height: 215,
     resizeMode: "contain",
   },
-  sectionBookComponent: {},
+  sectionBookComponent: {
+    flex: 1,
+  },
+  tabContainer: {
+    flex: 1,
+  },
   ratingGenreAndPageAmountOfBookContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -153,7 +200,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    width: "80%",
+    width: "90%",
   },
   rateOfBookBlock: {
     flexDirection: "row",
@@ -186,15 +233,14 @@ const styles = StyleSheet.create({
   },
   footerBookComponent: {
     backgroundColor: "#fff",
-
     paddingVertical: 10,
+    alignItems: "center",
   },
   btnOpenModalReceiveBook: {
     borderRadius: 12,
     backgroundColor: "#00A9FF",
     paddingVertical: 9,
     width: "90%",
-    margin: "auto",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
