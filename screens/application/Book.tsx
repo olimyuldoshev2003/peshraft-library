@@ -75,23 +75,23 @@ const Book = ({ route }: { route: any }) => {
           {/* Fixed Tab Navigator - Removed NavigationContainer wrapper */}
           <View style={styles.tabContainer}>
             <Tab.Navigator
-              // screenOptions={{
-              //   tabBarActiveTintColor: "#00A9FF",
-              //   tabBarInactiveTintColor: "#515151",
-              //   tabBarIndicatorStyle: {
-              //     backgroundColor: "#00A9FF",
-              //     height: 3,
-              //   },
-              //   tabBarLabelStyle: {
-              //     fontSize: 16,
-              //     fontWeight: "600",
-              //   },
-              //   tabBarStyle: {
-              //     backgroundColor: "#fff",
-              //     elevation: 0,
-              //     shadowOpacity: 0,
-              //   },
-              // }}
+            // screenOptions={{
+            //   tabBarActiveTintColor: "#00A9FF",
+            //   tabBarInactiveTintColor: "#515151",
+            //   tabBarIndicatorStyle: {
+            //     backgroundColor: "#00A9FF",
+            //     height: 3,
+            //   },
+            //   tabBarLabelStyle: {
+            //     fontSize: 16,
+            //     fontWeight: "600",
+            //   },
+            //   tabBarStyle: {
+            //     backgroundColor: "#fff",
+            //     elevation: 0,
+            //     shadowOpacity: 0,
+            //   },
+            // }}
             >
               <Tab.Screen
                 name="AboutBook"
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   bookComponentBlock: {
     flex: 1,
+    paddingBottom: 46,
   },
   headerBookComponent: {},
   imgBgHeaderBookComponent: {
