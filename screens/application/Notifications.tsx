@@ -14,7 +14,20 @@ const Notifications = () => {
   return (
     <NavigationIndependentTree>
       <NavigationContainer>
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: "#00A9FF",
+            tabBarInactiveTintColor: "#515151",
+            tabBarIndicatorStyle: {
+              backgroundColor: "#00A9FF",
+              height: 3,
+            },
+            tabBarLabelStyle: {
+              fontSize: 16,
+              fontWeight: "600",
+            },
+          }}
+        >
           <Tab.Screen name="Duetime" component={Duetime} />
           <Tab.Screen name="News" component={News} />
         </Tab.Navigator>

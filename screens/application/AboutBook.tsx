@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const AboutBook = () => {
   return (
@@ -36,56 +36,56 @@ const AboutBook = () => {
             style={styles.otherBooksBlock}
           >
             {/* Book 1 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
 
             {/* Book 2 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
 
             {/* Book 3 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
 
             {/* Book 4 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
             {/* Book 5 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
             {/* Book 6 */}
-            <View style={styles.otherBookImgAndName}>
+            <Pressable style={styles.otherBookImgAndName}>
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
               />
               <Text style={styles.otherBookName}>Tojikon</Text>
-            </View>
+            </Pressable>
           </ScrollView>
         </View>
       </ScrollView>
