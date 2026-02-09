@@ -25,7 +25,10 @@ const ReviewBook = () => {
 export default ReviewBook;
 
 const styles = StyleSheet.create({
-  reviewBookComponent: {},
+  reviewBookComponent: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   reviewBookComponentBlock: {},
   titleBtnOpenModalAddReviewInpSearchAndFiltersBlockReviewBookComponent: {},
   titleAndBtnOpenModalAddReview: {},
