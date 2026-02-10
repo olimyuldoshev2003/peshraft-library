@@ -86,6 +86,9 @@ const Book = ({ route }: { route: any }) => {
                   fontSize: 16,
                   fontWeight: "600",
                 },
+
+                // Functionality
+                swipeEnabled: false,
               }}
             >
               <Tab.Screen
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   ratingGenreAndPageAmountOfBookContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    top: -23.9,
+    top: -25.6,
   },
   ratingGenreAndPageAmountOfBookBlock: {
     flexDirection: "row",

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   aboutBookBlock: {},
   aboutBook: {
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "500",
   },
   otherBooksContainer: {
     marginTop: 10,
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   otherBookImg: {
     width: 95,
     height: 145,
+    borderRadius: 8,
   },
   otherBookName: {
     textAlign: "center",
