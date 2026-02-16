@@ -1,6 +1,4 @@
-import Feather from "@expo/vector-icons/Feather";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   Pressable,
@@ -11,6 +9,13 @@ import {
   View,
 } from "react-native";
 
+import Entypo from "@expo/vector-icons/Entypo";
+import Feather from "@expo/vector-icons/Feather";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+// @ts-ignore
+import Stars from "react-native-stars";
+
 const ReviewBook = () => {
   const filterButtons = [
     { id: 1, title: "All", active: true },
@@ -18,6 +23,8 @@ const ReviewBook = () => {
     { id: 3, title: "Complain", active: false },
     { id: 4, title: "Feedback", active: false },
   ];
+
+  const [rating, setRating] = useState(0);
 
   return (
     <ScrollView
@@ -90,15 +97,46 @@ const ReviewBook = () => {
             <View style={styles.reviewBlock}>
               <View style={styles.headerReviewBlock}>
                 <View style={styles.userImgFullnameAndRateBlock}>
-                  <Image style={styles.userImg} />
+                  <Image
+                    source={require("../../assets/peshraft-library/book/commented-user.jpg")}
+                    style={styles.userImg}
+                  />
                   <View style={styles.fullnameAndRateBlock}>
                     <Text style={styles.fullname}>John Doe</Text>
-                    {/* <Text style={styles.rate}>4.5</Text> */}
+                    <Stars
+                      default={rating}
+                      count={5}
+                      disabled={true}
+                      starSize={50}
+                      fullStar={
+                        <Entypo name="star" size={22} color="#FCC400" />
+                      }
+                      emptyStar={
+                        <Entypo
+                          name="star-outlined"
+                          size={22}
+                          color="#FCC400"
+                        />
+                      }
+                      halfStar={
+                        <Ionicons name="star-half" size={22} color="#FCC400" />
+                      }
+                    />
                   </View>
                 </View>
+                <Entypo name="heart-outlined" size={30} color={"#939393"} />
               </View>
-              <View style={styles.sectionReviewBlock}></View>
-              <View style={styles.footerReviewBlock}></View>
+              <View style={styles.sectionReviewBlock}>
+                <Text style={styles.review}>
+                  The Harry Potter book series delivers a magical blend of
+                  adventure, friendship, and self-discovery. Its richly imagined
+                  world invites readers to explore themes of courage, loyalty,
+                  and the struggle between good and evil. .
+                </Text>
+              </View>
+              <View style={styles.footerReviewBlock}>
+                <Text style={styles.sentDate}>1 days ago</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -202,16 +240,55 @@ const styles = StyleSheet.create({
     color: "#939393",
   },
 
-  reviewsBlock: {},
+  reviewsBlock: {
+    padding: 10,
+  },
 
   // Styles with the same properties
-  reviewBlock: {},
-  headerReviewBlock: {},
-  userImgFullnameAndRateBlock: {},
+  reviewBlock: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 4,
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 21,
+  },
+  headerReviewBlock: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  userImgFullnameAndRateBlock: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
   userImg: {},
   fullnameAndRateBlock: {},
-  fullname: {},
+  fullname: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
   rate: {},
-  sectionReviewBlock: {},
-  footerReviewBlock: {},
+  sectionReviewBlock: {
+    marginTop: 10,
+  },
+  review: {
+    color: "#4D506C",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  footerReviewBlock: {
+    marginTop: 10,
+  },
+  sentDate: {
+    color: "#C2C2C2",
+    fontSize: 14,
+    fontWeight: "500",
+    textAlign: "right",
+  },
 });
