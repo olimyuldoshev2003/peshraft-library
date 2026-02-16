@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Image,
   Pressable,
@@ -16,7 +16,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 // @ts-ignore
 import Stars from "react-native-stars";
 
-const ReviewBook = () => {
+const ReviewBook = ({
+  route,
+  setModalAddReview,
+}: {
+  route: any;
+  setModalAddReview: Dispatch<SetStateAction<boolean>>;
+  }) => {
+  
+  
   const filterButtons = [
     { id: 1, title: "All", active: true },
     { id: 2, title: "Interesting", active: false },
@@ -39,7 +47,12 @@ const ReviewBook = () => {
         >
           <View style={styles.titleAndBtnOpenModalAddReview}>
             <Text style={styles.title}>Reviews</Text>
-            <Pressable style={styles.btnOpenModalAddReview}>
+            <Pressable
+              style={styles.btnOpenModalAddReview}
+              onPress={() => {
+                setModalAddReview(true);
+              }}
+            >
               <Feather
                 name="edit-2"
                 size={21}

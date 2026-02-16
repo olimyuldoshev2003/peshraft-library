@@ -1,8 +1,9 @@
+import ModalAddReview from "@/components/book/ModalAddReview";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useNavigation } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   ImageBackground,
@@ -17,6 +18,13 @@ import ReviewBook from "./ReviewBook";
 const Book = ({ route }: { route: any }) => {
   const Tab = createMaterialTopTabNavigator();
   const navigation: any = useNavigation();
+
+  const [modalAddReview, setModalAddReview] = useState<boolean>(false);
+  const [modalApply, setModalApply] = useState<boolean>(false);
+
+  const ReviewJobWithModalAddReview = ({ route }: { route: any }) => (
+    <ReviewBook setModalAddReview={setModalAddReview} route={route} />
+  );
 
   return (
     <View style={styles.bookComponent}>
@@ -98,7 +106,7 @@ const Book = ({ route }: { route: any }) => {
               />
               <Tab.Screen
                 name="ReviewBook"
-                component={ReviewBook}
+                component={ReviewJobWithModalAddReview}
                 options={{ title: "Review" }}
               />
             </Tab.Navigator>
@@ -111,6 +119,10 @@ const Book = ({ route }: { route: any }) => {
             </Text>
           </Pressable>
         </View>
+        <ModalAddReview
+          modalAddReview={modalAddReview}
+          setModalAddReview={setModalAddReview}
+        />
       </View>
     </View>
   );
