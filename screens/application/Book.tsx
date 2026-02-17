@@ -1,4 +1,5 @@
 import ModalAddReview from "@/components/book/ModalAddReview";
+import ModalReceivingBook from "@/components/book/ModalReceivingBook";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -20,7 +21,7 @@ const Book = ({ route }: { route: any }) => {
   const navigation: any = useNavigation();
 
   const [modalAddReview, setModalAddReview] = useState<boolean>(false);
-  const [modalApply, setModalApply] = useState<boolean>(false);
+  const [modalReceivingBook, setModalReceivingBook] = useState<boolean>(false);
 
   const ReviewJobWithModalAddReview = ({ route }: { route: any }) => (
     <ReviewBook setModalAddReview={setModalAddReview} route={route} />
@@ -113,15 +114,27 @@ const Book = ({ route }: { route: any }) => {
           </View>
         </View>
         <View style={styles.footerBookComponent}>
-          <Pressable style={styles.btnOpenModalReceiveBook}>
+          <Pressable
+            style={styles.btnOpenModalReceiveBook}
+            onPress={() => {
+              setModalReceivingBook(true);
+            }}
+          >
             <Text style={styles.btnTextOpenModalReceiveBook}>
               Receive a book
             </Text>
           </Pressable>
         </View>
+
+        {/* Modal Add Review */}
         <ModalAddReview
           modalAddReview={modalAddReview}
           setModalAddReview={setModalAddReview}
+        />
+        {/* Modal Receiving Book */}
+        <ModalReceivingBook
+          modalReceivingBook={modalReceivingBook}
+          setModalReceivingBook={setModalReceivingBook}
         />
       </View>
     </View>

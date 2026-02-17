@@ -116,7 +116,7 @@ const ReviewBook = ({
                   />
                   <View style={styles.fullnameAndRateBlock}>
                     <Text style={styles.fullname}>John Doe</Text>
-                    <Stars
+                    {/* <Stars
                       default={rating}
                       count={5}
                       disabled={true}
@@ -130,6 +130,22 @@ const ReviewBook = ({
                           size={22}
                           color="#FCC400"
                         />
+                      }
+                      halfStar={
+                        <Ionicons name="star-half" size={22} color="#FCC400" />
+                      }
+                    /> */}
+
+                    <Stars
+                      default={rating}
+                      count={5}
+                      disabled={true}
+                      starSize={50}
+                      fullStar={
+                        <Entypo name="star" size={22} color="#FCC400" />
+                      }
+                      emptyStar={
+                        <Entypo name="star" size={22} color="#D9D9D9" />
                       }
                       halfStar={
                         <Ionicons name="star-half" size={22} color="#FCC400" />
