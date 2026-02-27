@@ -17,6 +17,8 @@ import AboutBook from "./AboutBook";
 import ReviewBook from "./ReviewBook";
 
 const Book = ({ route }: { route: any }) => {
+  // console.log("Book route params:", route.params);
+  
   const Tab = createMaterialTopTabNavigator();
   const navigation: any = useNavigation();
 

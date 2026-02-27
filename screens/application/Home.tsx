@@ -228,7 +228,9 @@ const Home = () => {
               showsHorizontalScrollIndicator={false}
             >
               {receivedBooksData.map((book) => (
-                <View key={book.id} style={styles.receivedBookContainer}>
+                <Pressable key={book.id} style={styles.receivedBookContainer} onPress={() => {
+                  navigation.navigate("ReceivedBook")
+                }}>
                   <View style={styles.receivedBookContainerBlock1}>
                     <Image source={book.image} style={styles.imgReceivedBook} />
                   </View>
@@ -266,7 +268,7 @@ const Home = () => {
                       </Text>
                     </View>
                   </View>
-                </View>
+                </Pressable>
               ))}
             </ScrollView>
           </View>

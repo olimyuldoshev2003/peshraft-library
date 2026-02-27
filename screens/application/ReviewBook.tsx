@@ -38,6 +38,7 @@ const ReviewBook = ({
     <ScrollView
       contentContainerStyle={styles.reviewBookComponentScrollView}
       style={styles.reviewBookComponent}
+      showsVerticalScrollIndicator={false}
     >
       <View style={styles.reviewBookComponentBlock}>
         <View

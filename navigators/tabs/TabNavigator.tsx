@@ -23,7 +23,7 @@ const TabNavigator = () => {
     const routeName = getFocusedRouteNameFromRoute(route);
 
     // Define which screens should hide the tab bar
-    const hideTabBarScreens = ["Book", "Notifications"];
+    const hideTabBarScreens = ["Book", "Notifications", "ReceivedBook"];
 
     // If we're on a screen that should hide tab bar, return none display
     if (routeName && hideTabBarScreens.includes(routeName)) {

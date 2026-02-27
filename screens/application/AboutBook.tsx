@@ -1,7 +1,17 @@
+import { useNavigation } from "expo-router";
 import React from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const AboutBook = () => {
+  const navigation: any = useNavigation();
+
   return (
     <View style={styles.aboutBookComponent}>
       <ScrollView
@@ -36,7 +46,12 @@ const AboutBook = () => {
             style={styles.otherBooksBlock}
           >
             {/* Book 1 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 2 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
@@ -45,7 +60,12 @@ const AboutBook = () => {
             </Pressable>
 
             {/* Book 2 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 3 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
@@ -54,7 +74,12 @@ const AboutBook = () => {
             </Pressable>
 
             {/* Book 3 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 4 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
@@ -63,7 +88,12 @@ const AboutBook = () => {
             </Pressable>
 
             {/* Book 4 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 5 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
@@ -71,7 +101,12 @@ const AboutBook = () => {
               <Text style={styles.otherBookName}>Tojikon</Text>
             </Pressable>
             {/* Book 5 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 6 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
@@ -79,7 +114,12 @@ const AboutBook = () => {
               <Text style={styles.otherBookName}>Tojikon</Text>
             </Pressable>
             {/* Book 6 */}
-            <Pressable style={styles.otherBookImgAndName}>
+            <Pressable
+              style={styles.otherBookImgAndName}
+              onPress={() => {
+                navigation.navigate("Book", { id: 7 });
+              }}
+            >
               <Image
                 source={require("../../assets/peshraft-library/home/tojikon.jpg")}
                 style={styles.otherBookImg}
