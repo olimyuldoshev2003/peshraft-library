@@ -5,8 +5,10 @@ import {
   Image,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 
@@ -65,6 +67,85 @@ const ModalReceivingBook = ({
               </View>
             </View>
           </View>
+          <ScrollView
+            contentContainerStyle={styles.sectionModalReceivingBookScrollView}
+            style={styles.sectionModalReceivingBook}
+          >
+            {/* Full name */}
+            <View
+              style={[
+                styles.labelAndInputFullNameBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelFullName]}>
+                Full name
+              </Text>
+              <TextInput style={[styles.input, styles.inputFullName]} />
+            </View>
+
+            {/*Job title  */}
+            <View
+              style={[
+                styles.labelAndInputJobTitleBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelJobTitle]}>
+                Job Title
+              </Text>
+              <TextInput style={[styles.input, styles.inputJobTitle]} />
+            </View>
+
+            {/* Book name */}
+            <View
+              style={[
+                styles.labelAndInputBookNameBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelBookName]}>
+                Book name
+              </Text>
+              <TextInput style={[styles.input, styles.inputBookName]} />
+            </View>
+
+            {/* Writer */}
+            <View
+              style={[
+                styles.labelAndInputWriterBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelWriter]}>Writer</Text>
+              <TextInput style={[styles.input, styles.inputWriter]} />
+            </View>
+
+            {/*Data receiving*/}
+            <View
+              style={[
+                styles.labelAndInputDataReceivingBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelDataReceiving]}>
+                Data receiving
+              </Text>
+              <TextInput style={[styles.input, styles.inputDataReceiving]} />
+            </View>
+            {/*Data returning*/}
+            <View
+              style={[
+                styles.labelAndInputDataReturningBlock,
+                styles.labelAndInputBlock,
+              ]}
+            >
+              <Text style={[styles.label, styles.labelDataReturning]}>
+                Data returning
+              </Text>
+              <TextInput style={[styles.input, styles.inputDataReturning]} />
+            </View>
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>
@@ -124,4 +205,55 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "center",
   },
+
+  sectionModalReceivingBookScrollView: {
+    paddingTop: 10,
+    paddingHorizontal: 10,
+    gap: 15,
+  },
+  sectionModalReceivingBook: {},
+
+  labelAndInputFullNameBlock: {},
+  labelFullName: {},
+  inputFullName: {},
+
+  labelAndInputJobTitleBlock: {},
+  labelJobTitle: {},
+  inputJobTitle: {},
+
+  labelAndInputBookNameBlock: {},
+  labelBookName: {},
+  inputBookName: {},
+
+  labelAndInputWriterBlock: {},
+  labelWriter: {},
+  inputWriter: {},
+
+  labelAndInputDataReceivingBlock: {},
+  labelDataReceiving: {},
+  inputDataReceiving: {},
+
+  labelAndInputDataReturningBlock: {},
+  labelDataReturning: {},
+  inputDataReturning: {},
+
+  // Styles with the same properties and names
+  ///////////////////////////////////////////
+  labelAndInputBlock: {},
+  label: {
+    fontSize: 15,
+    fontWeight: "500",
+    marginTop: 3,
+    color: "#646464",
+  },
+  input: {
+    borderBottomWidth: 2,
+    borderBottomColor: "#000",
+    fontSize: 18,
+    paddingVertical: 8,
+    paddingBottom: 5,
+    height: 35,
+    color: "#646464",
+  },
+  //////////////////////1//1///////////////////
 });
