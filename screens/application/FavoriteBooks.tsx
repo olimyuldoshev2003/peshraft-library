@@ -2,10 +2,20 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useNavigation } from "expo-router";
 import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const FavoriteBooks = () => {
+  const navigation:any = useNavigation();
+
   return (
     <View style={styles.favoriteBooksComponent}>
       <View style={styles.favoriteBooksComponentBlock}>
@@ -20,7 +30,9 @@ const FavoriteBooks = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Favorite Book 1 */}
-          <View style={styles.favoriteBookContainer}>
+          <Pressable onPress={() => {
+            navigation.navigate("Book")
+          }} style={styles.favoriteBookContainer}>
             <View style={styles.favoriteBookContainerBlock1}>
               <Image
                 style={styles.favoriteBookImg}
@@ -80,10 +92,12 @@ const FavoriteBooks = () => {
                 </View>
               </View>
             </View>
-          </View>
+          </Pressable>
 
           {/* Favorite Book 2 */}
-          <View style={styles.favoriteBookContainer}>
+          <Pressable onPress={() => {
+            navigation.navigate("Book")
+          }} style={styles.favoriteBookContainer}>
             <View style={styles.favoriteBookContainerBlock1}>
               <Image
                 style={styles.favoriteBookImg}
@@ -143,10 +157,12 @@ const FavoriteBooks = () => {
                 </View>
               </View>
             </View>
-          </View>
-          
+          </Pressable>
+
           {/* Favorite Book 3 */}
-          <View style={styles.favoriteBookContainer}>
+          <Pressable onPress={() => {
+            navigation.navigate("Book")
+          }} style={styles.favoriteBookContainer}>
             <View style={styles.favoriteBookContainerBlock1}>
               <Image
                 style={styles.favoriteBookImg}
@@ -206,10 +222,12 @@ const FavoriteBooks = () => {
                 </View>
               </View>
             </View>
-          </View>
+          </Pressable>
 
           {/* Favorite Book 4 */}
-          <View style={styles.favoriteBookContainer}>
+          <Pressable onPress={() => {
+            navigation.navigate("Book")
+          }} style={styles.favoriteBookContainer}>
             <View style={styles.favoriteBookContainerBlock1}>
               <Image
                 style={styles.favoriteBookImg}
@@ -269,7 +287,7 @@ const FavoriteBooks = () => {
                 </View>
               </View>
             </View>
-          </View>
+          </Pressable>
         </ScrollView>
       </View>
     </View>

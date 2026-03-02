@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -66,6 +67,8 @@ const Bookshelf = () => {
     },
   ];
 
+  const navigation:any = useNavigation();
+
   return (
     <View style={styles.bookshelfComponent}>
       <View style={styles.bookshelfComponentBlock}>
@@ -96,7 +99,10 @@ const Bookshelf = () => {
           >
             {receivedBooksData.map((receivedBook) => {
               return (
-                <View
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("ReceivedBook")
+                  }}
                   style={styles.receivedBookContainer}
                   key={receivedBook.id}
                 >
@@ -142,7 +148,7 @@ const Bookshelf = () => {
                       </Pressable>
                     </View>
                   </View>
-                </View>
+                </Pressable>
               );
             })}
           </ScrollView>

@@ -1,16 +1,16 @@
-import Profile from "@/screens/application/Profile";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, usePathname } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 
-import Bookshelf from "@/screens/application/Bookshelf";
-import FavoriteBooks from "@/screens/application/FavoriteBooks";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Octicons from "@expo/vector-icons/Octicons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import StackNavigatorBookshelfPage from "../stacks/StackNavigatorBookshelfPage";
+import StackNavigatorFavoritePage from "../stacks/StackNavigatorFavoritePage";
 import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
+import StackNavigatorProfilePage from "../stacks/StackNavigatorProfilePage";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -64,16 +64,16 @@ const TabNavigator = () => {
         name="HomeStack"
         component={StackNavigatorHomePage}
         options={({ route }) => ({
+          title: "Home",
           tabBarStyle: getTabBarStyle(route),
           tabBarIcon: ({ size, color }) => {
             return <Octicons name="home" size={size} color={color} />;
           },
-          title: "Home",
         })}
       />
       <Tab.Screen
-        name="Bookshelf"
-        component={Bookshelf}
+        name="BookshelfStack"
+        component={StackNavigatorBookshelfPage}
         options={({ route }) => ({
           title: "Book",
           tabBarStyle: getTabBarStyle(route),
@@ -83,8 +83,8 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="FavoriteBooks"
-        component={FavoriteBooks}
+        name="FavoriteBooksStack"
+        component={StackNavigatorFavoritePage}
         options={({ route }) => ({
           title: "Favorite",
           tabBarStyle: getTabBarStyle(route),
@@ -94,9 +94,10 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="ProfileStack"
+        component={StackNavigatorProfilePage}
         options={({ route }) => ({
+          title: "Profile",
           tabBarStyle: getTabBarStyle(route),
           tabBarIcon: ({ size, color }) => {
             return (

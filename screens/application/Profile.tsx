@@ -1,14 +1,22 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
 const Profile = () => {
   return (
-    <View>
-      <Text>Profile</Text>
+    <View style={styles.profileComponent}>
+      <View style={styles.profileComponentBlock}>
+        <View style={styles.headerProfileComponent}></View>
+        <View style={styles.sectionProfileComponent}></View>
+      </View>
     </View>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  profileComponent: {},
+  profileComponentBlock: {},
+  headerProfileComponent: {},
+  sectionProfileComponent: {},
+});
