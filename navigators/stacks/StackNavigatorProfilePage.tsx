@@ -1,3 +1,5 @@
+import Book from "@/screens/application/Book";
+import HistoryBook from "@/screens/application/HistoryBook";
 import Profile from "@/screens/application/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
@@ -13,6 +15,8 @@ const StackNavigatorProfilePage = () => {
       }}
     >
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="HistoryBook" component={HistoryBook} />
+      <Stack.Screen name="Book" component={Book} />
     </Stack.Navigator>
   );
 };
