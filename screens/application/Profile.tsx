@@ -36,7 +36,9 @@ const Profile = () => {
               <Text style={styles.userFullname}>Olim Yuldoshev</Text>
               <Text style={styles.userEmail}>oyuldoshev39@gmail.com</Text>
               <View style={styles.btnEditBlock}>
-                <Pressable style={styles.btnEdit}>
+                <Pressable style={styles.btnEdit} onPress={() => {
+                  navigation.navigate("EditUser")
+                }}>
                   <Text style={styles.btnTextEdit}>Edit Profile</Text>
                 </Pressable>
               </View>
@@ -92,9 +94,9 @@ const Profile = () => {
               {/* Feedback */}
               <TouchableHighlight
                 style={[styles.btnFunc, styles.feedbackBtn]}
-                // onPress={() => {
-                //   navigation.navigate("GestureControl");
-                // }}
+                onPress={() => {
+                  navigation.navigate("Feedback");
+                }}
                 underlayColor={"#f0f0f0"}
               >
                 <View style={styles.iconFuncTypeAndIconRightSideBlock}>

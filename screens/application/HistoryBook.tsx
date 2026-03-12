@@ -26,11 +26,11 @@ const HistoryBook = () => {
             }}
           />
           <Text style={styles.titleHistoryBookComponent}>History book</Text>
-          <View></View>
         </View>
         <ScrollView
           contentContainerStyle={styles.sectionHistoryBookComponentScrollView}
           style={styles.sectionHistoryBookComponent}
+          showsVerticalScrollIndicator={false}
         >
           {/* History Book 24.03.2025 */}
           <View style={styles.historyBookContainer}>
@@ -485,8 +485,8 @@ const styles = StyleSheet.create({
   },
   headerHistoryBookComponent: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    gap: 81,
   },
   titleHistoryBookComponent: {
     fontSize: 23,
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   },
   sectionHistoryBookComponentScrollView: {
     gap: 22,
-    paddingBottom: 65,
+    paddingBottom: 105,
   },
   sectionHistoryBookComponent: {
     paddingHorizontal: 5,
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   },
   historyBookOfThisDay: {
     marginTop: 10,
-    gap:20
+    gap: 20,
   },
 
   // Styles with the same names and properties
