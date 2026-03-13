@@ -869,25 +869,26 @@ const EditUser = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -40}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.editUserComponent}>
-          <View style={styles.editUserComponentBlock}>
-            <View style={styles.headerEditUserComponent}>
-              <MaterialCommunityIcons
-                name="arrow-left-thin-circle-outline"
-                size={45}
-                color="black"
-                onPress={() => {
-                  navigation.goBack();
-                }}
-              />
-              <Text style={styles.titleEditUserComponent}>Edit User</Text>
-            </View>
+    <View style={styles.editUserComponent}>
+      <View style={styles.editUserComponentBlock}>
+        <View style={styles.headerEditUserComponent}>
+          <MaterialCommunityIcons
+            name="arrow-left-thin-circle-outline"
+            size={45}
+            color="black"
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <Text style={styles.titleEditUserComponent}>Edit User</Text>
+        </View>
+
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView
               contentContainerStyle={styles.sectionEditUserComponentScrollView}
               style={styles.sectionEditUserComponent}
@@ -1476,24 +1477,22 @@ const EditUser = () => {
                 )}
               </Formik>
             </ScrollView>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 };
 
 export default EditUser;
 
 const styles = StyleSheet.create({
-  keyboardAvoidingView: {
-    flex: 1,
-  },
   editUserComponent: {
     flex: 1,
     backgroundColor: "#fff",
   },
   editUserComponentBlock: {
+    flex: 1,
     padding: 10,
     paddingTop: 30,
   },
@@ -1507,12 +1506,18 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
 
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+
   sectionEditUserComponentScrollView: {
+    // flex: 1,
     paddingBottom: 70,
   },
 
   sectionEditUserComponent: {
     marginTop: 10,
+    flex: 1,
   },
   editUserImgBlock: {
     flexDirection: "row",
@@ -1598,7 +1603,9 @@ const styles = StyleSheet.create({
   inputJobTitle: {},
   inputPhoneNumber: {},
   inputEmail: {},
-  inputPassword: {},
+  inputPassword: {
+    paddingRight: 50,
+  },
 
   // Styles with the same properties
   labelAndInputBlock: {
