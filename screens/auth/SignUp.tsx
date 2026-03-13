@@ -1057,7 +1057,7 @@ const SignUp = () => {
                         onChangeText={handleChange("email")}
                         onBlur={handleBlur("email")}
                         value={values.email}
-                        placeholder="example@email.com"
+                        placeholder="example@gmail.com"
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
