@@ -16,11 +16,41 @@ const StackNavigatorProfilePage = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="HistoryBook" component={HistoryBook} />
-      <Stack.Screen name="Book" component={Book} />
-      <Stack.Screen name="EditUser" component={EditUser} />
-      <Stack.Screen name="Feedback" component={Feedback} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="HistoryBook"
+        component={HistoryBook}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="Book"
+        component={Book}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="EditUser"
+        component={EditUser}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="Feedback"
+        component={Feedback}
+        options={{
+          animation: "ios_from_right",
+        }}
+      />
     </Stack.Navigator>
   );
 };

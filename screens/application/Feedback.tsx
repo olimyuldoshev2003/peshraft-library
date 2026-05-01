@@ -727,7 +727,9 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: "400",
   },
-  sectionFeedbackComponent: {},
+  sectionFeedbackComponent: {
+    flex:1,
+  },
   userImgFullnameAndEmailBlock: {
     justifyContent: "center",
     alignItems: "center",
@@ -752,10 +754,13 @@ const styles = StyleSheet.create({
     color: "#939393",
   },
 
-  keyboardAvoidingView: {},
+  keyboardAvoidingView: {
+    flex:1
+  },
 
   formFeedbackScrollView: {
-    paddingBottom: 10,
+    // flex:1,
+    paddingBottom: 50,
   },
 
   formFeedback: {

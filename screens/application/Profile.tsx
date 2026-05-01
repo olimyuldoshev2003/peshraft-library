@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import {
   Entypo,
   FontAwesome,
@@ -5,8 +6,10 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -17,8 +20,35 @@ import {
 } from "react-native";
 
 const Profile = () => {
+  const navigation: any = useNavigation();
 
-  const navigation:any = useNavigation()
+  const [loading, setLoading] = useState(false);
+
+  const { logout } = useAuth();
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await logout();
+    } finally {
+      setLoading(false);
+
+      Alert.alert("Logged out", "You have been successfully logged out.", [
+        {
+          text: "OK",
+          onPress: () => {},
+        },
+      ]);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#00A9FF" />
+        <Text style={{ marginTop: 10, color: "#555" }}>Logging out...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.profileComponent}>
@@ -36,9 +66,12 @@ const Profile = () => {
               <Text style={styles.userFullname}>Olim Yuldoshev</Text>
               <Text style={styles.userEmail}>oyuldoshev39@gmail.com</Text>
               <View style={styles.btnEditBlock}>
-                <Pressable style={styles.btnEdit} onPress={() => {
-                  navigation.navigate("EditUser")
-                }}>
+                <Pressable
+                  style={styles.btnEdit}
+                  onPress={() => {
+                    navigation.navigate("EditUser");
+                  }}
+                >
                   <Text style={styles.btnTextEdit}>Edit Profile</Text>
                 </Pressable>
               </View>
@@ -196,7 +229,10 @@ const Profile = () => {
                 </View>
               </TouchableHighlight>
 
-              <TouchableHighlight style={[styles.btnFunc, styles.logoutBtn]}>
+              <TouchableHighlight
+                style={[styles.btnFunc, styles.logoutBtn]}
+                onPress={handleLogout}
+              >
                 <View style={styles.iconFuncTypeAndIconRightSideBlock}>
                   <View style={styles.iconAndFuncTypeBlock}>
                     <View style={styles.iconBlock}>
@@ -379,4 +415,11 @@ const styles = StyleSheet.create({
   },
 
   ////////////////////////////////////////////////////
+
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
 });

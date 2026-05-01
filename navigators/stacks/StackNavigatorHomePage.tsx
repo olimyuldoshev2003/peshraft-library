@@ -2,12 +2,15 @@ import Book from "@/screens/application/Book";
 import Home from "@/screens/application/Home";
 import Notifications from "@/screens/application/Notifications";
 import ReceivedBook from "@/screens/application/ReceivedBook";
+import { getToken } from "@/utils/token";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
 
 const StackNavigatorHomePage = () => {
   const Stack = createNativeStackNavigator();
+
+  console.log(getToken());
 
   return (
     <Stack.Navigator

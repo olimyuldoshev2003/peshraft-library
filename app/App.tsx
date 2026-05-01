@@ -1,4 +1,5 @@
-import TabNavigator from "@/navigators/tabs/TabNavigator";
+import { AuthProvider } from "@/context/AuthContext";
+import StackNavigator from "@/navigators/stacks/StackNavigator";
 import {
   NavigationContainer,
   NavigationIndependentTree,
@@ -9,9 +10,11 @@ import { StyleSheet } from "react-native";
 const App = () => {
   return (
     <NavigationIndependentTree>
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <StackNavigator />
+        </NavigationContainer>
+      </AuthProvider>
     </NavigationIndependentTree>
   );
 };

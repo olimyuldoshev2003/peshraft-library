@@ -1,4 +1,6 @@
 import ModalSearch from "@/components/home/ModalSearch";
+import { useAuth } from "@/context/AuthContext";
+import { removeToken } from "@/utils/token";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -125,20 +127,8 @@ const filterButtons = [
 
 const Home = () => {
   const navigation: any = useNavigation();
-
   const [modalSearch, setModalSearch] = useState<boolean>(false);
-
-  // Function to calculate the width percentage (opposite logic)
-  const calculateProgressWidth = (daysLeft: number, daysGiven: number) => {
-    // Calculate percentage of time REMAINING (not used)
-    const remainingPercentage = (daysLeft * 100) / daysGiven;
-
-    // Calculate percentage of time USED (opposite logic)
-    const usedPercentage = ((daysGiven - daysLeft) * 100) / daysGiven;
-
-    // Or simpler: show how much time has passed rather than how much is left
-    return `${usedPercentage}%`;
-  };
+ 
 
   return (
     <View style={styles.homeComponent}>
@@ -228,9 +218,13 @@ const Home = () => {
               showsHorizontalScrollIndicator={false}
             >
               {receivedBooksData.map((book) => (
-                <Pressable key={book.id} style={styles.receivedBookContainer} onPress={() => {
-                  navigation.navigate("ReceivedBook")
-                }}>
+                <Pressable
+                  key={book.id}
+                  style={styles.receivedBookContainer}
+                  onPress={() => {
+                    navigation.navigate("ReceivedBook");
+                  }}
+                >
                   <View style={styles.receivedBookContainerBlock1}>
                     <Image source={book.image} style={styles.imgReceivedBook} />
                   </View>

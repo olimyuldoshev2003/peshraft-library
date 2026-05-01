@@ -141,11 +141,11 @@ const Bookshelf = () => {
                       </Text>
                     </View>
                     <View style={styles.btnReturnBookBlock}>
-                      <Pressable style={styles.btnReturnBook}>
+                      <View style={styles.btnReturnBook}>
                         <Text style={styles.btnTextReturnBook}>
                           Return the book
                         </Text>
-                      </Pressable>
+                      </View>
                     </View>
                   </View>
                 </Pressable>

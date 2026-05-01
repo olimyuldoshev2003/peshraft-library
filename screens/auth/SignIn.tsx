@@ -1,4 +1,6 @@
+import { useAuth } from "@/context/AuthContext";
 import Entypo from "@expo/vector-icons/Entypo";
+import axios from "axios";
 import { useNavigation } from "expo-router";
 import { Formik } from "formik";
 import React, { useState } from "react";
@@ -30,10 +32,9 @@ const SignInSchema = Yup.object().shape({
       "Email must be properly formatted (e.g., user@example.com)",
       (value) => {
         if (!value) return false;
-        // Additional email format validation
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         return emailRegex.test(value);
-      }
+      },
     )
     .max(100, "Email must not exceed 100 characters")
     .trim(),
@@ -44,139 +45,66 @@ const SignInSchema = Yup.object().shape({
     .max(50, "Password must not exceed 50 characters")
     .test(
       "password-strength",
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      "Password must contain at least one number",
       (value) => {
         if (!value) return false;
-
-        const hasUpperCase = /[A-Z]/.test(value);
-        const hasLowerCase = /[a-z]/.test(value);
         const hasNumbers = /\d/.test(value);
-        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
-          value
-        );
-
-        return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
-      }
-    )
-    .test(
-      "no-common-patterns",
-      "Password is too common or contains easily guessable patterns",
-      (value) => {
-        if (!value) return true;
-
-        const commonPasswords = [
-          "password123",
-          "12345678",
-          "qwerty123",
-          "admin123",
-          "letmein",
-          "welcome123",
-          "password1",
-          "123456789",
-        ];
-
-        const sequentialPatterns = [
-          "12345678",
-          "abcdefgh",
-          "qwertyui",
-          "asdfghjk",
-        ];
-
-        const lowerValue = value.toLowerCase();
-
-        // Check against common passwords
-        if (commonPasswords.includes(lowerValue)) {
-          return false;
-        }
-
-        // Check for sequential patterns
-        for (const pattern of sequentialPatterns) {
-          if (lowerValue.includes(pattern)) {
-            return false;
-          }
-        }
-
-        return true;
-      }
+        return hasNumbers;
+      },
     ),
 });
-
-// Mock authentication function (replace with your actual API call)
-const mockAuthenticate = async (
-  email: string,
-  password: string
-): Promise<boolean> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // This is where you would call your actual authentication API
-  // For demo purposes, we'll accept a specific test account
-  const validCredentials = email === "o@gmail.com" && password === "Olim2003$";
-
-  return validCredentials;
-};
 
 const SignIn = () => {
   const navigation: any = useNavigation();
   const [showAndHidePassword, setShowAndHidePassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loginAttempts, setLoginAttempts] = useState(0);
+  const { setToken } = useAuth();
 
-  // Initial form values
   const initialValues: SignInFormValues = {
     email: "",
     password: "",
   };
 
   const handleSignIn = async (values: SignInFormValues) => {
-    if (loginAttempts >= 5) {
-      Alert.alert(
-        "Account Locked",
-        "Too many failed attempts. Please try again after 15 minutes or reset your password.",
-        [{ text: "OK" }]
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      // Trim values before sending
       const trimmedValues = {
         email: values.email.trim(),
         password: values.password.trim(),
       };
 
-      const isAuthenticated = await mockAuthenticate(
-        trimmedValues.email,
-        trimmedValues.password
+      const response = await axios.post(
+        "https://melodious-friendship-production-e718.up.railway.app/auth/login",
+        {
+          email: trimmedValues.email,
+          password: trimmedValues.password,
+        },
       );
 
-      if (isAuthenticated) {
-        // Reset login attempts on successful login
-        setLoginAttempts(0);
+      if (response.status === 200 || response.status === 201) {
+        await setToken(response.data.token);
         Alert.alert("Success", "Login successful!");
-        // navigation.replace("IntroductionAboutBook");
-      } else {
-        const newAttempts = loginAttempts + 1;
-        setLoginAttempts(newAttempts);
-
-        if (newAttempts >= 3) {
-          Alert.alert(
-            "Security Alert",
-            `Failed login attempt ${newAttempts} of 5. After 5 failed attempts, your account will be temporarily locked.`,
-            [{ text: "OK" }]
-          );
-        } else {
-          Alert.alert("Error", "Invalid email or password");
-        }
+        // Use replace to navigate to Application screen
+        // navigation.replace("Application");
       }
-    } catch (error) {
-      Alert.alert(
-        "Connection Error",
-        "Unable to connect to server. Please check your internet connection and try again."
-      );
-      console.error("Login error:", error);
+    } catch (error: any) {
+      // Handle 401 specifically without logging as error
+      if (error.response && error.response.status === 401) {
+        Alert.alert("Error", "Invalid email or password");
+      } else if (error.response && error.response.status === 404) {
+        Alert.alert("Error", "User not found");
+      } else if (error.response) {
+        Alert.alert("Error", error.response.data?.message || "Login failed");
+      } else if (error.request) {
+        Alert.alert(
+          "Connection Error",
+          "Unable to connect to server. Please check your internet connection.",
+        );
+      } else {
+        Alert.alert("Error", "An unexpected error occurred");
+      }
+      // Silent catch - don't log authentication errors
     } finally {
       setIsSubmitting(false);
     }
@@ -191,11 +119,10 @@ const SignIn = () => {
         {
           text: "Send",
           onPress: () => {
-            // Handle password reset logic here
             Alert.alert("Success", "Reset link sent to your email!");
           },
         },
-      ]
+      ],
     );
   };
 
@@ -262,7 +189,7 @@ const SignIn = () => {
                     {touched.email && errors.email && (
                       <Text style={styles.errorText}>{errors.email}</Text>
                     )}
-                    {touched.email && !errors.email && (
+                    {touched.email && !errors.email && values.email !== "" && (
                       <Text style={styles.successText}>✓ Valid email</Text>
                     )}
                   </View>
@@ -323,34 +250,41 @@ const SignIn = () => {
                     {touched.password && errors.password && (
                       <Text style={styles.errorText}>{errors.password}</Text>
                     )}
-                    {touched.password && !errors.password && (
-                      <Text style={styles.successText}>✓ Strong password</Text>
-                    )}
+                    {touched.password &&
+                      !errors.password &&
+                      values.password !== "" && (
+                        <Text style={styles.successText}>✓ Valid password</Text>
+                      )}
                   </View>
 
-                  {/* Password Requirements Info */}
-                  {/* {!touched.password || errors.password ? (
-                    <View style={styles.passwordRequirements}>
-                      <Text style={styles.passwordRequirementsTitle}>
-                        Password must contain:
-                      </Text>
-                      <Text style={styles.passwordRequirement}>
-                        • At least 8 characters
-                      </Text>
-                      <Text style={styles.passwordRequirement}>
-                        • One uppercase letter
-                      </Text>
-                      <Text style={styles.passwordRequirement}>
-                        • One lowercase letter
-                      </Text>
-                      <Text style={styles.passwordRequirement}>
-                        • One number
-                      </Text>
-                      <Text style={styles.passwordRequirement}>
-                        • One special character
-                      </Text>
-                    </View>
-                  ) : null} */}
+                  {/* Password Requirements (shown when password field is focused or has errors) */}
+                  {(!touched.password || errors.password) &&
+                    values.password !== "" && (
+                      <View style={styles.passwordRequirements}>
+                        <Text style={styles.passwordRequirementsTitle}>
+                          Password must contain:
+                        </Text>
+                        <Text
+                          style={[
+                            styles.passwordRequirement,
+                            values.password.length >= 8 &&
+                              styles.requirementMet,
+                          ]}
+                        >
+                          {values.password.length >= 8 ? "✓" : "•"} At least 8
+                          characters
+                        </Text>
+                        <Text
+                          style={[
+                            styles.passwordRequirement,
+                            /\d/.test(values.password) && styles.requirementMet,
+                          ]}
+                        >
+                          {/\d/.test(values.password) ? "✓" : "•"} At least one
+                          number
+                        </Text>
+                      </View>
+                    )}
                 </View>
 
                 {/* Forgot Password */}
@@ -383,11 +317,6 @@ const SignIn = () => {
                       <Text style={styles.btnTextSignIn}>Sign In</Text>
                     )}
                   </Pressable>
-                  {loginAttempts > 0 && (
-                    <Text style={styles.attemptsText}>
-                      Login attempts: {loginAttempts}/5
-                    </Text>
-                  )}
                 </View>
 
                 {/* Divider */}
@@ -551,6 +480,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#6C757D",
     marginLeft: 8,
+    marginBottom: 4,
+  },
+  requirementMet: {
+    color: "#34C759",
+    fontWeight: "600",
   },
 
   forgetPasswordNavBtnBlock: {
@@ -653,7 +587,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 2,
-    borderBottomColor: "#000",
+    borderBottomColor: "#E0E0E0",
     fontSize: 18,
     paddingVertical: 8,
     paddingBottom: 5,

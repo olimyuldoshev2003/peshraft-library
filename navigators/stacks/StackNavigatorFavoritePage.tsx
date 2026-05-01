@@ -13,8 +13,12 @@ const StackNavigatorFavoritePage = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="FavoriteBooks" component={FavoriteBooks} />
-      <Stack.Screen name="Book" component={Book} />
+      <Stack.Screen name="FavoriteBooks" component={FavoriteBooks} options={{
+          animation: "ios_from_right",
+        }}/>
+      <Stack.Screen name="Book" component={Book} options={{
+          animation: "ios_from_right",
+        }}/>
     </Stack.Navigator>
   );
 };
