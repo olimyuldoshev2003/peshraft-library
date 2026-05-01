@@ -1323,7 +1323,7 @@ const SignUp = () => {
                     </View>
 
                     {/* Volunteer Checkbox */}
-                    <View style={styles.checkboxOfIsPeshraftVolunteer}>
+                    {/* <View style={styles.checkboxOfIsPeshraftVolunteer}>
                       <AdvancedCheckbox
                         value={values.isVolunteer}
                         onValueChange={(value) =>
@@ -1338,7 +1338,7 @@ const SignUp = () => {
                         size={22}
                         disabled={isSubmitting}
                       />
-                    </View>
+                    </View> */}
 
                     {/* Submit Button */}
                     <View style={styles.btnSignUpAndSignInNavBlock}>
