@@ -11,11 +11,13 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -23,15 +25,17 @@ const Profile = () => {
   const navigation: any = useNavigation();
 
   const [loading, setLoading] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const { logout } = useAuth();
+
   const handleLogout = async () => {
     try {
       setLoading(true);
       await logout();
+      setShowLogoutModal(false);
     } finally {
       setLoading(false);
-
       Alert.alert("Logged out", "You have been successfully logged out.", [
         {
           text: "OK",
@@ -231,7 +235,8 @@ const Profile = () => {
 
               <TouchableHighlight
                 style={[styles.btnFunc, styles.logoutBtn]}
-                onPress={handleLogout}
+                onPress={() => setShowLogoutModal(true)}
+                underlayColor={"#f0f0f0"}
               >
                 <View style={styles.iconFuncTypeAndIconRightSideBlock}>
                   <View style={styles.iconAndFuncTypeBlock}>
@@ -257,6 +262,44 @@ const Profile = () => {
           </View>
         </ScrollView>
       </View>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showLogoutModal}
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setShowLogoutModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <View style={styles.modalIconContainer}>
+                  <MaterialIcons name="logout" size={60} color="#FF3B30" />
+                </View>
+                <Text style={styles.modalTitle}>Logout</Text>
+                <Text style={styles.modalMessage}>
+                  Are you sure you want to logout from your account?
+                </Text>
+                <View style={styles.modalButtons}>
+                  <Pressable
+                    style={[styles.modalButton, styles.cancelButton]}
+                    onPress={() => setShowLogoutModal(false)}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.modalButton, styles.logoutButton]}
+                    onPress={handleLogout}
+                  >
+                    <Text style={styles.logoutButtonText}>Logout</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };
@@ -286,7 +329,6 @@ const styles = StyleSheet.create({
   userImgFullnameAndEmailAndBtnEditBlock: {
     marginTop: 20,
     flexDirection: "row",
-    // alignItems: "center"
     gap: 15,
   },
   userImgBlock: {},
@@ -343,16 +385,6 @@ const styles = StyleSheet.create({
   // Styles with the same properties
   generalAndAppearanceSection: {
     marginTop: 20,
-    // backgroundColor: "#fff",
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 0,
-    // },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 2,
-    // elevation: 5,
-    // padding: 10,
     borderRadius: 12,
     gap: 12,
   },
@@ -399,7 +431,6 @@ const styles = StyleSheet.create({
   selectedFunc: {
     fontSize: 13,
     fontWeight: "400",
-
     color: "#626262",
   },
   rightSideIcon: {},
@@ -421,5 +452,75 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    width: "85%",
+    maxWidth: 340,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalIconContainer: {
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#000",
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
+    marginBottom: 25,
+    lineHeight: 22,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    gap: 12,
+    width: "100%",
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#F2F2F2",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+  },
+  cancelButtonText: {
+    color: "#666",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  logoutButton: {
+    backgroundColor: "#FF3B30",
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
