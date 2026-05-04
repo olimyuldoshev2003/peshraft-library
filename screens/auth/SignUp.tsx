@@ -23,7 +23,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { AdvancedCheckbox } from "react-native-advanced-checkbox";
 import { Selector } from "rn-selector";
 import * as Yup from "yup";
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
@@ -113,7 +112,7 @@ const formatDateOfBirth = (text: string): string => {
   } else {
     return `${limited.slice(0, 4)}-${limited.slice(4, 6)}-${limited.slice(
       6,
-      8
+      8,
     )}`; // YYYY-MM-DD
   }
 };
@@ -147,7 +146,7 @@ const validateDateOfBirth = (date: string): boolean => {
 
 // Enhanced password validation for 8-character minimum
 const validatePasswordStrength = (
-  password: string
+  password: string,
 ): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
@@ -167,7 +166,7 @@ const validatePasswordStrength = (
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /\d/.test(password);
   const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-    password
+    password,
   );
 
   if (!hasUpperCase)
@@ -304,14 +303,14 @@ const validatePasswordStrength = (
 
 // Mock signup API function (replace with your actual API call)
 const mockSignUp = async (
-  userData: any
+  userData: any,
 ): Promise<{ success: boolean; message: string }> => {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // This is where you would call your actual signup API
   // For demo purposes, we'll simulate a successful signup
-  const success = Math.random() > 0.2; // 80% success rate for demo
+  const success = Math.random() > 0.2; // 80% success rate for demoYuldoshev
 
   if (success) {
     return {
@@ -338,7 +337,7 @@ const SignUpSchema = Yup.object().shape({
       (value) => {
         if (!value) return true;
         return /^[a-zA-Z\s\-'.]*$/.test(value);
-      }
+      },
     ),
   dateOfBirth: Yup.string()
     .required("Date of Birth is required")
@@ -348,7 +347,7 @@ const SignUpSchema = Yup.object().shape({
       function (value) {
         if (!value) return false;
         return validateDateOfBirth(value);
-      }
+      },
     )
     .test(
       "is-adult",
@@ -365,7 +364,7 @@ const SignUpSchema = Yup.object().shape({
           return age - 1 >= 13;
         }
         return age >= 13;
-      }
+      },
     ),
   phoneNumber: Yup.string()
     .required("Phone number is required")
@@ -443,7 +442,7 @@ const SignUpSchema = Yup.object().shape({
           });
         }
         return true;
-      }
+      },
     ),
   confirmPassword: Yup.string()
     .required("Confirm Password is required")
@@ -525,7 +524,7 @@ const SignUp = () => {
 
     const sortedCountries = [...COUNTRIES_DATA].sort(
       (a: any, b: any) =>
-        b.dialCode.replace("+", "").length - a.dialCode.replace("+", "").length
+        b.dialCode.replace("+", "").length - a.dialCode.replace("+", "").length,
     );
 
     for (const country of sortedCountries) {
@@ -559,7 +558,7 @@ const SignUp = () => {
 
         try {
           const formatter = new AsYouType(
-            detectedCountry.toUpperCase() as CountryCode
+            detectedCountry.toUpperCase() as CountryCode,
           );
           const formatted = formatter.input(cleaned);
           setFieldValue("phoneNumber", formatted);
@@ -589,7 +588,7 @@ const SignUp = () => {
     if (selectedCountry) {
       try {
         const formatter = new AsYouType(
-          selectedCountry.toUpperCase() as CountryCode
+          selectedCountry.toUpperCase() as CountryCode,
         );
         const formatted = formatter.input(cleaned);
         setFieldValue("phoneNumber", formatted);
@@ -610,7 +609,7 @@ const SignUp = () => {
   const validatePhoneNumber = (
     phoneNumber: string,
     countryCode: string,
-    setError: any
+    setError: any,
   ) => {
     if (phoneNumber.replace("+", "").length < 4) {
       setError("");
@@ -620,7 +619,7 @@ const SignUp = () => {
     try {
       const phoneNumberObj = parsePhoneNumberFromString(
         phoneNumber,
-        countryCode.toUpperCase() as CountryCode
+        countryCode.toUpperCase() as CountryCode,
       );
 
       if (phoneNumberObj && phoneNumberObj.isValid()) {
@@ -692,7 +691,7 @@ const SignUp = () => {
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-      password
+      password,
     );
 
     const typeCount = [
@@ -755,7 +754,7 @@ const SignUp = () => {
     const maxScore = 9;
     const strengthPercentage = Math.min(
       100,
-      Math.round((score / maxScore) * 100)
+      Math.round((score / maxScore) * 100),
     );
 
     // Filter out duplicate feedback
@@ -795,9 +794,7 @@ const SignUp = () => {
         Alert.alert("Success", result.message, [
           {
             text: "Continue",
-            onPress: () => {
-              navigation.replace("Introduction");
-            },
+            onPress: () => {},
           },
         ]);
       } else {
@@ -807,7 +804,7 @@ const SignUp = () => {
       Alert.alert(
         "Connection Error",
         "Unable to connect to server. Please check your internet connection and try again.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
       console.error("Signup error:", error);
     } finally {
@@ -1138,10 +1135,10 @@ const SignUp = () => {
                                     passwordStrength.score >= 80
                                       ? "#34C759"
                                       : passwordStrength.score >= 60
-                                      ? "#FF9500"
-                                      : passwordStrength.score >= 40
-                                      ? "#FFCC00"
-                                      : "#FF3B30",
+                                        ? "#FF9500"
+                                        : passwordStrength.score >= 40
+                                          ? "#FFCC00"
+                                          : "#FF3B30",
                                 },
                               ]}
                             />
@@ -1151,10 +1148,10 @@ const SignUp = () => {
                             {passwordStrength.score >= 80
                               ? " (Strong)"
                               : passwordStrength.score >= 60
-                              ? " (Good)"
-                              : passwordStrength.score >= 40
-                              ? " (Fair)"
-                              : " (Weak)"}
+                                ? " (Good)"
+                                : passwordStrength.score >= 40
+                                  ? " (Fair)"
+                                  : " (Weak)"}
                           </Text>
 
                           {/* Password Requirements */}
@@ -1215,12 +1212,12 @@ const SignUp = () => {
                                 style={[
                                   styles.requirementText,
                                   /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-                                    values.password
+                                    values.password,
                                   ) && styles.requirementMet,
                                 ]}
                               >
                                 {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-                                  values.password
+                                  values.password,
                                 )
                                   ? "✓"
                                   : "•"}{" "}
@@ -1242,7 +1239,7 @@ const SignUp = () => {
                                     >
                                       {item}
                                     </Text>
-                                  )
+                                  ),
                                 )}
                               </View>
                             )}
