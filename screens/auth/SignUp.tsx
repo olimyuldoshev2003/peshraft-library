@@ -1,5 +1,6 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import axios from "axios";
 import { useNavigation } from "expo-router";
 import { Formik } from "formik";
 import {
@@ -23,8 +24,11 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Selector } from "rn-selector";
 import * as Yup from "yup";
+import { useAuth } from "@/context/AuthContext";
+
+
+
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
 import { allCountries } from "country-telephone-data";
 
@@ -144,185 +148,31 @@ const validateDateOfBirth = (date: string): boolean => {
   return inputDate <= today;
 };
 
-// Enhanced password validation for 8-character minimum
+// Simplified password validation for signup (minimum 8 characters with at least one number)
 const validatePasswordStrength = (
   password: string,
-): { isValid: boolean; errors: string[] } => {
-  const errors: string[] = [];
-
-  // Basic requirements - 8 characters minimum
-  if (!password || password.length < 8) {
-    errors.push("Password must be at least 8 characters long");
-    return { isValid: false, errors };
+): { isValid: boolean; error: string | null } => {
+  if (!password) {
+    return { isValid: false, error: "Password is required" };
   }
 
-  if (password.length > 128) {
-    errors.push("Password must not exceed 128 characters");
-    return { isValid: false, errors };
+  if (password.length < 8) {
+    return { isValid: false, error: "Password must be at least 8 characters" };
   }
 
-  // Character type requirements - MUST HAVE ALL 4 TYPES for maximum strength
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
+  if (password.length > 50) {
+    return { isValid: false, error: "Password must not exceed 50 characters" };
+  }
+
   const hasNumbers = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-    password,
-  );
-
-  if (!hasUpperCase)
-    errors.push("Must contain at least one uppercase letter (A-Z)");
-  if (!hasLowerCase)
-    errors.push("Must contain at least one lowercase letter (a-z)");
-  if (!hasNumbers) errors.push("Must contain at least one number (0-9)");
-  if (!hasSpecialChar)
-    errors.push("Must contain at least one special character (!@#$%^&* etc.)");
-
-  // Advanced security checks
-  // For 8-char passwords, we require ALL 4 character types
-  const hasAllTypes =
-    hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
-  if (!hasAllTypes) {
-    errors.push("For maximum security, include all character types");
-  }
-
-  // Check for sequential characters (keyboard patterns) - simplified for 8 chars
-  const sequentialPatterns = [
-    "12345678",
-    "87654321",
-    "23456789",
-    "98765432",
-    "qwertyui",
-    "iuytrewq",
-    "asdfghjk",
-    "kjhgfdsa",
-    "zxcvbnm",
-    "mnbvcxz",
-    "password",
-    "admin123",
-    "letmein1",
-    "welcome1",
-    "monkey12",
-    "dragon12",
-  ];
-
-  const lowerPassword = password.toLowerCase();
-  for (const pattern of sequentialPatterns) {
-    if (lowerPassword.includes(pattern)) {
-      errors.push("Contains common sequential pattern");
-      break;
-    }
-  }
-
-  // Check for repeated characters (more strict for short passwords)
-  const hasRepeatedChars = /(.)\1{3,}/.test(password); // More than 3 same characters in a row
-  if (hasRepeatedChars) {
-    errors.push("Too many repeated characters in sequence");
-  }
-
-  // Check for common number sequences
-  const commonSequences = [
-    "12345678",
-    "87654321",
-    "11111111",
-    "22222222",
-    "33333333",
-    "44444444",
-    "55555555",
-    "66666666",
-    "77777777",
-    "88888888",
-    "99999999",
-    "00000000",
-    "11223344",
-    "22334455",
-    "33445566",
-    "44556677",
-    "55667788",
-    "66778899",
-  ];
-
-  if (commonSequences.includes(password)) {
-    errors.push("Password is too predictable");
-  }
-
-  // Check for personal data patterns
-  const emailPattern = /@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-  if (emailPattern.test(password)) {
-    errors.push("Avoid using email patterns in passwords");
-  }
-
-  // Entropy calculation for short passwords
-  const characterSetSize =
-    (hasUpperCase ? 26 : 0) +
-    (hasLowerCase ? 26 : 0) +
-    (hasNumbers ? 10 : 0) +
-    (hasSpecialChar ? 32 : 0);
-
-  const entropy = Math.log2(Math.pow(characterSetSize, password.length));
-  if (entropy < 40) {
-    errors.push("Password is not complex enough");
-  }
-
-  // Check for dictionary words (simplified)
-  const dictionaryWords = [
-    "password",
-    "admin",
-    "welcome",
-    "qwerty",
-    "letmein",
-    "monkey",
-    "dragon",
-    "sunshine",
-    "princess",
-    "football",
-    "baseball",
-    "mustang",
-    "superman",
-    "trustno1",
-    "master",
-    "hello123",
-    "secret",
-    "abcd1234",
-    "passw0rd",
-    "admin123",
-  ];
-
-  const normalizedPass = password.toLowerCase();
-  for (const word of dictionaryWords) {
-    if (normalizedPass.includes(word)) {
-      errors.push("Contains common dictionary word");
-      break;
-    }
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors: errors.slice(0, 3), // Limit to 3 most critical errors
-  };
-};
-
-// Mock signup API function (replace with your actual API call)
-const mockSignUp = async (
-  userData: any,
-): Promise<{ success: boolean; message: string }> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  // This is where you would call your actual signup API
-  // For demo purposes, we'll simulate a successful signup
-  const success = Math.random() > 0.2; // 80% success rate for demoYuldoshev
-
-  if (success) {
+  if (!hasNumbers) {
     return {
-      success: true,
-      message: "Account created successfully!",
-    };
-  } else {
-    return {
-      success: false,
-      message: "Email already exists. Please use a different email.",
+      isValid: false,
+      error: "Password must contain at least one number",
     };
   }
+
+  return { isValid: true, error: null };
 };
 
 // Validation schema
@@ -426,22 +276,14 @@ const SignUpSchema = Yup.object().shape({
   password: Yup.string()
     .required("Password is required")
     .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must not exceed 128 characters")
+    .max(50, "Password must not exceed 50 characters")
     .test(
       "password-strength",
-      "Password is not strong enough",
+      "Password must contain at least one number",
       function (value) {
         if (!value) return false;
-
-        const validation = validatePasswordStrength(value);
-        if (!validation.isValid) {
-          return this.createError({
-            message:
-              validation.errors[0] ||
-              "Password does not meet security requirements",
-          });
-        }
-        return true;
+        const hasNumbers = /\d/.test(value);
+        return hasNumbers;
       },
     ),
   confirmPassword: Yup.string()
@@ -459,11 +301,9 @@ const SignUp = () => {
   const [phoneError, setPhoneError] = useState("");
   const [detectedOperator, setDetectedOperator] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string>("tj");
-  const [passwordStrength, setPasswordStrength] = useState<{
-    score: number;
-    feedback: string[];
-  }>({ score: 0, feedback: [] });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { setToken } = useAuth();
 
   // Detect Tajik mobile operator from phone number
   const detectTajikOperator = (phoneNumber: string): string => {
@@ -670,107 +510,6 @@ const SignUp = () => {
     setFieldValue("dateOfBirth", formatted);
   };
 
-  // Password strength analyzer for 8-character passwords
-  const analyzePasswordStrength = (password: string) => {
-    if (!password) {
-      setPasswordStrength({ score: 0, feedback: [] });
-      return;
-    }
-
-    let score = 0;
-    const feedback: string[] = [];
-
-    // Length score
-    if (password.length >= 12) score += 3;
-    else if (password.length >= 10) score += 2;
-    else if (password.length >= 8) score += 1;
-    else feedback.push("❌ Minimum 8 characters required");
-
-    // Character diversity
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-      password,
-    );
-
-    const typeCount = [
-      hasUpperCase,
-      hasLowerCase,
-      hasNumbers,
-      hasSpecialChar,
-    ].filter(Boolean).length;
-
-    // More points for more character types
-    if (typeCount === 4) score += 3;
-    else if (typeCount === 3) score += 2;
-    else if (typeCount === 2) score += 1;
-    else feedback.push("❌ Include multiple character types");
-
-    // Check for all character types
-    if (!hasUpperCase) feedback.push("⚠️ Add uppercase letters");
-    if (!hasLowerCase) feedback.push("⚠️ Add lowercase letters");
-    if (!hasNumbers) feedback.push("⚠️ Add numbers");
-    if (!hasSpecialChar) feedback.push("⚠️ Add special characters");
-
-    // Pattern detection
-    const commonPatterns = [
-      "12345678",
-      "87654321",
-      "password",
-      "qwertyui",
-      "admin123",
-      "letmein1",
-      "11111111",
-      "22222222",
-    ];
-
-    const lowerPassword = password.toLowerCase();
-    let hasCommonPattern = false;
-    for (const pattern of commonPatterns) {
-      if (lowerPassword.includes(pattern)) {
-        hasCommonPattern = true;
-        feedback.push("⚠️ Avoid common patterns");
-        break;
-      }
-    }
-
-    if (!hasCommonPattern) score += 2;
-
-    // Entropy calculation
-    const charSetSize =
-      (hasUpperCase ? 26 : 0) +
-      (hasLowerCase ? 26 : 0) +
-      (hasNumbers ? 10 : 0) +
-      (hasSpecialChar ? 32 : 0);
-
-    const entropy = Math.log2(Math.pow(charSetSize, password.length));
-    if (entropy > 60) score += 3;
-    else if (entropy > 45) score += 2;
-    else if (entropy > 30) score += 1;
-    else if (password.length > 0) feedback.push("⚠️ Increase complexity");
-
-    // Update strength
-    const maxScore = 9;
-    const strengthPercentage = Math.min(
-      100,
-      Math.round((score / maxScore) * 100),
-    );
-
-    // Filter out duplicate feedback
-    const uniqueFeedback = [...new Set(feedback)];
-
-    setPasswordStrength({
-      score: strengthPercentage,
-      feedback: uniqueFeedback.slice(0, 3),
-    });
-  };
-
-  const handlePasswordChange = (text: string, setFieldValue: any) => {
-    setFieldValue("password", text);
-    analyzePasswordStrength(text);
-  };
-
   const handleSubmit = async (values: any) => {
     if (isSubmitting) return;
 
@@ -779,26 +518,24 @@ const SignUp = () => {
     try {
       // Prepare user data for API
       const userData = {
-        fullName: values.fullName.trim(),
-        dateOfBirth: values.dateOfBirth,
-        phoneNumber: values.phoneNumber.trim(),
+        name: values.fullName.trim(),
+        date_of_birth: values.dateOfBirth,
+        phone: values.phoneNumber.trim(),
         email: values.email.trim().toLowerCase(),
         password: values.password,
-        isVolunteer: values.isVolunteer,
+        confirm_password: values.confirmPassword,
       };
 
       // Call signup API
-      const result = await mockSignUp(userData);
 
-      if (result.success) {
-        Alert.alert("Success", result.message, [
-          {
-            text: "Continue",
-            onPress: () => {},
-          },
-        ]);
-      } else {
-        Alert.alert("Sign Up Failed", result.message, [{ text: "OK" }]);
+      const response = await axios.post(
+        "https://melodious-friendship-production-e718.up.railway.app/auth/register",
+        userData,
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        setToken(response.data.token);
+        Alert.alert("Success", "Registered successfully!");
       }
     } catch (error) {
       Alert.alert(
@@ -945,37 +682,6 @@ const SignUp = () => {
                     >
                       <Text style={styles.label}>Phone number</Text>
 
-                      {/* Country Selector */}
-                      <View style={styles.countrySelectorContainer}>
-                        <Selector
-                          options={COUNTRIES_DATA}
-                          selectedValue={selectedCountry}
-                          onValueChange={(countryCode) =>
-                            handleCountrySelect(countryCode, setFieldValue)
-                          }
-                          placeholder="Select Country"
-                          searchable={true}
-                          primaryColor="#007AFF"
-                          customArrow={
-                            <Entypo
-                              name="chevron-thin-down"
-                              size={16}
-                              color="#666"
-                            />
-                          }
-                          searchPlaceholder="Search countries..."
-                          textStyle={{
-                            color: "#000",
-                            fontSize: 14,
-                          }}
-                          style={styles.selectorStyle}
-                          optionStyle={styles.optionStyle}
-                          dropdownStyle={styles.dropdownStyle}
-                          searchInputStyle={styles.searchInputStyle}
-                          disabled={isSubmitting}
-                        />
-                      </View>
-
                       <View style={styles.phoneInputContainer}>
                         <FontAwesome
                           name="phone"
@@ -1088,14 +794,12 @@ const SignUp = () => {
                               !errors.password &&
                               styles.inputSuccess,
                           ]}
-                          onChangeText={(text) =>
-                            handlePasswordChange(text, setFieldValue)
-                          }
+                          onChangeText={handleChange("password")}
                           onBlur={handleBlur("password")}
                           value={values.password}
                           secureTextEntry={!showAndHidePassword}
                           autoComplete="password-new"
-                          placeholder="At least 8 characters with mixed types"
+                          placeholder="At least 8 characters with at least one number"
                           returnKeyType="next"
                           editable={!isSubmitting}
                         />
@@ -1122,130 +826,35 @@ const SignUp = () => {
                         )}
                       </View>
 
-                      {/* Password Strength Indicator */}
-                      {values.password.length > 0 && (
-                        <View style={styles.passwordStrengthContainer}>
-                          <View style={styles.strengthBarContainer}>
-                            <View
-                              style={[
-                                styles.strengthBar,
-                                {
-                                  width: `${passwordStrength.score}%`,
-                                  backgroundColor:
-                                    passwordStrength.score >= 80
-                                      ? "#34C759"
-                                      : passwordStrength.score >= 60
-                                        ? "#FF9500"
-                                        : passwordStrength.score >= 40
-                                          ? "#FFCC00"
-                                          : "#FF3B30",
-                                },
-                              ]}
-                            />
-                          </View>
-                          <Text style={styles.strengthText}>
-                            Strength: {passwordStrength.score}%
-                            {passwordStrength.score >= 80
-                              ? " (Strong)"
-                              : passwordStrength.score >= 60
-                                ? " (Good)"
-                                : passwordStrength.score >= 40
-                                  ? " (Fair)"
-                                  : " (Weak)"}
-                          </Text>
-
-                          {/* Password Requirements */}
+                      {/* Password Requirements (shown when password field is touched or has errors) */}
+                      {(!touched.password || errors.password) &&
+                        values.password !== "" && (
                           <View style={styles.passwordRequirements}>
-                            <Text style={styles.requirementsTitle}>
-                              Requirements:
+                            <Text style={styles.passwordRequirementsTitle}>
+                              Password must contain:
                             </Text>
-                            <View style={styles.requirementItem}>
-                              <Text
-                                style={[
-                                  styles.requirementText,
-                                  values.password.length >= 8 &&
-                                    styles.requirementMet,
-                                ]}
-                              >
-                                {values.password.length >= 8 ? "✓" : "•"} At
-                                least 8 characters
-                              </Text>
-                            </View>
-                            <View style={styles.requirementItem}>
-                              <Text
-                                style={[
-                                  styles.requirementText,
-                                  /[A-Z]/.test(values.password) &&
-                                    styles.requirementMet,
-                                ]}
-                              >
-                                {/[A-Z]/.test(values.password) ? "✓" : "•"} One
-                                uppercase letter
-                              </Text>
-                            </View>
-                            <View style={styles.requirementItem}>
-                              <Text
-                                style={[
-                                  styles.requirementText,
-                                  /[a-z]/.test(values.password) &&
-                                    styles.requirementMet,
-                                ]}
-                              >
-                                {/[a-z]/.test(values.password) ? "✓" : "•"} One
-                                lowercase letter
-                              </Text>
-                            </View>
-                            <View style={styles.requirementItem}>
-                              <Text
-                                style={[
-                                  styles.requirementText,
-                                  /\d/.test(values.password) &&
-                                    styles.requirementMet,
-                                ]}
-                              >
-                                {/\d/.test(values.password) ? "✓" : "•"} One
-                                number
-                              </Text>
-                            </View>
-                            <View style={styles.requirementItem}>
-                              <Text
-                                style={[
-                                  styles.requirementText,
-                                  /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-                                    values.password,
-                                  ) && styles.requirementMet,
-                                ]}
-                              >
-                                {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-                                  values.password,
-                                )
-                                  ? "✓"
-                                  : "•"}{" "}
-                                One special character
-                              </Text>
-                            </View>
-
-                            {/* Advanced feedback */}
-                            {passwordStrength.feedback.length > 0 && (
-                              <View style={styles.feedbackContainer}>
-                                <Text style={styles.feedbackTitle}>
-                                  Tips to improve:
-                                </Text>
-                                {passwordStrength.feedback.map(
-                                  (item, index) => (
-                                    <Text
-                                      key={index}
-                                      style={styles.feedbackItem}
-                                    >
-                                      {item}
-                                    </Text>
-                                  ),
-                                )}
-                              </View>
-                            )}
+                            <Text
+                              style={[
+                                styles.passwordRequirement,
+                                values.password.length >= 8 &&
+                                  styles.requirementMet,
+                              ]}
+                            >
+                              {values.password.length >= 8 ? "✓" : "•"} At least
+                              8 characters
+                            </Text>
+                            <Text
+                              style={[
+                                styles.passwordRequirement,
+                                /\d/.test(values.password) &&
+                                  styles.requirementMet,
+                              ]}
+                            >
+                              {/\d/.test(values.password) ? "✓" : "•"} At least
+                              one number
+                            </Text>
                           </View>
-                        </View>
-                      )}
+                        )}
 
                       {errors.password && touched.password && (
                         <Text style={styles.errorText}>{errors.password}</Text>
@@ -1318,24 +927,6 @@ const SignUp = () => {
                           </Text>
                         )}
                     </View>
-
-                    {/* Volunteer Checkbox */}
-                    {/* <View style={styles.checkboxOfIsPeshraftVolunteer}>
-                      <AdvancedCheckbox
-                        value={values.isVolunteer}
-                        onValueChange={(value) =>
-                          setFieldValue(
-                            "isVolunteer",
-                            typeof value === "boolean" ? value : false
-                          )
-                        }
-                        label="I'm a volunteer of Peshraft"
-                        checkedColor="#007AFF"
-                        uncheckedColor="#ccc"
-                        size={22}
-                        disabled={isSubmitting}
-                      />
-                    </View> */}
 
                     {/* Submit Button */}
                     <View style={styles.btnSignUpAndSignInNavBlock}>
@@ -1496,22 +1087,23 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 2,
-    borderBottomColor: "#000",
+    borderBottomColor: "#E0E0E0",
     fontSize: 18,
     paddingVertical: 8,
     paddingBottom: 5,
     height: 35,
   },
   inputError: {
-    borderBottomColor: "#FF0000",
+    borderBottomColor: "#FF3B30",
   },
   inputSuccess: {
     borderBottomColor: "#34C759",
   },
   errorText: {
-    color: "#FF0000",
+    color: "#FF3B30",
     fontSize: 12,
     marginTop: 2,
+    fontWeight: "500",
   },
   successText: {
     color: "#34C759",
@@ -1587,67 +1179,29 @@ const styles = StyleSheet.create({
   phoneInput: {
     paddingLeft: 30,
   },
-  // Password Strength Styles
-  passwordStrengthContainer: {
-    marginTop: 10,
-  },
-  strengthBarContainer: {
-    height: 6,
-    backgroundColor: "#E9ECEF",
-    borderRadius: 3,
-    overflow: "hidden",
-    marginBottom: 6,
-  },
-  strengthBar: {
-    height: "100%",
-    borderRadius: 3,
-  },
-  strengthText: {
-    fontSize: 12,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
+  // Password Requirements Styles (from SignIn)
   passwordRequirements: {
+    marginTop: 10,
+    padding: 12,
     backgroundColor: "#F8F9FA",
     borderRadius: 8,
-    padding: 12,
-    marginTop: 8,
     borderWidth: 1,
     borderColor: "#E9ECEF",
   },
-  requirementsTitle: {
+  passwordRequirementsTitle: {
     fontSize: 14,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 6,
     color: "#495057",
   },
-  requirementItem: {
-    marginBottom: 4,
-  },
-  requirementText: {
+  passwordRequirement: {
     fontSize: 12,
     color: "#6C757D",
+    marginLeft: 8,
+    marginBottom: 4,
   },
   requirementMet: {
     color: "#34C759",
-    fontWeight: "500",
-  },
-  feedbackContainer: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#DEE2E6",
-  },
-  feedbackTitle: {
-    fontSize: 13,
     fontWeight: "600",
-    marginBottom: 6,
-    color: "#6C757D",
-  },
-  feedbackItem: {
-    fontSize: 11,
-    color: "#FF9500",
-    marginBottom: 3,
-    fontStyle: "italic",
   },
 });
