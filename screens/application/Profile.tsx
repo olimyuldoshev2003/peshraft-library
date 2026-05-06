@@ -33,6 +33,7 @@ const Profile = () => {
     try {
       setLoading(true);
       await logout();
+      await 
       setShowLogoutModal(false);
     } finally {
       setLoading(false);

@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import axios from "axios";
@@ -25,12 +26,11 @@ import {
   View,
 } from "react-native";
 import * as Yup from "yup";
-import { useAuth } from "@/context/AuthContext";
-
-
 
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
 import { allCountries } from "country-telephone-data";
+
+import { setIsSignedUpUser } from "@/utils/token";
 
 // Tajik SIM card prefixes and operators data
 const TAJIK_PREFIXES = {
@@ -516,7 +516,6 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare user data for API
       const userData = {
         name: values.fullName.trim(),
         date_of_birth: values.dateOfBirth,
@@ -526,463 +525,465 @@ const SignUp = () => {
         confirm_password: values.confirmPassword,
       };
 
-      // Call signup API
-
       const response = await axios.post(
         "https://melodious-friendship-production-e718.up.railway.app/auth/register",
         userData,
       );
 
       if (response.status === 200 || response.status === 201) {
-        setToken(response.data.token);
+        await setToken(response.data.token);
+
+        // ❗ IMPORTANT: user is NOT finished onboarding yet
+        await setIsSignedUpUser(false);
+
         Alert.alert("Success", "Registered successfully!");
       }
     } catch (error) {
-      Alert.alert(
-        "Connection Error",
-        "Unable to connect to server. Please check your internet connection and try again.",
-        [{ text: "OK" }],
-      );
-      console.error("Signup error:", error);
+      Alert.alert("Error", "Registration failed");
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
-  };
 
-  return (
-    <View style={styles.containerSignUpComponent}>
-      {/* Header - Fixed at top */}
-      <View style={styles.headerSignUpComponent}>
-        <Image
-          source={require("../../assets/peshraft-library/auth/signUpImg.jpg")}
-          style={styles.imgHeaderSignUpComponent}
-        />
-      </View>
+    return (
+      <View style={styles.containerSignUpComponent}>
+        {/* Header - Fixed at top */}
+        <View style={styles.headerSignUpComponent}>
+          <Image
+            source={require("../../assets/peshraft-library/auth/signUpImg.jpg")}
+            style={styles.imgHeaderSignUpComponent}
+          />
+        </View>
 
-      {/* Scrollable Section - Only this part scrolls */}
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            style={styles.sectionSignUpComponent}
-            contentContainerStyle={styles.sectionSignUpComponentScrollView}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.formSignUp}>
-              <Text style={styles.titleFormSignUp}>Create account</Text>
+        {/* Scrollable Section - Only this part scrolls */}
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView
+              style={styles.sectionSignUpComponent}
+              contentContainerStyle={styles.sectionSignUpComponentScrollView}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.formSignUp}>
+                <Text style={styles.titleFormSignUp}>Create account</Text>
 
-              <Formik
-                initialValues={{
-                  fullName: "",
-                  dateOfBirth: "",
-                  phoneNumber: "+992 ",
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  isVolunteer: false,
-                }}
-                validationSchema={SignUpSchema}
-                onSubmit={handleSubmit}
-                validateOnChange={true}
-                validateOnBlur={true}
-              >
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  setFieldValue,
-                  values,
-                  errors,
-                  touched,
-                  isValid,
-                  dirty,
-                }) => (
-                  <View style={styles.blockLabelsAndInputs}>
-                    {/* Full Name */}
-                    <View
-                      style={[
-                        styles.labelAndInputFullNameBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Full Name</Text>
-                      <TextInput
+                <Formik
+                  initialValues={{
+                    fullName: "",
+                    dateOfBirth: "",
+                    phoneNumber: "+992 ",
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                    isVolunteer: false,
+                  }}
+                  validationSchema={SignUpSchema}
+                  onSubmit={handleSubmit}
+                  validateOnChange={true}
+                  validateOnBlur={true}
+                >
+                  {({
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    setFieldValue,
+                    values,
+                    errors,
+                    touched,
+                    isValid,
+                    dirty,
+                  }) => (
+                    <View style={styles.blockLabelsAndInputs}>
+                      {/* Full Name */}
+                      <View
                         style={[
-                          styles.input,
-                          errors.fullName &&
-                            touched.fullName &&
-                            styles.inputError,
-                          touched.fullName &&
-                            !errors.fullName &&
-                            styles.inputSuccess,
+                          styles.labelAndInputFullNameBlock,
+                          styles.labelAndInputBlock,
                         ]}
-                        onChangeText={handleChange("fullName")}
-                        onBlur={handleBlur("fullName")}
-                        value={values.fullName}
-                        placeholder="Enter your full name"
-                        returnKeyType="next"
-                        editable={!isSubmitting}
-                      />
-                      {errors.fullName && touched.fullName && (
-                        <Text style={styles.errorText}>{errors.fullName}</Text>
-                      )}
-                      {touched.fullName && !errors.fullName && (
-                        <Text style={styles.successText}>✓ Valid name</Text>
-                      )}
-                    </View>
-
-                    {/* Date of Birth */}
-                    <View
-                      style={[
-                        styles.labelAndInputAgeBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Date of Birth</Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          errors.dateOfBirth &&
-                            touched.dateOfBirth &&
-                            styles.inputError,
-                          touched.dateOfBirth &&
-                            !errors.dateOfBirth &&
-                            styles.inputSuccess,
-                        ]}
-                        onChangeText={(text) =>
-                          handleDateOfBirthChange(text, setFieldValue)
-                        }
-                        onBlur={handleBlur("dateOfBirth")}
-                        value={values.dateOfBirth}
-                        placeholder="YYYY-MM-DD"
-                        keyboardType="numeric"
-                        returnKeyType="next"
-                        editable={!isSubmitting}
-                      />
-                      {errors.dateOfBirth && touched.dateOfBirth && (
-                        <Text style={styles.errorText}>
-                          {errors.dateOfBirth}
-                        </Text>
-                      )}
-                      {touched.dateOfBirth && !errors.dateOfBirth && (
-                        <Text style={styles.successText}>✓ Valid date</Text>
-                      )}
-                    </View>
-
-                    {/* Phone Number */}
-                    <View
-                      style={[
-                        styles.labelAndInputPhoneNumberBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Phone number</Text>
-
-                      <View style={styles.phoneInputContainer}>
-                        <FontAwesome
-                          name="phone"
-                          size={20}
-                          color="black"
-                          style={styles.phoneIcon}
-                        />
+                      >
+                        <Text style={styles.label}>Full Name</Text>
                         <TextInput
                           style={[
                             styles.input,
-                            styles.phoneInput,
-                            (errors.phoneNumber && touched.phoneNumber) ||
-                            phoneError
-                              ? styles.inputError
-                              : null,
-                            touched.phoneNumber &&
-                              !errors.phoneNumber &&
-                              !phoneError &&
+                            errors.fullName &&
+                              touched.fullName &&
+                              styles.inputError,
+                            touched.fullName &&
+                              !errors.fullName &&
+                              styles.inputSuccess,
+                          ]}
+                          onChangeText={handleChange("fullName")}
+                          onBlur={handleBlur("fullName")}
+                          value={values.fullName}
+                          placeholder="Enter your full name"
+                          returnKeyType="next"
+                          editable={!isSubmitting}
+                        />
+                        {errors.fullName && touched.fullName && (
+                          <Text style={styles.errorText}>
+                            {errors.fullName}
+                          </Text>
+                        )}
+                        {touched.fullName && !errors.fullName && (
+                          <Text style={styles.successText}>✓ Valid name</Text>
+                        )}
+                      </View>
+
+                      {/* Date of Birth */}
+                      <View
+                        style={[
+                          styles.labelAndInputAgeBlock,
+                          styles.labelAndInputBlock,
+                        ]}
+                      >
+                        <Text style={styles.label}>Date of Birth</Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            errors.dateOfBirth &&
+                              touched.dateOfBirth &&
+                              styles.inputError,
+                            touched.dateOfBirth &&
+                              !errors.dateOfBirth &&
                               styles.inputSuccess,
                           ]}
                           onChangeText={(text) =>
-                            handlePhoneChange(text, setFieldValue)
+                            handleDateOfBirthChange(text, setFieldValue)
                           }
-                          onBlur={handleBlur("phoneNumber")}
-                          value={values.phoneNumber}
-                          placeholder="+992 93 123 4567"
-                          keyboardType="phone-pad"
+                          onBlur={handleBlur("dateOfBirth")}
+                          value={values.dateOfBirth}
+                          placeholder="YYYY-MM-DD"
+                          keyboardType="numeric"
                           returnKeyType="next"
                           editable={!isSubmitting}
                         />
-                      </View>
-
-                      {errors.phoneNumber && touched.phoneNumber ? (
-                        <Text style={styles.errorText}>
-                          {errors.phoneNumber}
-                        </Text>
-                      ) : phoneError ? (
-                        <Text style={styles.errorText}>{phoneError}</Text>
-                      ) : (
-                        touched.phoneNumber &&
-                        !errors.phoneNumber &&
-                        !phoneError && (
-                          <Text style={styles.successText}>
-                            ✓ Valid phone number
-                          </Text>
-                        )
-                      )}
-
-                      {detectedOperator && (
-                        <Text style={styles.operatorText}>
-                          Operator: {detectedOperator}
-                        </Text>
-                      )}
-
-                      <Text style={styles.phoneHint}>
-                        {selectedCountry === "tj"
-                          ? "Start with +992. Supported prefixes: 90, 91, 92, 93, 94, 98, 99, etc."
-                          : "Start with + or select country."}
-                      </Text>
-                    </View>
-
-                    {/* Email */}
-                    <View
-                      style={[
-                        styles.labelAndInputEmailBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Email</Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          errors.email && touched.email && styles.inputError,
-                          touched.email && !errors.email && styles.inputSuccess,
-                        ]}
-                        onChangeText={handleChange("email")}
-                        onBlur={handleBlur("email")}
-                        value={values.email}
-                        placeholder="example@gmail.com"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        returnKeyType="next"
-                        editable={!isSubmitting}
-                      />
-                      {errors.email && touched.email && (
-                        <Text style={styles.errorText}>{errors.email}</Text>
-                      )}
-                      {touched.email && !errors.email && (
-                        <Text style={styles.successText}>✓ Valid email</Text>
-                      )}
-                    </View>
-
-                    {/* Password */}
-                    <View
-                      style={[
-                        styles.labelAndInputPasswordBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Password</Text>
-                      <View style={styles.iconAndInputPasswordBlock}>
-                        <TextInput
-                          style={[
-                            styles.input,
-                            styles.inputPassword,
-                            errors.password &&
-                              touched.password &&
-                              styles.inputError,
-                            touched.password &&
-                              !errors.password &&
-                              styles.inputSuccess,
-                          ]}
-                          onChangeText={handleChange("password")}
-                          onBlur={handleBlur("password")}
-                          value={values.password}
-                          secureTextEntry={!showAndHidePassword}
-                          autoComplete="password-new"
-                          placeholder="At least 8 characters with at least one number"
-                          returnKeyType="next"
-                          editable={!isSubmitting}
-                        />
-                        {showAndHidePassword ? (
-                          <Entypo
-                            name="eye-with-line"
-                            size={30}
-                            color="black"
-                            style={styles.showAndHidePasswordIcon}
-                            onPress={() =>
-                              !isSubmitting && setShowAndHidePassword(false)
-                            }
-                          />
-                        ) : (
-                          <Entypo
-                            name="eye"
-                            size={30}
-                            color="black"
-                            style={styles.showAndHidePasswordIcon}
-                            onPress={() =>
-                              !isSubmitting && setShowAndHidePassword(true)
-                            }
-                          />
-                        )}
-                      </View>
-
-                      {/* Password Requirements (shown when password field is touched or has errors) */}
-                      {(!touched.password || errors.password) &&
-                        values.password !== "" && (
-                          <View style={styles.passwordRequirements}>
-                            <Text style={styles.passwordRequirementsTitle}>
-                              Password must contain:
-                            </Text>
-                            <Text
-                              style={[
-                                styles.passwordRequirement,
-                                values.password.length >= 8 &&
-                                  styles.requirementMet,
-                              ]}
-                            >
-                              {values.password.length >= 8 ? "✓" : "•"} At least
-                              8 characters
-                            </Text>
-                            <Text
-                              style={[
-                                styles.passwordRequirement,
-                                /\d/.test(values.password) &&
-                                  styles.requirementMet,
-                              ]}
-                            >
-                              {/\d/.test(values.password) ? "✓" : "•"} At least
-                              one number
-                            </Text>
-                          </View>
-                        )}
-
-                      {errors.password && touched.password && (
-                        <Text style={styles.errorText}>{errors.password}</Text>
-                      )}
-                    </View>
-
-                    {/* Confirm Password */}
-                    <View
-                      style={[
-                        styles.labelAndInputConfirmPasswordBlock,
-                        styles.labelAndInputBlock,
-                      ]}
-                    >
-                      <Text style={styles.label}>Confirm Password</Text>
-                      <View style={styles.iconAndInputConfirmPasswordBlock}>
-                        <TextInput
-                          style={[
-                            styles.input,
-                            styles.inputConfirmPassword,
-                            errors.confirmPassword &&
-                              touched.confirmPassword &&
-                              styles.inputError,
-                            touched.confirmPassword &&
-                              !errors.confirmPassword &&
-                              styles.inputSuccess,
-                          ]}
-                          onChangeText={handleChange("confirmPassword")}
-                          onBlur={handleBlur("confirmPassword")}
-                          value={values.confirmPassword}
-                          secureTextEntry={!showAndHideConfirmPassword}
-                          autoComplete="password-new"
-                          placeholder="Re-enter your password"
-                          returnKeyType="done"
-                          editable={!isSubmitting}
-                        />
-                        {showAndHideConfirmPassword ? (
-                          <Entypo
-                            name="eye-with-line"
-                            size={30}
-                            color="black"
-                            style={styles.showAndHideConfirmPasswordIcon}
-                            onPress={() =>
-                              !isSubmitting &&
-                              setShowAndHideConfirmPassword(false)
-                            }
-                          />
-                        ) : (
-                          <Entypo
-                            name="eye"
-                            size={30}
-                            color="black"
-                            style={styles.showAndHideConfirmPasswordIcon}
-                            onPress={() =>
-                              !isSubmitting &&
-                              setShowAndHideConfirmPassword(true)
-                            }
-                          />
-                        )}
-                      </View>
-                      {errors.confirmPassword && touched.confirmPassword && (
-                        <Text style={styles.errorText}>
-                          {errors.confirmPassword}
-                        </Text>
-                      )}
-                      {touched.confirmPassword &&
-                        !errors.confirmPassword &&
-                        values.confirmPassword === values.password && (
-                          <Text style={styles.successText}>
-                            ✓ Passwords match
+                        {errors.dateOfBirth && touched.dateOfBirth && (
+                          <Text style={styles.errorText}>
+                            {errors.dateOfBirth}
                           </Text>
                         )}
-                    </View>
+                        {touched.dateOfBirth && !errors.dateOfBirth && (
+                          <Text style={styles.successText}>✓ Valid date</Text>
+                        )}
+                      </View>
 
-                    {/* Submit Button */}
-                    <View style={styles.btnSignUpAndSignInNavBlock}>
-                      <Pressable
+                      {/* Phone Number */}
+                      <View
                         style={[
-                          styles.btnSignUp,
-                          (!isValid || !dirty || isSubmitting) &&
-                            styles.btnSignUpDisabled,
+                          styles.labelAndInputPhoneNumberBlock,
+                          styles.labelAndInputBlock,
                         ]}
-                        onPress={() => handleSubmit()}
-                        disabled={!isValid || !dirty || isSubmitting}
                       >
-                        {isSubmitting ? (
-                          <ActivityIndicator color="#fff" size="small" />
-                        ) : (
-                          <Text style={styles.btnTextSignUp}>Sign up</Text>
-                        )}
-                      </Pressable>
+                        <Text style={styles.label}>Phone number</Text>
 
-                      <View style={styles.blockTitleAndBtnNavSignIn}>
-                        <Text style={styles.titleAndBtnNavSignIn}>
-                          Already have an account?
-                        </Text>
-                        <Pressable
-                          style={styles.btnNavSignIn}
-                          onPress={() => {
-                            if (!isSubmitting) {
-                              navigation.navigate("SignIn");
-                            }
-                          }}
-                          disabled={isSubmitting}
-                        >
-                          <Text
+                        <View style={styles.phoneInputContainer}>
+                          <FontAwesome
+                            name="phone"
+                            size={20}
+                            color="black"
+                            style={styles.phoneIcon}
+                          />
+                          <TextInput
                             style={[
-                              styles.btnTextNavSignIn,
-                              isSubmitting && styles.disabledNavText,
+                              styles.input,
+                              styles.phoneInput,
+                              (errors.phoneNumber && touched.phoneNumber) ||
+                              phoneError
+                                ? styles.inputError
+                                : null,
+                              touched.phoneNumber &&
+                                !errors.phoneNumber &&
+                                !phoneError &&
+                                styles.inputSuccess,
                             ]}
-                          >
-                            {" "}
-                            Sign in
+                            onChangeText={(text) =>
+                              handlePhoneChange(text, setFieldValue)
+                            }
+                            onBlur={handleBlur("phoneNumber")}
+                            value={values.phoneNumber}
+                            placeholder="+992 93 123 4567"
+                            keyboardType="phone-pad"
+                            returnKeyType="next"
+                            editable={!isSubmitting}
+                          />
+                        </View>
+
+                        {errors.phoneNumber && touched.phoneNumber ? (
+                          <Text style={styles.errorText}>
+                            {errors.phoneNumber}
                           </Text>
+                        ) : phoneError ? (
+                          <Text style={styles.errorText}>{phoneError}</Text>
+                        ) : (
+                          touched.phoneNumber &&
+                          !errors.phoneNumber &&
+                          !phoneError && (
+                            <Text style={styles.successText}>
+                              ✓ Valid phone number
+                            </Text>
+                          )
+                        )}
+
+                        {detectedOperator && (
+                          <Text style={styles.operatorText}>
+                            Operator: {detectedOperator}
+                          </Text>
+                        )}
+
+                        <Text style={styles.phoneHint}>
+                          {selectedCountry === "tj"
+                            ? "Start with +992. Supported prefixes: 90, 91, 92, 93, 94, 98, 99, etc."
+                            : "Start with + or select country."}
+                        </Text>
+                      </View>
+
+                      {/* Email */}
+                      <View
+                        style={[
+                          styles.labelAndInputEmailBlock,
+                          styles.labelAndInputBlock,
+                        ]}
+                      >
+                        <Text style={styles.label}>Email</Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            errors.email && touched.email && styles.inputError,
+                            touched.email &&
+                              !errors.email &&
+                              styles.inputSuccess,
+                          ]}
+                          onChangeText={handleChange("email")}
+                          onBlur={handleBlur("email")}
+                          value={values.email}
+                          placeholder="example@gmail.com"
+                          keyboardType="email-address"
+                          autoCapitalize="none"
+                          returnKeyType="next"
+                          editable={!isSubmitting}
+                        />
+                        {errors.email && touched.email && (
+                          <Text style={styles.errorText}>{errors.email}</Text>
+                        )}
+                        {touched.email && !errors.email && (
+                          <Text style={styles.successText}>✓ Valid email</Text>
+                        )}
+                      </View>
+
+                      {/* Password */}
+                      <View
+                        style={[
+                          styles.labelAndInputPasswordBlock,
+                          styles.labelAndInputBlock,
+                        ]}
+                      >
+                        <Text style={styles.label}>Password</Text>
+                        <View style={styles.iconAndInputPasswordBlock}>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              styles.inputPassword,
+                              errors.password &&
+                                touched.password &&
+                                styles.inputError,
+                              touched.password &&
+                                !errors.password &&
+                                styles.inputSuccess,
+                            ]}
+                            onChangeText={handleChange("password")}
+                            onBlur={handleBlur("password")}
+                            value={values.password}
+                            secureTextEntry={!showAndHidePassword}
+                            autoComplete="password-new"
+                            placeholder="At least 8 characters with at least one number"
+                            returnKeyType="next"
+                            editable={!isSubmitting}
+                          />
+                          {showAndHidePassword ? (
+                            <Entypo
+                              name="eye-with-line"
+                              size={30}
+                              color="black"
+                              style={styles.showAndHidePasswordIcon}
+                              onPress={() =>
+                                !isSubmitting && setShowAndHidePassword(false)
+                              }
+                            />
+                          ) : (
+                            <Entypo
+                              name="eye"
+                              size={30}
+                              color="black"
+                              style={styles.showAndHidePasswordIcon}
+                              onPress={() =>
+                                !isSubmitting && setShowAndHidePassword(true)
+                              }
+                            />
+                          )}
+                        </View>
+
+                        {/* Password Requirements (shown when password field is touched or has errors) */}
+                        {(!touched.password || errors.password) &&
+                          values.password !== "" && (
+                            <View style={styles.passwordRequirements}>
+                              <Text style={styles.passwordRequirementsTitle}>
+                                Password must contain:
+                              </Text>
+                              <Text
+                                style={[
+                                  styles.passwordRequirement,
+                                  values.password.length >= 8 &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {values.password.length >= 8 ? "✓" : "•"} At
+                                least 8 characters
+                              </Text>
+                              <Text
+                                style={[
+                                  styles.passwordRequirement,
+                                  /\d/.test(values.password) &&
+                                    styles.requirementMet,
+                                ]}
+                              >
+                                {/\d/.test(values.password) ? "✓" : "•"} At
+                                least one number
+                              </Text>
+                            </View>
+                          )}
+
+                        {errors.password && touched.password && (
+                          <Text style={styles.errorText}>
+                            {errors.password}
+                          </Text>
+                        )}
+                      </View>
+
+                      {/* Confirm Password */}
+                      <View
+                        style={[
+                          styles.labelAndInputConfirmPasswordBlock,
+                          styles.labelAndInputBlock,
+                        ]}
+                      >
+                        <Text style={styles.label}>Confirm Password</Text>
+                        <View style={styles.iconAndInputConfirmPasswordBlock}>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              styles.inputConfirmPassword,
+                              errors.confirmPassword &&
+                                touched.confirmPassword &&
+                                styles.inputError,
+                              touched.confirmPassword &&
+                                !errors.confirmPassword &&
+                                styles.inputSuccess,
+                            ]}
+                            onChangeText={handleChange("confirmPassword")}
+                            onBlur={handleBlur("confirmPassword")}
+                            value={values.confirmPassword}
+                            secureTextEntry={!showAndHideConfirmPassword}
+                            autoComplete="password-new"
+                            placeholder="Re-enter your password"
+                            returnKeyType="done"
+                            editable={!isSubmitting}
+                          />
+                          {showAndHideConfirmPassword ? (
+                            <Entypo
+                              name="eye-with-line"
+                              size={30}
+                              color="black"
+                              style={styles.showAndHideConfirmPasswordIcon}
+                              onPress={() =>
+                                !isSubmitting &&
+                                setShowAndHideConfirmPassword(false)
+                              }
+                            />
+                          ) : (
+                            <Entypo
+                              name="eye"
+                              size={30}
+                              color="black"
+                              style={styles.showAndHideConfirmPasswordIcon}
+                              onPress={() =>
+                                !isSubmitting &&
+                                setShowAndHideConfirmPassword(true)
+                              }
+                            />
+                          )}
+                        </View>
+                        {errors.confirmPassword && touched.confirmPassword && (
+                          <Text style={styles.errorText}>
+                            {errors.confirmPassword}
+                          </Text>
+                        )}
+                        {touched.confirmPassword &&
+                          !errors.confirmPassword &&
+                          values.confirmPassword === values.password && (
+                            <Text style={styles.successText}>
+                              ✓ Passwords match
+                            </Text>
+                          )}
+                      </View>
+
+                      {/* Submit Button */}
+                      <View style={styles.btnSignUpAndSignInNavBlock}>
+                        <Pressable
+                          style={[
+                            styles.btnSignUp,
+                            (!isValid || !dirty || isSubmitting) &&
+                              styles.btnSignUpDisabled,
+                          ]}
+                          onPress={() => handleSubmit()}
+                          disabled={!isValid || !dirty || isSubmitting}
+                        >
+                          {isSubmitting ? (
+                            <ActivityIndicator color="#fff" size="small" />
+                          ) : (
+                            <Text style={styles.btnTextSignUp}>Sign up</Text>
+                          )}
                         </Pressable>
+
+                        <View style={styles.blockTitleAndBtnNavSignIn}>
+                          <Text style={styles.titleAndBtnNavSignIn}>
+                            Already have an account?
+                          </Text>
+                          <Pressable
+                            style={styles.btnNavSignIn}
+                            onPress={() => {
+                              if (!isSubmitting) {
+                                navigation.navigate("SignIn");
+                              }
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            <Text
+                              style={[
+                                styles.btnTextNavSignIn,
+                                isSubmitting && styles.disabledNavText,
+                              ]}
+                            >
+                              {" "}
+                              Sign in
+                            </Text>
+                          </Pressable>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                )}
-              </Formik>
-            </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </View>
-  );
+                  )}
+                </Formik>
+              </View>
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
+    );
+  };
 };
-
-export default SignUp;
 
 const styles = StyleSheet.create({
   containerSignUpComponent: {
@@ -1205,3 +1206,4 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+export default SignUp;

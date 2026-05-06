@@ -1,3 +1,4 @@
+import { setIsSignedUpUser } from "@/utils/token";
 import { useNavigation } from "expo-router";
 import React from "react";
 import {
@@ -83,8 +84,9 @@ const IntroductionAboutBook = () => {
               <View style={styles.blockBtnGetStarted}>
                 <Pressable
                   style={styles.btnGetStarted}
-                  onPress={() => {
+                  onPress={async () => {
                     navigation.replace("Application");
+                    await setIsSignedUpUser(true);
                   }}
                 >
                   <Text style={styles.btnTextGetStarted}>Get Started Now</Text>
