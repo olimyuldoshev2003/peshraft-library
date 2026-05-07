@@ -47,13 +47,14 @@ const StackNavigator = () => {
             component={SignIn}
             options={{ animation: "ios_from_right" }}
           />
+
           <Stack.Screen
             name="SignUp"
             component={SignUp}
-            // options={{ animation: "ios_from_right" }}
+            options={{ animation: "ios_from_right" }}
           />
         </>
-      ) : !isUserSignedUp ? (
+      ) : isUserSignedUp ? (
         <Stack.Screen
           name="Introduction"
           component={StackNavigatorIntroduction}

@@ -85,8 +85,8 @@ const IntroductionAboutBook = () => {
                 <Pressable
                   style={styles.btnGetStarted}
                   onPress={async () => {
-                    navigation.replace("Application");
-                    await setIsSignedUpUser(true);
+                    await setIsSignedUpUser(false);
+                    navigation.navigate("Application");
                   }}
                 >
                   <Text style={styles.btnTextGetStarted}>Get Started Now</Text>
