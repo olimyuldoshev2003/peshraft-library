@@ -6,9 +6,12 @@ import Profile from "@/screens/application/Profile";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { Modalize } from "react-native-modalize";
 
-const StackNavigatorProfilePage = () => {
+const StackNavigatorProfilePage = ({ languageModal }:{ languageModal: React.RefObject<any> }) => {
   const Stack = createNativeStackNavigator();
+
+  const ProfileWithLanguageModal = () => <Profile languageModal={languageModal} />;
 
   return (
     <Stack.Navigator
@@ -18,7 +21,7 @@ const StackNavigatorProfilePage = () => {
     >
       <Stack.Screen
         name="Profile"
-        component={Profile}
+        component={ProfileWithLanguageModal}
         options={{
           animation: "ios_from_right",
         }}

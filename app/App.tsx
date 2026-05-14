@@ -5,10 +5,19 @@ import {
   NavigationIndependentTree,
 } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import "../i18n";
 
 const App = () => {
   return (
+    <React.Suspense
+      fallback={
+        <View>
+          <Text>...Loading</Text>
+        </View>
+      }
+    >
+
     <NavigationIndependentTree>
       <AuthProvider>
         <NavigationContainer>
@@ -16,6 +25,7 @@ const App = () => {
         </NavigationContainer>
       </AuthProvider>
     </NavigationIndependentTree>
+    </React.Suspense>
   );
 };
 

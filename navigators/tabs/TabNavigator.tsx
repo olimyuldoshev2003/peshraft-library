@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation, usePathname } from "expo-router";
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -11,12 +12,22 @@ import StackNavigatorBookshelfPage from "../stacks/StackNavigatorBookshelfPage";
 import StackNavigatorFavoritePage from "../stacks/StackNavigatorFavoritePage";
 import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
 import StackNavigatorProfilePage from "../stacks/StackNavigatorProfilePage";
+import { Modalize } from "react-native-modalize";
+import LanguageModal from "@/components/profile/LanguageModal";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   const navigation = useNavigation();
   const pathName = usePathname();
+
+  const languageModal = useRef<Modalize>(null);
+
+  const StackNavigatorProfilePageWithFunctionLanguageModal = () => (
+    <StackNavigatorProfilePage languageModal={languageModal} />
+  );
+
+
 
   // Function to get tab bar style based on current route
   const getTabBarStyle = (route: any) => {
@@ -56,64 +67,69 @@ const TabNavigator = () => {
   };
 
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#7EC7EC",
-        tabBarInactiveTintColor: "#939393",
-        tabBarIconStyle: {},
-        tabBarLabelStyle: {
-          fontSize: 18,
-        },
-      }}
-    >
-      <Tab.Screen
-        name="HomeStack"
-        component={StackNavigatorHomePage}
-        options={({ route }) => ({
-          title: "Home",
-          tabBarStyle: getTabBarStyle(route),
-          tabBarIcon: ({ size, color }) => {
-            return <Octicons name="home" size={size} color={color} />;
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: "#7EC7EC",
+          tabBarInactiveTintColor: "#939393",
+          tabBarIconStyle: {},
+          tabBarLabelStyle: {
+            fontSize: 18,
           },
-        })}
-      />
-      <Tab.Screen
-        name="BookshelfStack"
-        component={StackNavigatorBookshelfPage}
-        options={({ route }) => ({
-          title: "Book",
-          tabBarStyle: getTabBarStyle(route),
-          tabBarIcon: ({ size, color }) => {
-            return <Feather name="book-open" size={size} color={color} />;
-          },
-        })}
-      />
-      <Tab.Screen
-        name="FavoriteBooksStack"
-        component={StackNavigatorFavoritePage}
-        options={({ route }) => ({
-          title: "Favorite",
-          tabBarStyle: getTabBarStyle(route),
-          tabBarIcon: ({ size, color }) => {
-            return <Feather name="heart" size={size} color={color} />;
-          },
-        })}
-      />
-      <Tab.Screen
-        name="ProfileStack"
-        component={StackNavigatorProfilePage}
-        options={({ route }) => ({
-          title: "Profile",
-          tabBarStyle: getTabBarStyle(route),
-          tabBarIcon: ({ size, color }) => {
-            return (
-              <FontAwesome6 name="user-circle" size={size} color={color} />
-            );
-          },
-        })}
-      />
-    </Tab.Navigator>
+        }}
+      >
+        <Tab.Screen
+          name="HomeStack"
+          component={StackNavigatorHomePage}
+          options={({ route }) => ({
+            title: "Home",
+            tabBarStyle: getTabBarStyle(route),
+            tabBarIcon: ({ size, color }) => {
+              return <Octicons name="home" size={size} color={color} />;
+            },
+          })}
+        />
+        <Tab.Screen
+          name="BookshelfStack"
+          component={StackNavigatorBookshelfPage}
+          options={({ route }) => ({
+            title: "Book",
+            tabBarStyle: getTabBarStyle(route),
+            tabBarIcon: ({ size, color }) => {
+              return <Feather name="book-open" size={size} color={color} />;
+            },
+          })}
+        />
+        <Tab.Screen
+          name="FavoriteBooksStack"
+          component={StackNavigatorFavoritePage}
+          options={({ route }) => ({
+            title: "Favorite",
+            tabBarStyle: getTabBarStyle(route),
+            tabBarIcon: ({ size, color }) => {
+              return <Feather name="heart" size={size} color={color} />;
+            },
+          })}
+        />
+        <Tab.Screen
+          name="ProfileStack"
+          component={StackNavigatorProfilePageWithFunctionLanguageModal}
+          options={({ route }) => ({
+            title: "Profile",
+            tabBarStyle: getTabBarStyle(route),
+            tabBarIcon: ({ size, color }) => {
+              return (
+                <FontAwesome6 name="user-circle" size={size} color={color} />
+              );
+            },
+          })}
+        />
+      </Tab.Navigator>
+
+      {/* language Modal */}
+      <LanguageModal languageModal={languageModal} />
+    </GestureHandlerRootView>
   );
 };
 

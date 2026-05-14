@@ -9,6 +9,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -129,6 +130,7 @@ const Home = () => {
   const navigation: any = useNavigation();
   const [modalSearch, setModalSearch] = useState<boolean>(false);
  
+  const { t} = useTranslation();
 
   return (
     <View style={styles.homeComponent}>
@@ -252,7 +254,7 @@ const Home = () => {
                       </View>
                       <Text style={styles.receivedBookLeftDays}>
                         {book.daysLeft === 1
-                          ? "1 day left"
+                          ? `1 day left`
                           : `${book.daysLeft} days left`}
                       </Text>
                     </View>

@@ -21,11 +21,17 @@ import {
   View,
 } from "react-native";
 
-const Profile = () => {
+const Profile = ({
+  languageModal,
+}: {
+  languageModal: React.RefObject<any>;
+}) => {
   const navigation: any = useNavigation();
 
   const [loading, setLoading] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // const languageModal = useRef<Modalize>(null);
 
   const { logout } = useAuth();
 
@@ -33,8 +39,7 @@ const Profile = () => {
     try {
       setLoading(true);
       await logout();
-      await 
-      setShowLogoutModal(false);
+      await setShowLogoutModal(false);
     } finally {
       setLoading(false);
       Alert.alert("Logged out", "You have been successfully logged out.", [
@@ -180,9 +185,9 @@ const Profile = () => {
               <TouchableHighlight
                 style={[styles.btnFuncShownType, styles.languageBtn]}
                 underlayColor={"#f0f0f0"}
-                // onPress={() => {
-                //   navigation.navigate("Language");
-                // }}
+                onPress={() => {
+                  languageModal.current?.open();
+                }}
               >
                 <View
                   style={
