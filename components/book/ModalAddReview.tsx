@@ -3,6 +3,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   GestureResponderEvent,
   Image,
@@ -27,7 +28,7 @@ const ModalAddReview = ({
 }) => {
   const [rating, setRating] = useState(0);
 
-  
+  const {t} = useTranslation()  
 
   return (
     <Modal
@@ -58,13 +59,8 @@ const ModalAddReview = ({
                 setModalAddReview(false);
               }}
             />
-            <Text style={styles.titleModalAddReviewComponent}>Add Review</Text>
-            <MaterialIcons
-              style={styles.deleteIconModalAddReviewComponent}
-              name="delete"
-              size={35}
-              color="red"
-            />
+            <Text style={styles.titleModalAddReviewComponent}>{t("modalAddReview.t1")}</Text>
+            <View></View>
           </View>
           <ScrollView
             contentContainerStyle={styles.sectionModalAddReviewScrollView}
@@ -79,15 +75,15 @@ const ModalAddReview = ({
               <View style={styles.nameAndAuthorOfBookAndBtnNovelBlock}>
                 <Text style={styles.nameOfBook}>Tojikon</Text>
                 <Text style={styles.authorOfBook}>Bobojon Ghafurov</Text>
-                <Pressable style={styles.btnNovel}>
+                {/* <Pressable style={styles.btnNovel}>
                   <Text style={styles.btnTextNovel}>Novel</Text>
-                </Pressable>
+                </Pressable> */}
               </View>
             </View>
             <View style={styles.ratingAndLabelInpReviewBlock}>
               <View style={styles.ratingBlock}>
                 <Text style={styles.ratingTitle}>
-                  Your Overoll Rolling Of The Book{" "}
+                  {t("modalAddReview.t2")}
                 </Text>
                 {/* <Stars
                   default={rating}
@@ -117,10 +113,10 @@ const ModalAddReview = ({
                 />
               </View>
               <View style={styles.labelAndInpReviewBlock}>
-                <Text style={styles.labelReview}>Add Detailed Review</Text>
+                <Text style={styles.labelReview}>{t("modalAddReview.t3")}</Text>
                 <TextInput
                   style={styles.inpReview}
-                  placeholder="Enter your review"
+                  placeholder={t("modalAddReview.t4")}
                   placeholderTextColor={"#CFCFCF"}
                   textAlignVertical="top"
                   numberOfLines={8}
@@ -130,7 +126,7 @@ const ModalAddReview = ({
             </View>
             <View style={styles.btnSubmitBlock}>
               <Pressable style={styles.btnSubmit}>
-                <Text style={styles.btnTextSubmit}>Submit</Text>
+                <Text style={styles.btnTextSubmit}>{t("modalAddReview.t5")}</Text>
               </Pressable>
             </View>
           </ScrollView>

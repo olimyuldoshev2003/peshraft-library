@@ -7,6 +7,7 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -27,6 +28,8 @@ const Profile = ({
   languageModal: React.RefObject<any>;
 }) => {
   const navigation: any = useNavigation();
+
+  const {t} = useTranslation()
 
   const [loading, setLoading] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -64,7 +67,7 @@ const Profile = ({
     <View style={styles.profileComponent}>
       <View style={styles.profileComponentBlock}>
         <View style={styles.headerProfileComponent}>
-          <Text style={styles.titleProfileComponent}>My Profile</Text>
+          <Text style={styles.titleProfileComponent}>{ t("profile.t1") }</Text>
           <View style={styles.userImgFullnameAndEmailAndBtnEditBlock}>
             <View style={styles.userImgBlock}>
               <Image
@@ -82,7 +85,7 @@ const Profile = ({
                     navigation.navigate("EditUser");
                   }}
                 >
-                  <Text style={styles.btnTextEdit}>Edit Profile</Text>
+                  <Text style={styles.btnTextEdit}>{ t("profile.t2") }</Text>
                 </Pressable>
               </View>
             </View>
@@ -97,7 +100,7 @@ const Profile = ({
             style={[styles.generalSection, styles.generalAndAppearanceSection]}
           >
             <Text style={styles.titleOfGeneralAndAppearanceSections}>
-              General
+              { t("profile.t3") }
             </Text>
             <View
               style={[
@@ -123,7 +126,7 @@ const Profile = ({
                         style={[styles.icon, styles.historyBookIcon]}
                       />
                     </View>
-                    <Text style={styles.funcType}>History Book</Text>
+                    <Text style={styles.funcType}>{ t("profile.t4") }</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -152,7 +155,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>Feedback</Text>
+                    <Text style={styles.funcType}>{ t("profile.t5") }</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -173,7 +176,7 @@ const Profile = ({
             ]}
           >
             <Text style={styles.titleOfGeneralAndAppearanceSections}>
-              Appearance
+              { t("profile.t6") }
             </Text>
             <View
               style={[
@@ -204,7 +207,7 @@ const Profile = ({
                           style={styles.icon}
                         />
                       </View>
-                      <Text style={styles.funcType}>Language</Text>
+                      <Text style={styles.funcType}>{ t("profile.t7") }</Text>
                     </View>
                     <Text style={styles.selectedFunc}>English</Text>
                   </View>
@@ -228,7 +231,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>Update app</Text>
+                    <Text style={styles.funcType}>{ t("profile.t8") }</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -254,7 +257,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>Logout</Text>
+                    <Text style={styles.funcType}>{ t("profile.t9") }</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"

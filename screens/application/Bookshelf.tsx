@@ -4,6 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -67,14 +68,15 @@ const Bookshelf = () => {
     },
   ];
 
-  const navigation:any = useNavigation();
+  const navigation: any = useNavigation();
+  const {t} = useTranslation()
 
   return (
     <View style={styles.bookshelfComponent}>
       <View style={styles.bookshelfComponentBlock}>
         <View style={styles.headerBookshelfComponent}>
           <View style={styles.titleAndIconNotifications}>
-            <Text style={styles.titleOfComponent}>My Bookshelf</Text>
+            <Text style={styles.titleOfComponent}>{t("bookshelf.t1")}</Text>
             <MaterialIcons name="notifications-none" size={35} color="black" />
           </View>
           <View style={styles.searchBlock}>
@@ -86,7 +88,7 @@ const Bookshelf = () => {
             />
             <TextInput
               style={styles.inputSearch}
-              placeholder="Search Here"
+              placeholder={t("bookshelf.t2")}
               placeholderTextColor={"#939393"}
             />
           </View>
@@ -137,13 +139,13 @@ const Bookshelf = () => {
                         style={styles.alertIcon}
                       />
                       <Text style={styles.daysLeft}>
-                        {receivedBook.daysLeft} days left
+                        {receivedBook.daysLeft} {t("bookshelf.t4")}
                       </Text>
                     </View>
                     <View style={styles.btnReturnBookBlock}>
                       <View style={styles.btnReturnBook}>
                         <Text style={styles.btnTextReturnBook}>
-                          Return the book
+                          {t("bookshelf.t5")}
                         </Text>
                       </View>
                     </View>

@@ -1,6 +1,4 @@
 import ModalSearch from "@/components/home/ModalSearch";
-import { useAuth } from "@/context/AuthContext";
-import { removeToken } from "@/utils/token";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -129,8 +127,8 @@ const filterButtons = [
 const Home = () => {
   const navigation: any = useNavigation();
   const [modalSearch, setModalSearch] = useState<boolean>(false);
- 
-  const { t} = useTranslation();
+
+  const { t } = useTranslation();
 
   return (
     <View style={styles.homeComponent}>
@@ -142,7 +140,7 @@ const Home = () => {
                 source={require("../../assets/peshraft-library/introduction/Logo.png")}
                 style={styles.logo}
               />
-              <Text style={styles.nameOfApp}>Peshraft Library</Text>
+              <Text style={styles.nameOfApp}>{t("home.t1")}</Text>
             </View>
             <MaterialIcons
               name="notifications-none"
@@ -168,7 +166,7 @@ const Home = () => {
               />
               <TextInput
                 style={styles.inputOpenModalSearch}
-                placeholder="Search"
+                placeholder={t("home.t2")}
                 editable={false}
                 placeholderTextColor={"#939393"}
               />
@@ -211,7 +209,7 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.receivedBooks}>
-            <Text style={styles.receivedBookTitle}>Received books</Text>
+            <Text style={styles.receivedBookTitle}>{t("home.t3")}</Text>
             <ScrollView
               contentContainerStyle={styles.receivedBooksBlockScrollView}
               style={styles.receivedBooksBlock}
@@ -254,8 +252,8 @@ const Home = () => {
                       </View>
                       <Text style={styles.receivedBookLeftDays}>
                         {book.daysLeft === 1
-                          ? `1 day left`
-                          : `${book.daysLeft} days left`}
+                          ? `1 ${t("home.t4")}`
+                          : `${book.daysLeft} ${t("home.t5")}`}
                       </Text>
                     </View>
                     <View style={styles.receivedBookStatus}>
@@ -269,7 +267,7 @@ const Home = () => {
             </ScrollView>
           </View>
           <View style={styles.allBooks}>
-            <Text style={styles.allBooksTitle}>All books</Text>
+            <Text style={styles.allBooksTitle}>{t("home.t6")}</Text>
             <View style={styles.allBooksBlock}>
               {allBooksData.map((book) => (
                 <Pressable
@@ -316,7 +314,9 @@ const Home = () => {
                           <Text style={styles.numberOfReaders}>
                             {book.readers}
                           </Text>
-                          <Text style={styles.titleOfReaders}>readers</Text>
+                          <Text style={styles.titleOfReaders}>
+                            {t("home.t8")}
+                          </Text>
                         </View>
                       </View>
                       <View style={styles.forwardIconBlock}>

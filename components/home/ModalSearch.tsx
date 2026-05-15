@@ -11,6 +11,7 @@ import {
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
+import { useTranslation } from "react-i18next";
 
 const ModalSearch = ({
   modalSearch,
@@ -20,6 +21,8 @@ const ModalSearch = ({
   setModalSearch: any;
 }) => {
   const [inpSearch, setInpSearch] = useState<string>("");
+
+  const { t } = useTranslation();
 
   return (
     <Modal
@@ -50,7 +53,7 @@ const ModalSearch = ({
             />
             <TextInput
               style={styles.inputSearch}
-              placeholder="Search Here"
+              placeholder={t("modalSearchHome.t1")}
               value={inpSearch}
               onChangeText={(val) => {
                 setInpSearch(val);
@@ -85,9 +88,9 @@ const ModalSearch = ({
           <View style={styles.sectionModalSearch}>
             <View style={styles.searchedBooksContainer}>
               <View style={styles.searchBooksTitleAndBtnSeeAllBlock}>
-                <Text style={styles.searchBooksTitle}>Books</Text>
+                <Text style={styles.searchBooksTitle}>{t("modalSearchHome.t2")}</Text>
                 <Pressable style={styles.btnSeeAll}>
-                  <Text style={styles.btnTextSeeAll}>See all</Text>
+                  <Text style={styles.btnTextSeeAll}>{t("modalSearchHome.t3")}</Text>
                 </Pressable>
               </View>
               <View style={styles.searchedBooksBlock}>
@@ -107,10 +110,10 @@ const ModalSearch = ({
             </View>
             <View style={styles.recentSearchesContainer}>
               <View style={styles.recentSearchesTitleAndBtnDeleteHistoryBlock}>
-                <Text style={styles.recentSearchesTitle}>Recent Searches</Text>
+                <Text style={styles.recentSearchesTitle}>{t("modalSearchHome.t4")}</Text>
                 <Pressable style={styles.btnDeleteHistory}>
                   <Text style={styles.btnTextDeleteHistory}>
-                    Delete History
+                    {t("modalSearchHome.t5")}
                   </Text>
                 </Pressable>
               </View>
@@ -278,7 +281,7 @@ const styles = StyleSheet.create({
   },
   recentSearch: {
     fontSize: 18,
-    fontWeight: "400"
+    fontWeight: "400",
   },
   deleteRecentSearchIcon: {},
   //////////////////////////////////////////////

@@ -1,6 +1,7 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "expo-router";
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   GestureResponderEvent,
   Image,
@@ -40,7 +41,8 @@ const ModalReceivingBook = ({
   setModalReceivingBook: Dispatch<SetStateAction<boolean>>;
   }) => {
   
-  const navigation:any = useNavigation(); 
+  const navigation: any = useNavigation(); 
+  const {t} = useTranslation();
   
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
@@ -118,58 +120,58 @@ const ModalReceivingBook = ({
 
     switch (name) {
       case "fullName":
-        if (!value.trim()) return "Full name is required";
+        if (!value.trim()) return t("modalReceivingBook.t15");
         if (value.trim().length < 3)
-          return "Full name must be at least 3 characters";
+          return t("modalReceivingBook.t16");
         if (value.trim().length > 50)
-          return "Full name must not exceed 50 characters";
+          return t("modalReceivingBook.t17");
         if (!/^[a-zA-Z\s\-']+$/.test(value.trim()))
-          return "Full name can only contain letters, spaces, hyphens and apostrophes";
+          return t("modalReceivingBook.t18");
         return "";
 
       case "jobTitle":
-        if (!value.trim()) return "Job title is required";
+        if (!value.trim()) return t("modalReceivingBook.t19");
         if (value.trim().length < 2)
-          return "Job title must be at least 2 characters";
+          return t("modalReceivingBook.t20");
         if (value.trim().length > 50)
-          return "Job title must not exceed 50 characters";
+          return t("modalReceivingBook.t21");
         return "";
 
       case "bookName":
-        if (!value.trim()) return "Book name is required";
+        if (!value.trim()) return t("modalReceivingBook.t22");
         if (value.trim().length < 1)
-          return "Book name must be at least 1 character";
+          return t("modalReceivingBook.t23");
         if (value.trim().length > 100)
-          return "Book name must not exceed 100 characters";
+          return t("modalReceivingBook.t24");
         return "";
 
       case "author":
-        if (!value.trim()) return "Author name is required";
+        if (!value.trim()) return t("modalReceivingBook.t25");
         if (value.trim().length < 3)
-          return "Author name must be at least 3 characters";
+          return t("modalReceivingBook.t26");
         if (value.trim().length > 50)
-          return "Author name must not exceed 50 characters";
+          return t("modalReceivingBook.t27");
         return "";
 
       case "receivingDate":
-        if (!value.trim()) return "Receiving date is required";
+        if (!value.trim()) return t("modalReceivingBook.t28");
         if (!/^\d{2}\.\d{2}\.\d{4}$/.test(value))
-          return "Date must be in format DD.MM.YYYY";
+          return t("modalReceivingBook.t29");
         if (!isValidDate(value))
-          return "Invalid date or date cannot be in the past";
+          return t("modalReceivingBook.t30");
         return "";
 
       case "returningDate":
-        if (!value.trim()) return "Returning date is required";
+        if (!value.trim()) return t("modalReceivingBook.t31");
         if (!/^\d{2}\.\d{2}\.\d{4}$/.test(value))
-          return "Date must be in format DD.MM.YYYY";
+          return t("modalReceivingBook.t29");
         if (!isValidDate(value))
-          return "Invalid date or date cannot be in the past";
+          return t("modalReceivingBook.t30");
 
         // Check if returning date is after receiving date
         if (data.receivingDate) {
           if (!isDateAfter(data.receivingDate, value)) {
-            return "Returning date must be after receiving date";
+            return t("modalReceivingBook.t32");
           }
         }
         return "";
@@ -265,7 +267,7 @@ const ModalReceivingBook = ({
 
     if (validateForm()) {
       // Form is valid, you can submit the data
-      Alert.alert("Success", "Book receipt recorded successfully!", [
+      Alert.alert(t("modalReceivingBook.t33"), t("modalReceivingBook.t34"), [
         {
           text: "OK",
           onPress: () => {
@@ -287,7 +289,7 @@ const ModalReceivingBook = ({
       ]);
       console.log("Form submitted:", formData);
     } else {
-      Alert.alert("Error", "Please fix all errors before submitting");
+      Alert.alert(t("modalReceivingBook.t35"), t("modalReceivingBook.t36"));
     }
   };
 
@@ -332,7 +334,7 @@ const ModalReceivingBook = ({
                 onPress={handleClose}
               />
               <Text style={styles.titleModalReceivingBookComponent}>
-                Receive a book
+                {t("modalReceivingBook.t1")}
               </Text>
               <View></View>
             </View>
@@ -361,7 +363,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelFullName]}>
-                Full name <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t2")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -372,7 +374,7 @@ const ModalReceivingBook = ({
                 value={formData.fullName}
                 onChangeText={(text) => handleInputChange("fullName", text)}
                 onBlur={() => handleBlur("fullName")}
-                placeholder="Enter full name"
+                placeholder={t("modalReceivingBook.t3")}
                 placeholderTextColor="#999"
                 maxLength={50}
               />
@@ -389,7 +391,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelJobTitle]}>
-                Job Title <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t4")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -400,7 +402,7 @@ const ModalReceivingBook = ({
                 value={formData.jobTitle}
                 onChangeText={(text) => handleInputChange("jobTitle", text)}
                 onBlur={() => handleBlur("jobTitle")}
-                placeholder="Enter job title"
+                placeholder={t("modalReceivingBook.t5")}
                 placeholderTextColor="#999"
                 maxLength={50}
               />
@@ -417,7 +419,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelBookName]}>
-                Book name <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t6")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -428,7 +430,7 @@ const ModalReceivingBook = ({
                 value={formData.bookName}
                 onChangeText={(text) => handleInputChange("bookName", text)}
                 onBlur={() => handleBlur("bookName")}
-                placeholder="Enter book name"
+                placeholder={t("modalReceivingBook.t7")}
                 placeholderTextColor="#999"
                 maxLength={100}
               />
@@ -445,7 +447,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelAuthor]}>
-                Author <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t8")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -456,7 +458,7 @@ const ModalReceivingBook = ({
                 value={formData.author}
                 onChangeText={(text) => handleInputChange("author", text)}
                 onBlur={() => handleBlur("author")}
-                placeholder="Enter author name"
+                placeholder={t("modalReceivingBook.t9")}
                 placeholderTextColor="#999"
                 maxLength={50}
               />
@@ -473,7 +475,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelReceivingDate]}>
-                Receiving date <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t10")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -489,7 +491,7 @@ const ModalReceivingBook = ({
                   handleInputChange("receivingDate", text)
                 }
                 onBlur={() => handleBlur("receivingDate")}
-                placeholder="DD.MM.YYYY"
+                placeholder={t("modalReceivingBook.t11")}
                 placeholderTextColor="#999"
                 maxLength={10}
               />
@@ -506,7 +508,7 @@ const ModalReceivingBook = ({
               ]}
             >
               <Text style={[styles.label, styles.labelReturningDate]}>
-                Returning date <Text style={styles.requiredStar}>*</Text>
+                {t("modalReceivingBook.t12")} <Text style={styles.requiredStar}>*</Text>
               </Text>
               <TextInput
                 style={[
@@ -522,7 +524,7 @@ const ModalReceivingBook = ({
                   handleInputChange("returningDate", text)
                 }
                 onBlur={() => handleBlur("returningDate")}
-                placeholder="DD.MM.YYYY"
+                placeholder={t("modalReceivingBook.t13")}
                 placeholderTextColor="#999"
                 maxLength={10}
               />
@@ -533,7 +535,7 @@ const ModalReceivingBook = ({
 
             {/* Submit Button */}
             <Pressable style={styles.submitButton} onPress={handleSubmit}>
-              <Text style={styles.submitButtonText}>Submit</Text>
+              <Text style={styles.submitButtonText}>{t("modalReceivingBook.t14")}</Text>
             </Pressable>
           </ScrollView>
         </Pressable>

@@ -15,6 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 // @ts-ignore
 import Stars from "react-native-stars";
+import { useTranslation } from "react-i18next";
 
 const ReviewBook = ({
   route,
@@ -33,6 +34,7 @@ const ReviewBook = ({
   ];
 
   const [rating, setRating] = useState(0);
+  const {t} = useTranslation();
 
   return (
     <ScrollView
@@ -47,7 +49,7 @@ const ReviewBook = ({
           }
         >
           <View style={styles.titleAndBtnOpenModalAddReview}>
-            <Text style={styles.title}>Reviews</Text>
+            <Text style={styles.title}>{t("reviewBook.t1")}</Text>
             <Pressable
               style={styles.btnOpenModalAddReview}
               onPress={() => {
@@ -60,7 +62,7 @@ const ReviewBook = ({
                 color="#2623D0"
                 style={styles.btnIconOpenModalAddReview}
               />
-              <Text style={styles.btnTextOpenModalAddReview}>Add review</Text>
+              <Text style={styles.btnTextOpenModalAddReview}>{t("reviewBook.t2")}</Text>
             </Pressable>
           </View>
           <View style={styles.inpSearchBlock}>
@@ -72,7 +74,7 @@ const ReviewBook = ({
             />
             <TextInput
               style={styles.inpSearch}
-              placeholder="Search"
+              placeholder={t("reviewBook.t3")}
               placeholderTextColor={"#939393"}
             />
           </View>
@@ -165,7 +167,7 @@ const ReviewBook = ({
                 </Text>
               </View>
               <View style={styles.footerReviewBlock}>
-                <Text style={styles.sentDate}>1 days ago</Text>
+                <Text style={styles.sentDate}>1 {t("reviewBook.t4")}</Text>
               </View>
             </View>
           </View>

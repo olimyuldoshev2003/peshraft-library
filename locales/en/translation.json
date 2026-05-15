@@ -1,9 +1,122 @@
 {
-  "home":{
+  "home": {
     "t1": "Peshraft Library",
     "t2": "Search",
-    "t3": "Library"
-  } ,
+    "t3": "Received books",
+    "t4": "day left",
+    "t5": "days left",
+    "t6": "All books",
+    "t7": "reader",
+    "t8": "readers"
+  },
+  "modalSearchHome": {
+    "t1": "Search Here",
+    "t2": "Books",
+    "t3": "See all",
+    "t4": "Recent Searches",
+    "t5": "Delete History"
+  },
+  "receivedBook": {
+    "t1": "Hello",
+    "t2": "Do you really want to return the book?",
+    "t3": "When you reject a book, do you return it to the library?",
+    "t4": "day left",
+    "t5": "days left",
+    "t6": "Return the book",
+    "t7": "You may like this"
+  },
+  "book": {
+    "t1": "page",
+    "t2": "pages",
+    "t3": "About",
+    "t4": "Reviews",
+    "t5": "Receive a book"
+  },
+  "aboutBook": {
+    "t1": "You may like this"
+  },
+  "reviewBook": {
+    "t1": "Reviews",
+    "t2": "Add review",
+    "t3": "Search",
+    "t4": "day ago",
+    "t5": "days ago"
+  },
+  "modalAddReview": {
+    "t1": "Add Review",
+    "t2": "Your Overall Rating Of The Book",
+    "t3": "Add Detailed Review",
+    "t4": "Enter your review",
+    "t5": "Submit"
+  },
+  "modalReceivingBook": {
+    "t1": "Receive Book",
+    "t2": "Full name",
+    "t3": "Enter full name",
+    "t4": "Job Title",
+    "t5": "Enter job title",
+    "t6": "Book name",
+    "t7": "Enter book name",
+    "t8": "Author",
+    "t9": "Enter author name",
+    "t10": "Receiving date",
+    "t11": "DD.MM.YYYY",
+    "t12": "Returning date",
+    "t13": "DD.MM.YYYY",
+    "t14": "Submit",
+
+    "t15": "Full name is required",
+    "t16": "Full name must be at least 3 characters",
+    "t17": "Full name must not exceed 50 characters",
+    "t18": "Full name can only contain letters, spaces, hyphens and apostrophes",
+
+    "t19": "Job title is required",
+    "t20": "Job title must be at least 2 characters",
+    "t21": "Job title must not exceed 50 characters",
+
+    "t22": "Book name is required",
+    "t23": "Book name must be at least 1 character",
+    "t24": "Book name must not exceed 100 characters",
+
+    "t25": "Author name is required",
+    "t26": "Author name must be at least 3 characters",
+    "t27": "Author name must not exceed 50 characters",
+
+    "t28": "Receiving date is required",
+    "t29": "Date must be in format DD.MM.YYYY",
+    "t30": "Invalid date or date cannot be in the past",
+
+    "t31": "Returning date is required",
+    "t32": "Returning date must be after receiving date",
+    "t33": "Success",
+    "t34": "Your request has been submitted successfully! The specialist will contact you soon.",
+    "t35": "Error",
+    "t36": "Please enter all fields"
+  },
+  "bookshelf": {
+    "t1": "My Bookshelf",
+    "t2": "Search Here",
+    "t3": "day left",
+    "t4": "days left",
+    "t5": "Return the book"
+  },
+  "favoriteBooks": {
+    "t1": "My favorite books",
+    "t2": "reader",
+    "t3": "readers"
+  },
+  "profile": {
+    "t1": "My Profile",
+    "t2": "Edit Profile",
+    "t3": "General",
+    "t4": "History Book",
+    "t5": "Feedback",
+    "t6": "Appearance",
+    "t7": "Language",
+    "t8": "Update app",
+    "t9": "Logout"
+  },
+
   "language": {
     "selectLang": "Select language",
     "langChanged": "Language changed to English",

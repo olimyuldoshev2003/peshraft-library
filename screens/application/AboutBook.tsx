@@ -1,5 +1,6 @@
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -11,6 +12,9 @@ import {
 
 const AboutBook = () => {
   const navigation: any = useNavigation();
+
+
+  const {t} = useTranslation();
 
   return (
     <View style={styles.aboutBookComponent}>
@@ -38,7 +42,7 @@ const AboutBook = () => {
           </Text>
         </View>
         <View style={styles.otherBooksContainer}>
-          <Text style={styles.titleOtherBooks}>You may like this</Text>
+          <Text style={styles.titleOtherBooks}>{t("aboutBook.t1")}</Text>
           <ScrollView
             showsHorizontalScrollIndicator={false}
             horizontal

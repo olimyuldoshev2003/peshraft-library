@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import AboutBook from "./AboutBook";
 import ReviewBook from "./ReviewBook";
+import { useTranslation } from "react-i18next";
 
 const Book = ({ route }: { route: any }) => {
   // console.log("Book route params:", route.params);
@@ -24,6 +25,8 @@ const Book = ({ route }: { route: any }) => {
 
   const [modalAddReview, setModalAddReview] = useState<boolean>(false);
   const [modalReceivingBook, setModalReceivingBook] = useState<boolean>(false);
+
+  const {t} = useTranslation();
 
   const ReviewJobWithModalAddReview = ({ route }: { route: any }) => (
     <ReviewBook setModalAddReview={setModalAddReview} route={route} />
@@ -79,7 +82,7 @@ const Book = ({ route }: { route: any }) => {
                 <Text style={styles.rateInNumber}>4.0</Text>
               </View>
               <Text style={styles.genreOfBook}>Fantasy</Text>
-              <Text style={styles.pageAmountOfBook}>333 pages</Text>
+              <Text style={styles.pageAmountOfBook}>333 {t("book.t2")}</Text>
             </View>
           </View>
 
@@ -105,12 +108,12 @@ const Book = ({ route }: { route: any }) => {
               <Tab.Screen
                 name="AboutBook"
                 component={AboutBook}
-                options={{ title: "About" }}
+                options={{ title: t("book.t3") }}
               />
               <Tab.Screen
                 name="ReviewBook"
                 component={ReviewJobWithModalAddReview}
-                options={{ title: "Review" }}
+                options={{ title: t("book.t4") }}
               />
             </Tab.Navigator>
           </View>
@@ -123,7 +126,7 @@ const Book = ({ route }: { route: any }) => {
             }}
           >
             <Text style={styles.btnTextOpenModalReceiveBook}>
-              Receive a book
+              {t("book.t5")}
             </Text>
           </Pressable>
         </View>

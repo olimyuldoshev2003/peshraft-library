@@ -4,6 +4,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -14,14 +15,15 @@ import {
 } from "react-native";
 
 const FavoriteBooks = () => {
-  const navigation:any = useNavigation();
+  const navigation: any = useNavigation();
+  const {t} = useTranslation()
 
   return (
     <View style={styles.favoriteBooksComponent}>
       <View style={styles.favoriteBooksComponentBlock}>
         <View style={styles.headerFavoriteBooksComponent}>
           <Text style={styles.titleHeaderFavoriteBooksComponent}>
-            My favorite books
+            {t("favoriteBooks.t1")}
           </Text>
         </View>
         <ScrollView
@@ -79,7 +81,7 @@ const FavoriteBooks = () => {
                   />
                   <View style={styles.numberAndTextReadersBlock}>
                     <Text style={styles.numberOfReaders}>24</Text>
-                    <Text style={styles.titleOfReaders}>readers</Text>
+                    <Text style={styles.titleOfReaders}> {t("favoriteBooks.t3")}</Text>
                   </View>
                 </View>
                 <View style={styles.forwardIconBlock}>
@@ -144,7 +146,7 @@ const FavoriteBooks = () => {
                   />
                   <View style={styles.numberAndTextReadersBlock}>
                     <Text style={styles.numberOfReaders}>24</Text>
-                    <Text style={styles.titleOfReaders}>readers</Text>
+                    <Text style={styles.titleOfReaders}> {t("favoriteBooks.t3")}</Text>
                   </View>
                 </View>
                 <View style={styles.forwardIconBlock}>
@@ -209,7 +211,7 @@ const FavoriteBooks = () => {
                   />
                   <View style={styles.numberAndTextReadersBlock}>
                     <Text style={styles.numberOfReaders}>24</Text>
-                    <Text style={styles.titleOfReaders}>readers</Text>
+                    <Text style={styles.titleOfReaders}> {t("favoriteBooks.t3")}</Text>
                   </View>
                 </View>
                 <View style={styles.forwardIconBlock}>
@@ -274,7 +276,7 @@ const FavoriteBooks = () => {
                   />
                   <View style={styles.numberAndTextReadersBlock}>
                     <Text style={styles.numberOfReaders}>24</Text>
-                    <Text style={styles.titleOfReaders}>readers</Text>
+                    <Text style={styles.titleOfReaders}> {t("favoriteBooks.t3")}</Text>
                   </View>
                 </View>
                 <View style={styles.forwardIconBlock}>

@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -13,6 +14,8 @@ import {
 
 const ReceivedBook = () => {
   const navigation: any = useNavigation();
+
+  const {t} = useTranslation();
 
   return (
     <View style={styles.receivedBookComponent}>
@@ -32,7 +35,7 @@ const ReceivedBook = () => {
           style={styles.sectionReceivedBookComponent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.greetingsAndNameOfUser}>Hello, Olim</Text>
+          <Text style={styles.greetingsAndNameOfUser}>{t("receivedBook.t1")} Olim</Text>
           <View style={styles.imgOfBookBlock}>
             <Image
               source={require("../../assets/peshraft-library/home/tojikon.jpg")}
@@ -41,10 +44,10 @@ const ReceivedBook = () => {
           </View>
           <View style={styles.blockForText}>
             <Text style={styles.textNumber1}>
-              Do you want to return the book?
+              {t("receivedBook.t2")}
             </Text>
             <Text style={styles.textNumber2}>
-              When you reject a book, do you return it to the library?
+              {t("receivedBook.t3")}
             </Text>
           </View>
           <View style={styles.daysLeftAndBtnReturnBlock}>
@@ -55,14 +58,14 @@ const ReceivedBook = () => {
                 color="#FF383C"
                 style={styles.alertIcon}
               />
-              <Text style={styles.daysLeft}>2 days left</Text>
+              <Text style={styles.daysLeft}>2 {t("receivedBook.t5")}</Text>
             </View>
             <Pressable style={styles.btnReturnTheBook}>
-              <Text style={styles.btnTextReturnTheBook}>Return the book</Text>
+              <Text style={styles.btnTextReturnTheBook}>{t("receivedBook.t6")}</Text>
             </Pressable>
           </View>
           <View style={styles.otherBooksContainer}>
-            <Text style={styles.titleOtherBooks}>You may like this</Text>
+            <Text style={styles.titleOtherBooks}>{t("receivedBook.t7")}</Text>
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal
