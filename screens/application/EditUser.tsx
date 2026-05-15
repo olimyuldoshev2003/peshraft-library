@@ -1106,7 +1106,7 @@ const EditUser = () => {
                       </Text>
 
                       {/* Country Selector */}
-                      <View style={styles.countrySelectorContainer}>
+                      {/* <View style={styles.countrySelectorContainer}>
                         <Selector
                           options={COUNTRIES_DATA}
                           selectedValue={selectedCountry}
@@ -1131,7 +1131,7 @@ const EditUser = () => {
                           searchInputStyle={styles.searchInputStyle}
                           disabled={isSubmitting}
                         />
-                      </View>
+                      </View> */}
 
                       <View style={styles.phoneInputContainer}>
                         {/* <FontAwesome
