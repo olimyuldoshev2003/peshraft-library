@@ -24,7 +24,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Selector } from "rn-selector";
 import * as Yup from "yup";
 
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
@@ -1174,17 +1173,17 @@ const EditUser = () => {
                         <Text style={styles.errorText}>{phoneError}</Text>
                       ) : null}
 
-                      {detectedOperator && (
+                      {/* {detectedOperator && (
                         <Text style={styles.operatorText}>
                           Operator: {detectedOperator}
                         </Text>
-                      )}
+                      )} */}
 
-                      <Text style={styles.phoneHint}>
+                      {/* <Text style={styles.phoneHint}>
                         {selectedCountry === "tj"
                           ? "Start with +992. Supported prefixes: 90, 91, 92, 93, 94, 98, 99, etc."
                           : "Start with + or select country."}
-                      </Text>
+                      </Text> */}
                     </View>
 
                     {/* Email */}
