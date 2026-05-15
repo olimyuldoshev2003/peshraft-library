@@ -103,36 +103,46 @@ const formatDateOfBirth = (text: string): string => {
   const cleaned = text.replace(/\D/g, "");
   const limited = cleaned.slice(0, 8);
 
-  if (limited.length <= 4) {
+  if (limited.length <= 2) {
     return limited;
-  } else if (limited.length <= 6) {
-    return `${limited.slice(0, 4)}-${limited.slice(4, 6)}`;
+  } else if (limited.length <= 4) {
+    return `${limited.slice(0, 2)}-${limited.slice(2)}`;
   } else {
-    return `${limited.slice(0, 4)}-${limited.slice(4, 6)}-${limited.slice(6, 8)}`;
+    return `${limited.slice(0, 2)}-${limited.slice(2, 4)}-${limited.slice(4)}`;
   }
 };
 
 // Validate date of birth
 const validateDateOfBirth = (date: string): boolean => {
-  if (!date || date.length !== 10) return false;
+  if (!date) return false;
 
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  // DD-MM-YYYY
+  const regex = /^\d{2}-\d{2}-\d{4}$/;
   if (!regex.test(date)) return false;
 
-  const [year, month, day] = date.split("-").map(Number);
+  const [day, month, year] = date.split("-").map(Number);
 
+  // Validate month
   if (month < 1 || month > 12) return false;
 
+  // Validate days
   const daysInMonth = new Date(year, month, 0).getDate();
   if (day < 1 || day > daysInMonth) return false;
 
+  // Validate year
   const currentYear = new Date().getFullYear();
   if (year < 1900 || year > currentYear) return false;
 
-  const inputDate = new Date(date);
+  // Create proper JS date
+  const inputDate = new Date(year, month - 1, day);
+
+  // Prevent future dates
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return inputDate <= today;
+
+  if (inputDate > today) return false;
+
+  return true;
 };
 
 // Enhanced password validation
@@ -268,7 +278,7 @@ const EditUserSchema = Yup.object().shape({
     .required("Date of Birth is required")
     .test(
       "is-valid-date",
-      "Invalid date format (YYYY-MM-DD)",
+      "Invalid date format (DD-MM-YYYY)",
       function (value) {
         if (!value) return false;
         return validateDateOfBirth(value);
@@ -276,15 +286,24 @@ const EditUserSchema = Yup.object().shape({
     )
     .test("is-adult", "You must be at least 13 years old", function (value) {
       if (!value) return false;
-      const birthDate = new Date(value);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      const dayDiff = today.getDate() - birthDate.getDate();
 
-      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        return age - 1 >= 13;
+      const [day, month, year] = value.split("-").map(Number);
+
+      const birthDate = new Date(year, month - 1, day);
+
+      const today = new Date();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
       }
+
       return age >= 13;
     }),
   jobTitle: Yup.string()
@@ -1030,7 +1049,7 @@ const EditUser = () => {
                         }
                         onBlur={handleBlur("dateOfBirth")}
                         value={values.dateOfBirth}
-                        placeholder="YYYY-MM-DD"
+                        placeholder="DD-MM-YYYY"
                         keyboardType="numeric"
                         returnKeyType="next"
                         editable={!isSubmitting}
