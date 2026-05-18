@@ -14,12 +14,15 @@ import StackNavigatorHomePage from "../stacks/StackNavigatorHomePage";
 import StackNavigatorProfilePage from "../stacks/StackNavigatorProfilePage";
 import { Modalize } from "react-native-modalize";
 import LanguageModal from "@/components/profile/LanguageModal";
+import { useTranslation } from "react-i18next";
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   const navigation = useNavigation();
   const pathName = usePathname();
+
+  const {t} = useTranslation()
 
   const languageModal = useRef<Modalize>(null);
 
@@ -83,7 +86,7 @@ const TabNavigator = () => {
           name="HomeStack"
           component={StackNavigatorHomePage}
           options={({ route }) => ({
-            title: "Home",
+            title: t("navigators.t1"),
             tabBarStyle: getTabBarStyle(route),
             tabBarIcon: ({ size, color }) => {
               return <Octicons name="home" size={size} color={color} />;
@@ -94,7 +97,7 @@ const TabNavigator = () => {
           name="BookshelfStack"
           component={StackNavigatorBookshelfPage}
           options={({ route }) => ({
-            title: "Book",
+            title: t("navigators.t2"),
             tabBarStyle: getTabBarStyle(route),
             tabBarIcon: ({ size, color }) => {
               return <Feather name="book-open" size={size} color={color} />;
@@ -105,7 +108,7 @@ const TabNavigator = () => {
           name="FavoriteBooksStack"
           component={StackNavigatorFavoritePage}
           options={({ route }) => ({
-            title: "Favorite",
+            title: t("navigators.t3"),
             tabBarStyle: getTabBarStyle(route),
             tabBarIcon: ({ size, color }) => {
               return <Feather name="heart" size={size} color={color} />;
@@ -116,7 +119,7 @@ const TabNavigator = () => {
           name="ProfileStack"
           component={StackNavigatorProfilePageWithFunctionLanguageModal}
           options={({ route }) => ({
-            title: "Profile",
+            title: t("navigators.t4"),
             tabBarStyle: getTabBarStyle(route),
             tabBarIcon: ({ size, color }) => {
               return (

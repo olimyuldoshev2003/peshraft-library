@@ -65,7 +65,7 @@ const ModalSearch = ({
                 name="close"
                 size={29}
                 color="black"
-                style={[styles.closeModalSearchIcon, styles.closeIconInCircle]}
+                style={[styles.closeIconInCircle, styles.closeModalSearchIcon]}
                 onPress={() => {
                   setInpSearch("");
                 }}
@@ -76,8 +76,8 @@ const ModalSearch = ({
                 size={24}
                 color="black"
                 style={[
-                  styles.clearTheInputSearchIcon,
                   styles.closeIconInCircle,
+                  styles.clearTheInputSearchIcon,
                 ]}
                 onPress={() => {
                   setModalSearch(false);
@@ -88,9 +88,13 @@ const ModalSearch = ({
           <View style={styles.sectionModalSearch}>
             <View style={styles.searchedBooksContainer}>
               <View style={styles.searchBooksTitleAndBtnSeeAllBlock}>
-                <Text style={styles.searchBooksTitle}>{t("modalSearchHome.t2")}</Text>
+                <Text style={styles.searchBooksTitle}>
+                  {t("modalSearchHome.t2")}
+                </Text>
                 <Pressable style={styles.btnSeeAll}>
-                  <Text style={styles.btnTextSeeAll}>{t("modalSearchHome.t3")}</Text>
+                  <Text style={styles.btnTextSeeAll}>
+                    {t("modalSearchHome.t3")}
+                  </Text>
                 </Pressable>
               </View>
               <View style={styles.searchedBooksBlock}>
@@ -110,7 +114,9 @@ const ModalSearch = ({
             </View>
             <View style={styles.recentSearchesContainer}>
               <View style={styles.recentSearchesTitleAndBtnDeleteHistoryBlock}>
-                <Text style={styles.recentSearchesTitle}>{t("modalSearchHome.t4")}</Text>
+                <Text style={styles.recentSearchesTitle}>
+                  {t("modalSearchHome.t4")}
+                </Text>
                 <Pressable style={styles.btnDeleteHistory}>
                   <Text style={styles.btnTextDeleteHistory}>
                     {t("modalSearchHome.t5")}
@@ -200,8 +206,7 @@ const styles = StyleSheet.create({
     paddingLeft: 55,
     paddingRight: 42,
   },
-  clearTheInputSearchIcon: {},
-  closeModalSearchIcon: {},
+
   // Styles with the same properties
   //////////////////////////////////
   closeIconInCircle: {
@@ -210,6 +215,13 @@ const styles = StyleSheet.create({
     top: 11.5,
   },
   //////////////////////////////////
+
+  clearTheInputSearchIcon: {
+  },
+  closeModalSearchIcon: {
+    
+    top: 9,
+  },
 
   sectionModalSearch: {
     marginTop: 30,

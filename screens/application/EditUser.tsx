@@ -28,371 +28,12 @@ import * as Yup from "yup";
 
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
 import { allCountries } from "country-telephone-data";
-
-// Tajik SIM card prefixes and operators data
-const TAJIK_PREFIXES = {
-  "90": "MegaFon Tajikistan",
-  "55": "MegaFon Tajikistan",
-  "41": "MegaFon Tajikistan",
-  "88": "MegaFon Tajikistan",
-  "00": "MegaFon Tajikistan",
-  "01": "MegaFon Tajikistan",
-  "02": "MegaFon Tajikistan",
-  "07": "MegaFon Tajikistan",
-  "97": "MegaFon Tajikistan",
-  "12": "MegaFon Tajikistan",
-  "21": "MegaFon Tajikistan",
-  "27": "MegaFon Tajikistan",
-  "91": "ZET-Mobile",
-  "40": "ZET-Mobile",
-  "80": "ZET-Mobile",
-  "33": "ZET-Mobile",
-  "81": "ZET-Mobile",
-  "03": "ZET-Mobile",
-  "04": "ZET-Mobile",
-  "08": "ZET-Mobile",
-  "05": "ZET-Mobile",
-  "09": "ZET-Mobile",
-  "06": "ZET-Mobile",
-  "18": "ZET-Mobile",
-  "19": "ZET-Mobile",
-  "66": "ZET-Mobile",
-  "38": "ZET-Mobile",
-  "92": "Tcell",
-  "93": "Tcell",
-  "50": "Tcell",
-  "77": "Tcell",
-  "70": "Tcell",
-  "99": "Tcell",
-  "11": "Tcell",
-  "10": "O-Mobile",
-  "20": "O-Mobile",
-  "22": "O-Mobile",
-  "30": "O-Mobile",
-  "78": "Anor",
-  "87": "Anor",
-  "98": "Babilon-Mobile",
-  "94": "Babilon-Mobile",
-  "71": "Babilon-Mobile",
-  "17": "Babilon-Mobile",
-  "75": "Babilon-Mobile",
-  "440": "ZET-Mobile",
-  "444": "ZET-Mobile",
-  "030": "ZET-Mobile",
-  "040": "ZET-Mobile",
-  "080": "ZET-Mobile",
-  "442": "ZET-Mobile",
-  "443": "ZET-Mobile",
-  "447": "ZET-Mobile",
-  "449": "ZET-Mobile",
-  "918": "Babilon-Mobile",
-};
-
-// Get all countries from the library and format for rn-selector
-const COUNTRIES_DATA = allCountries.map((country: any) => ({
-  value: country.iso2,
-  label: `${country.name} (+${country.dialCode})`,
-  emoji: country.emoji,
-  dialCode: country.dialCode,
-  name: country.name,
-}));
-
-// Date formatting function
-const formatDateOfBirth = (text: string): string => {
-  const cleaned = text.replace(/\D/g, "");
-  const limited = cleaned.slice(0, 8);
-
-  if (limited.length <= 2) {
-    return limited;
-  } else if (limited.length <= 4) {
-    return `${limited.slice(0, 2)}-${limited.slice(2)}`;
-  } else {
-    return `${limited.slice(0, 2)}-${limited.slice(2, 4)}-${limited.slice(4)}`;
-  }
-};
-
-// Validate date of birth
-const validateDateOfBirth = (date: string): boolean => {
-  if (!date) return false;
-
-  // DD-MM-YYYY
-  const regex = /^\d{2}-\d{2}-\d{4}$/;
-  if (!regex.test(date)) return false;
-
-  const [day, month, year] = date.split("-").map(Number);
-
-  // Validate month
-  if (month < 1 || month > 12) return false;
-
-  // Validate days
-  const daysInMonth = new Date(year, month, 0).getDate();
-  if (day < 1 || day > daysInMonth) return false;
-
-  // Validate year
-  const currentYear = new Date().getFullYear();
-  if (year < 1900 || year > currentYear) return false;
-
-  // Create proper JS date
-  const inputDate = new Date(year, month - 1, day);
-
-  // Prevent future dates
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (inputDate > today) return false;
-
-  return true;
-};
-
-// Enhanced password validation
-const validatePasswordStrength = (
-  password: string,
-): { isValid: boolean; errors: string[] } => {
-  const errors: string[] = [];
-
-  if (!password || password.length < 8) {
-    errors.push("Password must be at least 8 characters long");
-    return { isValid: false, errors };
-  }
-
-  if (password.length > 128) {
-    errors.push("Password must not exceed 128 characters");
-    return { isValid: false, errors };
-  }
-
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
-    password,
-  );
-
-  if (!hasUpperCase) errors.push("Must contain at least one uppercase letter");
-  if (!hasLowerCase) errors.push("Must contain at least one lowercase letter");
-  if (!hasNumbers) errors.push("Must contain at least one number");
-  if (!hasSpecialChar)
-    errors.push("Must contain at least one special character");
-
-  const sequentialPatterns = [
-    "12345678",
-    "87654321",
-    "23456789",
-    "98765432",
-    "qwertyui",
-    "iuytrewq",
-    "asdfghjk",
-    "kjhgfdsa",
-    "zxcvbnm",
-    "mnbvcxz",
-    "password",
-    "admin123",
-    "letmein1",
-    "welcome1",
-    "monkey12",
-    "dragon12",
-  ];
-
-  const lowerPassword = password.toLowerCase();
-  for (const pattern of sequentialPatterns) {
-    if (lowerPassword.includes(pattern)) {
-      errors.push("Contains common sequential pattern");
-      break;
-    }
-  }
-
-  const hasRepeatedChars = /(.)\1{3,}/.test(password);
-  if (hasRepeatedChars) errors.push("Too many repeated characters");
-
-  const commonSequences = [
-    "12345678",
-    "87654321",
-    "11111111",
-    "22222222",
-    "33333333",
-    "44444444",
-    "55555555",
-    "66666666",
-    "77777777",
-    "88888888",
-    "99999999",
-    "00000000",
-  ];
-
-  if (commonSequences.includes(password)) {
-    errors.push("Password is too predictable");
-  }
-
-  const dictionaryWords = [
-    "password",
-    "admin",
-    "welcome",
-    "qwerty",
-    "letmein",
-    "monkey",
-    "dragon",
-    "sunshine",
-    "princess",
-    "football",
-    "baseball",
-    "mustang",
-    "superman",
-    "trustno1",
-    "master",
-    "hello123",
-    "secret",
-    "abcd1234",
-    "passw0rd",
-    "admin123",
-  ];
-
-  const normalizedPass = password.toLowerCase();
-  for (const word of dictionaryWords) {
-    if (normalizedPass.includes(word)) {
-      errors.push("Contains common dictionary word");
-      break;
-    }
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors: errors.slice(0, 3),
-  };
-};
-
-// Validation schema for edit user
-const EditUserSchema = Yup.object().shape({
-  fullName: Yup.string()
-    .required("Full Name is required")
-    .min(3, "Full Name must be at least 3 characters")
-    .max(50, "Full Name must be at most 50 characters")
-    .test(
-      "no-special-chars",
-      "Full Name can only contain letters, spaces, and basic punctuation",
-      (value) => {
-        if (!value) return true;
-        return /^[a-zA-Z\s\-'.]*$/.test(value);
-      },
-    ),
-  dateOfBirth: Yup.string()
-    .required("Date of Birth is required")
-    .test(
-      "is-valid-date",
-      "Invalid date format (DD-MM-YYYY)",
-      function (value) {
-        if (!value) return false;
-        return validateDateOfBirth(value);
-      },
-    )
-    .test("is-adult", "You must be at least 13 years old", function (value) {
-      if (!value) return false;
-
-      const [day, month, year] = value.split("-").map(Number);
-
-      const birthDate = new Date(year, month - 1, day);
-
-      const today = new Date();
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      return age >= 13;
-    }),
-  jobTitle: Yup.string()
-    .max(100, "Job Title must not exceed 100 characters")
-    .test(
-      "job-title-format",
-      "Job Title contains invalid characters",
-      (value) => {
-        if (!value) return true;
-        return /^[a-zA-Z\s\-'.&,()]*$/.test(value);
-      },
-    ),
-  phoneNumber: Yup.string()
-    .required("Phone number is required")
-    .test("is-valid-phone", "Invalid phone number", function (value) {
-      if (!value) return false;
-
-      const cleanNumber = value.replace(/[^\d+]/g, "");
-
-      if (!cleanNumber.startsWith("+")) return false;
-
-      try {
-        const phoneNumber = parsePhoneNumberFromString(cleanNumber);
-        if (!phoneNumber || !phoneNumber.isValid()) return false;
-
-        if (phoneNumber.country === "TJ") {
-          const nationalNumber = phoneNumber.nationalNumber;
-
-          const threeDigitPrefix = nationalNumber.substring(0, 3);
-          if (TAJIK_PREFIXES[threeDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
-            return true;
-          }
-
-          const twoDigitPrefix = nationalNumber.substring(0, 2);
-          if (TAJIK_PREFIXES[twoDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
-            return true;
-          }
-
-          return false;
-        }
-
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }),
-  email: Yup.string()
-    .required("Email is required")
-    .email("Invalid email format")
-    .max(254, "Email must not exceed 254 characters")
-    .test("email-domain", "Please use a valid email domain", (value) => {
-      if (!value) return true;
-      const domain = value.split("@")[1];
-      const invalidDomains = [
-        "tempmail.com",
-        "temp-mail.org",
-        "guerrillamail.com",
-        "mailinator.com",
-        "yopmail.com",
-        "10minutemail.com",
-      ];
-      return !invalidDomains.includes(domain?.toLowerCase() || "");
-    }),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must not exceed 128 characters")
-    .test(
-      "password-strength",
-      "Password is not strong enough",
-      function (value) {
-        if (!value) return true;
-        const validation = validatePasswordStrength(value);
-        if (!validation.isValid) {
-          return this.createError({
-            message:
-              validation.errors[0] ||
-              "Password does not meet security requirements",
-          });
-        }
-        return true;
-      },
-    ),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password")],
-    "Passwords must match",
-  ),
-});
+import { useTranslation } from "react-i18next";
 
 const EditUser = () => {
   const navigation: any = useNavigation();
+
+  const { t } = useTranslation();
 
   const [userImage, setUserImage] = useState<string | null>(
     require("../../assets/peshraft-library/profile/profile-img.jpg"),
@@ -410,10 +51,379 @@ const EditUser = () => {
   }>({ score: 0, feedback: [] });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  ////////////////////////////////////////////////////////////////////////
+  // Tajik SIM card prefixes and operators data
+  const TAJIK_PREFIXES = {
+    "90": "MegaFon Tajikistan",
+    "55": "MegaFon Tajikistan",
+    "41": "MegaFon Tajikistan",
+    "88": "MegaFon Tajikistan",
+    "00": "MegaFon Tajikistan",
+    "01": "MegaFon Tajikistan",
+    "02": "MegaFon Tajikistan",
+    "07": "MegaFon Tajikistan",
+    "97": "MegaFon Tajikistan",
+    "12": "MegaFon Tajikistan",
+    "21": "MegaFon Tajikistan",
+    "27": "MegaFon Tajikistan",
+    "91": "ZET-Mobile",
+    "40": "ZET-Mobile",
+    "80": "ZET-Mobile",
+    "33": "ZET-Mobile",
+    "81": "ZET-Mobile",
+    "03": "ZET-Mobile",
+    "04": "ZET-Mobile",
+    "08": "ZET-Mobile",
+    "05": "ZET-Mobile",
+    "09": "ZET-Mobile",
+    "06": "ZET-Mobile",
+    "18": "ZET-Mobile",
+    "19": "ZET-Mobile",
+    "66": "ZET-Mobile",
+    "38": "ZET-Mobile",
+    "92": "Tcell",
+    "93": "Tcell",
+    "50": "Tcell",
+    "77": "Tcell",
+    "70": "Tcell",
+    "99": "Tcell",
+    "11": "Tcell",
+    "10": "O-Mobile",
+    "20": "O-Mobile",
+    "22": "O-Mobile",
+    "30": "O-Mobile",
+    "78": "Anor",
+    "87": "Anor",
+    "98": "Babilon-Mobile",
+    "94": "Babilon-Mobile",
+    "71": "Babilon-Mobile",
+    "17": "Babilon-Mobile",
+    "75": "Babilon-Mobile",
+    "440": "ZET-Mobile",
+    "444": "ZET-Mobile",
+    "030": "ZET-Mobile",
+    "040": "ZET-Mobile",
+    "080": "ZET-Mobile",
+    "442": "ZET-Mobile",
+    "443": "ZET-Mobile",
+    "447": "ZET-Mobile",
+    "449": "ZET-Mobile",
+    "918": "Babilon-Mobile",
+  };
+
+  // Get all countries from the library and format for rn-selector
+  const COUNTRIES_DATA = allCountries.map((country: any) => ({
+    value: country.iso2,
+    label: `${country.name} (+${country.dialCode})`,
+    emoji: country.emoji,
+    dialCode: country.dialCode,
+    name: country.name,
+  }));
+
+  // Date formatting function
+  const formatDateOfBirth = (text: string): string => {
+    const cleaned = text.replace(/\D/g, "");
+    const limited = cleaned.slice(0, 8);
+
+    if (limited.length <= 2) {
+      return limited;
+    } else if (limited.length <= 4) {
+      return `${limited.slice(0, 2)}-${limited.slice(2)}`;
+    } else {
+      return `${limited.slice(0, 2)}-${limited.slice(2, 4)}-${limited.slice(4)}`;
+    }
+  };
+
+  // Validate date of birth
+  const validateDateOfBirth = (date: string): boolean => {
+    if (!date) return false;
+
+    // DD-MM-YYYY
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+    if (!regex.test(date)) return false;
+
+    const [day, month, year] = date.split("-").map(Number);
+
+    // Validate month
+    if (month < 1 || month > 12) return false;
+
+    // Validate days
+    const daysInMonth = new Date(year, month, 0).getDate();
+    if (day < 1 || day > daysInMonth) return false;
+
+    // Validate year
+    const currentYear = new Date().getFullYear();
+    if (year < 1900 || year > currentYear) return false;
+
+    // Create proper JS date
+    const inputDate = new Date(year, month - 1, day);
+
+    // Prevent future dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (inputDate > today) return false;
+
+    return true;
+  };
+
+  // Enhanced password validation
+  const validatePasswordStrength = (
+    password: string,
+  ): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = [];
+
+    if (!password || password.length < 8) {
+      errors.push(t("editProfile.t18"));
+      return { isValid: false, errors };
+    }
+
+    if (password.length > 128) {
+      errors.push(t("editProfile.t19"));
+      return { isValid: false, errors };
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(
+      password,
+    );
+
+    if (!hasUpperCase)
+      errors.push(t("editProfile.t20"));
+    if (!hasLowerCase)
+      errors.push(t("editProfile.t21"));
+    if (!hasNumbers) errors.push(t("editProfile.t22"));
+    if (!hasSpecialChar)
+      errors.push(t("editProfile.t23"));
+
+    const sequentialPatterns = [
+      "12345678",
+      "87654321",
+      "23456789",
+      "98765432",
+      "qwertyui",
+      "iuytrewq",
+      "asdfghjk",
+      "kjhgfdsa",
+      "zxcvbnm",
+      "mnbvcxz",
+      "password",
+      "admin123",
+      "letmein1",
+      "welcome1",
+      "monkey12",
+      "dragon12",
+    ];
+
+    const lowerPassword = password.toLowerCase();
+    for (const pattern of sequentialPatterns) {
+      if (lowerPassword.includes(pattern)) {
+        errors.push(t("editProfile.t24"));
+        break;
+      }
+    }
+
+    const hasRepeatedChars = /(.)\1{3,}/.test(password);
+    if (hasRepeatedChars) errors.push(t("editProfile.t25"));
+
+    const commonSequences = [
+      "12345678",
+      "87654321",
+      "11111111",
+      "22222222",
+      "33333333",
+      "44444444",
+      "55555555",
+      "66666666",
+      "77777777",
+      "88888888",
+      "99999999",
+      "00000000",
+    ];
+
+    if (commonSequences.includes(password)) {
+      errors.push(t("editProfile.t26"));
+    }
+
+    const dictionaryWords = [
+      "password",
+      "admin",
+      "welcome",
+      "qwerty",
+      "letmein",
+      "monkey",
+      "dragon",
+      "sunshine",
+      "princess",
+      "football",
+      "baseball",
+      "mustang",
+      "superman",
+      "trustno1",
+      "master",
+      "hello123",
+      "secret",
+      "abcd1234",
+      "passw0rd",
+      "admin123",
+    ];
+
+    const normalizedPass = password.toLowerCase();
+    for (const word of dictionaryWords) {
+      if (normalizedPass.includes(word)) {
+        errors.push(t("editProfile.t27"));
+        break;
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors: errors.slice(0, 3),
+    };
+  };
+
+  // Validation schema for edit user
+  const EditUserSchema = Yup.object().shape({
+    fullName: Yup.string()
+      .required(t("editProfile.t28"))
+      .min(3, t("editProfile.t29"))
+      .max(50, t("editProfile.t30"))
+      .test(
+        "no-special-chars",
+        t("editProfile.t31"),
+        (value) => {
+          if (!value) return true;
+          return /^[a-zA-Z\s\-'.]*$/.test(value);
+        },
+      ),
+    dateOfBirth: Yup.string()
+      .required(t("editProfile.t32"))
+      .test(
+        "is-valid-date",
+        t("editProfile.t33"),
+        
+        function (value) {
+          if (!value) return false;
+          return validateDateOfBirth(value);
+        },
+      )
+      .test("is-adult", t("editProfile.t34"), function (value) {
+        if (!value) return false;
+
+        const [day, month, year] = value.split("-").map(Number);
+
+        const birthDate = new Date(year, month - 1, day);
+
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+
+        return age >= 13;
+      }),
+    jobTitle: Yup.string()
+      .max(100, t("editProfile.t35"))
+      .test(
+        "job-title-format",
+        t("editProfile.t36"),
+        (value) => {
+          if (!value) return true;
+          return /^[a-zA-Z\s\-'.&,()]*$/.test(value);
+        },
+      ),
+    phoneNumber: Yup.string()
+      .required(t("editProfile.t37"))
+      .test("is-valid-phone", t("editProfile.t38"), function (value) {
+        if (!value) return false;
+
+        const cleanNumber = value.replace(/[^\d+]/g, "");
+
+        if (!cleanNumber.startsWith("+")) return false;
+
+        try {
+          const phoneNumber = parsePhoneNumberFromString(cleanNumber);
+          if (!phoneNumber || !phoneNumber.isValid()) return false;
+
+          if (phoneNumber.country === "TJ") {
+            const nationalNumber = phoneNumber.nationalNumber;
+
+            const threeDigitPrefix = nationalNumber.substring(0, 3);
+            if (
+              TAJIK_PREFIXES[threeDigitPrefix as keyof typeof TAJIK_PREFIXES]
+            ) {
+              return true;
+            }
+
+            const twoDigitPrefix = nationalNumber.substring(0, 2);
+            if (TAJIK_PREFIXES[twoDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
+              return true;
+            }
+
+            return false;
+          }
+
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }),
+    email: Yup.string()
+      .required(t("editProfile.t39"))
+      .email(t("editProfile.t40"))
+      .max(254, t("editProfile.t41"))
+      .test("email-domain", t("editProfile.t42"), (value) => {
+        if (!value) return true;
+        const domain = value.split("@")[1];
+        const invalidDomains = [
+          "tempmail.com",
+          "temp-mail.org",
+          "guerrillamail.com",
+          "mailinator.com",
+          "yopmail.com",
+          "10minutemail.com",
+        ];
+        return !invalidDomains.includes(domain?.toLowerCase() || "");
+      }),
+    password: Yup.string()
+      .min(8, t("editProfile.t43"))
+      .max(128, t("editProfile.t44"))
+      .test(
+        "password-strength",
+        t("editProfile.t45"),
+        function (value) {
+          if (!value) return true;
+          const validation = validatePasswordStrength(value);
+          if (!validation.isValid) {
+            return this.createError({
+              message:
+                validation.errors[0] ||
+                t("editProfile.t46"),
+            });
+          }
+          return true;
+        },
+      ),
+    confirmPassword: Yup.string().oneOf(
+      [Yup.ref("password")],
+      t("editProfile.t47"),
+    ),
+  });
+  ////////////////////////////////////////////////////////////////////////
+
   // Mock user data - replace with actual user data from your backend
   const initialUserData = {
     fullName: "John Doe",
-    dateOfBirth: "1990-01-01",
+    dateOfBirth: "01-01-1991",
     jobTitle: "Software Developer",
     phoneNumber: "+992 93 123 4567",
     email: "john.doe@example.com",
@@ -469,7 +479,7 @@ const EditUser = () => {
         return detectedCountry;
       }
     } catch (error) {
-      console.log("Error parsing phone number:", error);
+      console.log(`${t("editProfile.t48")}:`, error);
     }
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
@@ -579,20 +589,20 @@ const EditUser = () => {
           if (cleanNumber.length >= 11) {
             const operator = detectTajikOperator(phoneNumber);
             if (!operator) {
-              setError("Invalid Tajik mobile prefix");
+              setError(t("editProfile.t49"));
             }
           }
         }
       } else {
         const cleanNumber = phoneNumber.replace(/[^\d]/g, "");
         if (cleanNumber.length >= 8) {
-          setError("Please enter a valid phone number");
+          setError(t("editProfile.t50"));
         }
       }
     } catch (error) {
       const cleanNumber = phoneNumber.replace(/[^\d]/g, "");
       if (cleanNumber.length >= 8) {
-        setError("Please enter a valid phone number");
+        setError(t("editProfile.t50"));
       }
     }
   };
@@ -628,7 +638,7 @@ const EditUser = () => {
     if (password.length >= 12) score += 3;
     else if (password.length >= 10) score += 2;
     else if (password.length >= 8) score += 1;
-    else feedback.push("❌ Minimum 8 characters required");
+    else feedback.push(`❌ ${t("editProfile.t51")}`);
 
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -647,12 +657,12 @@ const EditUser = () => {
     if (typeCount === 4) score += 3;
     else if (typeCount === 3) score += 2;
     else if (typeCount === 2) score += 1;
-    else feedback.push("❌ Include multiple character types");
+    else feedback.push(`❌ ${t("editProfile.t52")}`);
 
-    if (!hasUpperCase) feedback.push("⚠️ Add uppercase letters");
-    if (!hasLowerCase) feedback.push("⚠️ Add lowercase letters");
-    if (!hasNumbers) feedback.push("⚠️ Add numbers");
-    if (!hasSpecialChar) feedback.push("⚠️ Add special characters");
+    if (!hasUpperCase) feedback.push(`⚠️ ${t("editProfile.t53")}`);
+    if (!hasLowerCase) feedback.push(`⚠️ ${t("editProfile.t54")}`);
+    if (!hasNumbers) feedback.push(`⚠️ ${t("editProfile.t55")}`);
+    if (!hasSpecialChar) feedback.push(`⚠️ ${t("editProfile.t56")}`);
 
     const commonPatterns = [
       "12345678",
@@ -670,7 +680,7 @@ const EditUser = () => {
     for (const pattern of commonPatterns) {
       if (lowerPassword.includes(pattern)) {
         hasCommonPattern = true;
-        feedback.push("⚠️ Avoid common patterns");
+        feedback.push(`⚠️ ${t("editProfile.t57")}`);
         break;
       }
     }
@@ -687,7 +697,7 @@ const EditUser = () => {
     if (entropy > 60) score += 3;
     else if (entropy > 45) score += 2;
     else if (entropy > 30) score += 1;
-    else if (password.length > 0) feedback.push("⚠️ Increase complexity");
+    else if (password.length > 0) feedback.push(`⚠️ ${t("editProfile.t58")}`);
 
     const maxScore = 9;
     const strengthPercentage = Math.min(
@@ -727,7 +737,7 @@ const EditUser = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      Alert.alert("Success", "Profile updated successfully!", [
+      Alert.alert(`${t("editProfile.t59")}`, `${t("editProfile.t60")}`, [
         {
           text: "OK",
           onPress: () => {
@@ -737,8 +747,8 @@ const EditUser = () => {
       ]);
     } catch (error) {
       Alert.alert(
-        "Connection Error",
-        "Unable to connect to server. Please check your internet connection and try again.",
+        `${t("editProfile.t61")}`,
+        `${t("editProfile.t62")}`,
         [{ text: "OK" }],
       );
       console.error("Update error:", error);
@@ -757,8 +767,8 @@ const EditUser = () => {
 
       if (status !== "granted") {
         Alert.alert(
-          "Permission Required",
-          "Sorry, we need camera roll permissions to change your profile picture!",
+          `${t("editProfile.t63")}`,
+          `${t("editProfile.t64")}`,
         );
         return;
       }
@@ -779,8 +789,8 @@ const EditUser = () => {
 
         if (!fileExtension || !allowedTypes.includes(fileExtension)) {
           Alert.alert(
-            "Invalid File Type",
-            "Please select only JPG or PNG images.",
+            `${t("editProfile.t65")}`,
+            `${t("editProfile.t66")}`,
           );
           return;
         }
@@ -790,20 +800,22 @@ const EditUser = () => {
           selectedImage.fileSize > 10 * 1024 * 1024
         ) {
           Alert.alert(
-            "File Too Large",
-            "Please select an image smaller than 10MB.",
+            `${t("editProfile.t67")}`,
+            `${t("editProfile.t68")}`,
           );
           return;
         }
 
         setUserImage(selectedImage.uri);
-        Alert.alert("Success", "Profile picture updated successfully!", [
+        Alert.alert(`${t("editProfile.t69")}`, `${t("editProfile.t70")}`, [
           { text: "OK" },
         ]);
       }
     } catch (error) {
-      console.error("Error picking image:", error);
-      Alert.alert("Error", "Failed to select image. Please try again.");
+      console.error(`${t("editProfile.t71")}`, error);
+      Alert.alert(`${t("editProfile.t72")}`, `${t("editProfile.t73")}`, [
+        { text: "OK" },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -817,8 +829,8 @@ const EditUser = () => {
 
       if (status !== "granted") {
         Alert.alert(
-          "Permission Required",
-          "Sorry, we need camera permissions to take a photo!",
+          `${t("editProfile.t74")}`,
+          `${t("editProfile.t75")}`,
         );
         return;
       }
@@ -832,30 +844,32 @@ const EditUser = () => {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const takenPhoto = result.assets[0];
         setUserImage(takenPhoto.uri);
-        Alert.alert("Success", "Profile picture updated successfully!", [
+        Alert.alert(`${t("editProfile.t69")}`, `${t("editProfile.t70")}`, [
           { text: "OK" },
         ]);
       }
     } catch (error) {
-      console.error("Error taking photo:", error);
-      Alert.alert("Error", "Failed to take photo. Please try again.");
+      console.error(`${t("editProfile.t76")}`, error);
+      Alert.alert(`${t("editProfile.t77")}`, `${t("editProfile.t78")}`, [
+        { text: "OK" },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const showImagePickerOptions = () => {
-    Alert.alert("Change Profile Picture", "Choose an option", [
+    Alert.alert(`${t("editProfile.t79")}`, `${t("editProfile.t80")}`, [
       {
-        text: "Choose from Gallery",
+        text: `${t("editProfile.t81")}`,
         onPress: pickImage,
       },
       {
-        text: "Take Photo",
+        text: `${t("editProfile.t82")}`,
         onPress: takePhoto,
       },
       {
-        text: "Cancel",
+        text: `${t("editProfile.t83")}`,
         style: "cancel",
       },
     ]);
@@ -864,21 +878,22 @@ const EditUser = () => {
   const removeImage = () => {
     if (userImage && typeof userImage === "string") {
       Alert.alert(
-        "Remove Profile Picture",
-        "Are you sure you want to remove your profile picture?",
+        `${t("editProfile.t84")}`,
+        `${t("editProfile.t85")}`,
         [
           {
-            text: "Cancel",
+            text: `${t("editProfile.t83")}`,
             style: "cancel",
           },
           {
-            text: "Remove",
+            text: `${t("editProfile.t86")}`,
             style: "destructive",
             onPress: () => {
               setUserImage(
                 require("../../assets/peshraft-library/profile/profile-img.jpg"),
               );
-              Alert.alert("Success", "Profile picture removed!");
+
+              Alert.alert(`${t("editProfile.t69")}`, `${t("editProfile.t87")}`);
             },
           },
         ],
@@ -898,7 +913,7 @@ const EditUser = () => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.titleEditUserComponent}>Edit User</Text>
+          <Text style={styles.titleEditUserComponent}>{t("editProfile.t1")}</Text>
         </View>
 
         <KeyboardAvoidingView
@@ -924,7 +939,7 @@ const EditUser = () => {
                     }
                     style={styles.userImg}
                     onError={() => {
-                      Alert.alert("Error", "Failed to load image");
+                      Alert.alert(`${t("editProfile.t88")}`, `${t("editProfile.t89")}`);
                       setUserImage(
                         require("../../assets/peshraft-library/profile/profile-img.jpg"),
                       );
@@ -950,7 +965,7 @@ const EditUser = () => {
                       <ActivityIndicator size="small" color="#fff" />
                     ) : (
                       <Text style={styles.btnTextImgUserChange}>
-                        Change Profile Picture
+                        {t("editProfile.t2")}
                       </Text>
                     )}
                   </Pressable>
@@ -964,7 +979,7 @@ const EditUser = () => {
                       onPress={removeImage}
                       disabled={isLoading}
                     >
-                      <Text style={styles.btnTextRemoveImage}>Remove</Text>
+                      <Text style={styles.btnTextRemoveImage}>{t("editProfile.t90")}</Text>
                     </Pressable>
                   )}
                 </View>
@@ -997,7 +1012,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelFullname]}>
-                        Full Name
+                        {t("editProfile.t3")}
                       </Text>
                       <TextInput
                         style={[
@@ -1013,7 +1028,7 @@ const EditUser = () => {
                         onChangeText={handleChange("fullName")}
                         onBlur={handleBlur("fullName")}
                         value={values.fullName}
-                        placeholder="Enter your full name"
+                        placeholder={t("editProfile.t4")}
                         returnKeyType="next"
                         editable={!isSubmitting}
                       />
@@ -1030,7 +1045,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelBirthDate]}>
-                        Date of birth
+                        {t("editProfile.t5")}
                       </Text>
                       <TextInput
                         style={[
@@ -1048,7 +1063,7 @@ const EditUser = () => {
                         }
                         onBlur={handleBlur("dateOfBirth")}
                         value={values.dateOfBirth}
-                        placeholder="DD-MM-YYYY"
+                        placeholder={t("editProfile.t6")}
                         keyboardType="numeric"
                         returnKeyType="next"
                         editable={!isSubmitting}
@@ -1068,7 +1083,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelJobTitle]}>
-                        Job Title
+                        {t("editProfile.t7")}
                       </Text>
                       <TextInput
                         style={[
@@ -1084,7 +1099,7 @@ const EditUser = () => {
                         onChangeText={handleChange("jobTitle")}
                         onBlur={handleBlur("jobTitle")}
                         value={values.jobTitle}
-                        placeholder="Enter your job title"
+                        placeholder={t("editProfile.t8")}
                         returnKeyType="next"
                         editable={!isSubmitting}
                       />
@@ -1101,7 +1116,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelPhoneNumber]}>
-                        Phone Number
+                        {t("editProfile.t9")}
                       </Text>
 
                       {/* Country Selector */}
@@ -1112,7 +1127,7 @@ const EditUser = () => {
                           onValueChange={(countryCode) =>
                             handleCountrySelect(countryCode, setFieldValue)
                           }
-                          placeholder="Select Country"
+                          placeholder={t("editProfile.t91")}
                           searchable={true}
                           primaryColor="#007AFF"
                           customArrow={
@@ -1122,7 +1137,7 @@ const EditUser = () => {
                               color="#666"
                             />
                           }
-                          searchPlaceholder="Search countries..."
+                          searchPlaceholder={t("editProfile.t92")}
                           textStyle={{ color: "#000", fontSize: 14 }}
                           style={styles.selectorStyle}
                           optionStyle={styles.optionStyle}
@@ -1175,14 +1190,15 @@ const EditUser = () => {
 
                       {/* {detectedOperator && (
                         <Text style={styles.operatorText}>
-                          Operator: {detectedOperator}
+                          {t("editProfile.t93")}: {detectedOperator}
                         </Text>
                       )} */}
 
                       {/* <Text style={styles.phoneHint}>
                         {selectedCountry === "tj"
-                          ? "Start with +992. Supported prefixes: 90, 91, 92, 93, 94, 98, 99, etc."
-                          : "Start with + or select country."}
+                          ? `${t("editProfile.t94")}`
+                          : `${t("editProfile.t95")}`
+                        }
                       </Text> */}
                     </View>
 
@@ -1194,7 +1210,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelEmail]}>
-                        Email
+                        {t("editProfile.t11")}
                       </Text>
                       <TextInput
                         style={[
@@ -1206,7 +1222,7 @@ const EditUser = () => {
                         onChangeText={handleChange("email")}
                         onBlur={handleBlur("email")}
                         value={values.email}
-                        placeholder="example@email.com"
+                        placeholder={t("editProfile.t12")}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
@@ -1225,7 +1241,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelPassword]}>
-                        Password
+                        {t("editProfile.t13")}
                       </Text>
                       <View style={styles.iconAndInputPasswordBlock}>
                         <TextInput
@@ -1246,7 +1262,7 @@ const EditUser = () => {
                           value={values.password}
                           secureTextEntry={!showAndHidePassword}
                           autoComplete="password-new"
-                          placeholder="Leave empty to keep current password"
+                          placeholder={t("editProfile.t14")}
                           returnKeyType="next"
                           editable={!isSubmitting}
                         />
@@ -1295,20 +1311,20 @@ const EditUser = () => {
                             />
                           </View>
                           <Text style={styles.strengthText}>
-                            Strength: {passwordStrength.score}%
+                            {t("editProfile.t96")}: {passwordStrength.score}%
                             {passwordStrength.score >= 80
-                              ? " (Strong)"
+                              ? ` (${t("editProfile.t97")})`
                               : passwordStrength.score >= 60
-                                ? " (Good)"
+                                ? ` (${t("editProfile.t98")})`
                                 : passwordStrength.score >= 40
-                                  ? " (Fair)"
-                                  : " (Weak)"}
+                                  ? ` (${t("editProfile.t99")})`
+                                  : ` (${t("editProfile.t100")})`}
                           </Text>
 
                           {/* Password Requirements */}
                           <View style={styles.passwordRequirements}>
                             <Text style={styles.requirementsTitle}>
-                              Requirements:
+                              {t("editProfile.t101")}:
                             </Text>
                             <View style={styles.requirementItem}>
                               <Text
@@ -1318,8 +1334,7 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {values.password.length >= 8 ? "✓" : "•"} At
-                                least 8 characters
+                                {values.password.length >= 8 ? "✓" : "•"} {t("editProfile.t102")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1330,8 +1345,7 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/[A-Z]/.test(values.password) ? "✓" : "•"} One
-                                uppercase letter
+                                {/[A-Z]/.test(values.password) ? "✓" : "•"} {t("editProfile.t103")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1342,8 +1356,7 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/[a-z]/.test(values.password) ? "✓" : "•"} One
-                                lowercase letter
+                                {/[a-z]/.test(values.password) ? "✓" : "•"} {t("editProfile.t104")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1354,8 +1367,7 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/\d/.test(values.password) ? "✓" : "•"} One
-                                number
+                                {/\d/.test(values.password) ? "✓" : "•"} {t("editProfile.t105")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1372,7 +1384,7 @@ const EditUser = () => {
                                 )
                                   ? "✓"
                                   : "•"}{" "}
-                                One special character
+                                {t("editProfile.t106")}
                               </Text>
                             </View>
 
@@ -1380,7 +1392,7 @@ const EditUser = () => {
                             {passwordStrength.feedback.length > 0 && (
                               <View style={styles.feedbackContainer}>
                                 <Text style={styles.feedbackTitle}>
-                                  Tips to improve:
+                                  {t("editProfile.t107")}:
                                 </Text>
                                 {passwordStrength.feedback.map(
                                   (item, index) => (
@@ -1411,7 +1423,7 @@ const EditUser = () => {
                       ]}
                     >
                       <Text style={[styles.label, styles.labelPassword]}>
-                        Confirm Password
+                        {t("editProfile.t15")}
                       </Text>
                       <View style={styles.iconAndInputConfirmPasswordBlock}>
                         <TextInput
@@ -1430,7 +1442,7 @@ const EditUser = () => {
                           value={values.confirmPassword}
                           secureTextEntry={!showAndHideConfirmPassword}
                           autoComplete="password-new"
-                          placeholder="Re-enter new password"
+                          placeholder={t("editProfile.t16")}
                           returnKeyType="done"
                           editable={!isSubmitting}
                         />
@@ -1468,7 +1480,7 @@ const EditUser = () => {
                         values.confirmPassword === values.password &&
                         values.password.length > 0 && (
                           <Text style={styles.successText}>
-                            ✓ Passwords match
+                            ✓ {t("editProfile.t108")}
                           </Text>
                         )}
                     </View>
@@ -1487,7 +1499,7 @@ const EditUser = () => {
                         {isSubmitting ? (
                           <ActivityIndicator color="#fff" size="small" />
                         ) : (
-                          <Text style={styles.btnTextSave}>Save Changes</Text>
+                          <Text style={styles.btnTextSave}>{t("editProfile.t17")}</Text>
                         )}
                       </Pressable>
                     </View>

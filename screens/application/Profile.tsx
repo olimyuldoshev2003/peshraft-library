@@ -29,7 +29,8 @@ const Profile = ({
 }) => {
   const navigation: any = useNavigation();
 
-  const {t} = useTranslation()
+  const { t, i18n } = useTranslation();
+  console.log(i18n);
 
   const [loading, setLoading] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -54,6 +55,12 @@ const Profile = ({
     }
   };
 
+  const dynamicStyles = StyleSheet.create({
+    btnTextEdit: {
+      fontSize: i18n.language === "ru" ? 13 : 16,
+    },
+  });
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -67,7 +74,7 @@ const Profile = ({
     <View style={styles.profileComponent}>
       <View style={styles.profileComponentBlock}>
         <View style={styles.headerProfileComponent}>
-          <Text style={styles.titleProfileComponent}>{ t("profile.t1") }</Text>
+          <Text style={styles.titleProfileComponent}>{t("profile.t1")}</Text>
           <View style={styles.userImgFullnameAndEmailAndBtnEditBlock}>
             <View style={styles.userImgBlock}>
               <Image
@@ -85,7 +92,9 @@ const Profile = ({
                     navigation.navigate("EditUser");
                   }}
                 >
-                  <Text style={styles.btnTextEdit}>{ t("profile.t2") }</Text>
+                  <Text style={[styles.btnTextEdit, dynamicStyles.btnTextEdit]}>
+                    {t("profile.t2")}
+                  </Text>
                 </Pressable>
               </View>
             </View>
@@ -100,7 +109,7 @@ const Profile = ({
             style={[styles.generalSection, styles.generalAndAppearanceSection]}
           >
             <Text style={styles.titleOfGeneralAndAppearanceSections}>
-              { t("profile.t3") }
+              {t("profile.t3")}
             </Text>
             <View
               style={[
@@ -126,7 +135,7 @@ const Profile = ({
                         style={[styles.icon, styles.historyBookIcon]}
                       />
                     </View>
-                    <Text style={styles.funcType}>{ t("profile.t4") }</Text>
+                    <Text style={styles.funcType}>{t("profile.t4")}</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -155,7 +164,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>{ t("profile.t5") }</Text>
+                    <Text style={styles.funcType}>{t("profile.t5")}</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -176,7 +185,7 @@ const Profile = ({
             ]}
           >
             <Text style={styles.titleOfGeneralAndAppearanceSections}>
-              { t("profile.t6") }
+              {t("profile.t6")}
             </Text>
             <View
               style={[
@@ -207,9 +216,11 @@ const Profile = ({
                           style={styles.icon}
                         />
                       </View>
-                      <Text style={styles.funcType}>{ t("profile.t7") }</Text>
+                      <Text style={styles.funcType}>{t("profile.t7")}</Text>
                     </View>
-                    <Text style={styles.selectedFunc}>English</Text>
+                    <Text style={styles.selectedFunc}>
+                      {t(`language.${i18n.language}`)}
+                    </Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -231,7 +242,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>{ t("profile.t8") }</Text>
+                    <Text style={styles.funcType}>{t("profile.t8")}</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -257,7 +268,7 @@ const Profile = ({
                         style={styles.icon}
                       />
                     </View>
-                    <Text style={styles.funcType}>{ t("profile.t9") }</Text>
+                    <Text style={styles.funcType}>{t("profile.t9")}</Text>
                   </View>
                   <Entypo
                     name="chevron-small-right"
@@ -286,22 +297,24 @@ const Profile = ({
                 <View style={styles.modalIconContainer}>
                   <MaterialIcons name="logout" size={60} color="#FF3B30" />
                 </View>
-                <Text style={styles.modalTitle}>Logout</Text>
-                <Text style={styles.modalMessage}>
-                  Are you sure you want to logout from your account?
-                </Text>
+                <Text style={styles.modalTitle}>{t("logoutModal.t1")}</Text>
+                <Text style={styles.modalMessage}>{t("logoutModal.t2")}</Text>
                 <View style={styles.modalButtons}>
                   <Pressable
                     style={[styles.modalButton, styles.cancelButton]}
                     onPress={() => setShowLogoutModal(false)}
                   >
-                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                    <Text style={styles.cancelButtonText}>
+                      {t("logoutModal.t3")}
+                    </Text>
                   </Pressable>
                   <Pressable
                     style={[styles.modalButton, styles.logoutButton]}
                     onPress={handleLogout}
                   >
-                    <Text style={styles.logoutButtonText}>Logout</Text>
+                    <Text style={styles.logoutButtonText}>
+                      {t("logoutModal.t4")}
+                    </Text>
                   </Pressable>
                 </View>
               </View>

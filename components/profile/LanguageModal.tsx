@@ -134,8 +134,8 @@ const LanguageModal = ({ languageModal }: { languageModal: any }) => {
       // Show alert message
       Alert.alert(alertMessage);
 
-      console.log("Applied language:", languageName);
-      console.log("Applied language value:", languageValue);
+      // console.log("Applied language:", languageName);
+      // console.log("Applied language value:", languageValue);
 
       // Close modal after language change
       closeLanguageModal();

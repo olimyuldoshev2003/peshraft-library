@@ -15,7 +15,16 @@ import {
 const ReceivedBook = () => {
   const navigation: any = useNavigation();
 
-  const {t} = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const dynamicStyles = StyleSheet.create({
+    daysLeft: {
+      fontSize: i18n.language === "ru" ? 16 : 20,
+    },
+    btnTextReturnTheBook: {
+      fontSize: i18n.language === "ru" ? 15 : 18,
+    },
+  });
 
   return (
     <View style={styles.receivedBookComponent}>
@@ -35,7 +44,9 @@ const ReceivedBook = () => {
           style={styles.sectionReceivedBookComponent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.greetingsAndNameOfUser}>{t("receivedBook.t1")} Olim</Text>
+          <Text style={styles.greetingsAndNameOfUser}>
+            {t("receivedBook.t1")} Olim
+          </Text>
           <View style={styles.imgOfBookBlock}>
             <Image
               source={require("../../assets/peshraft-library/home/tojikon.jpg")}
@@ -43,12 +54,8 @@ const ReceivedBook = () => {
             />
           </View>
           <View style={styles.blockForText}>
-            <Text style={styles.textNumber1}>
-              {t("receivedBook.t2")}
-            </Text>
-            <Text style={styles.textNumber2}>
-              {t("receivedBook.t3")}
-            </Text>
+            <Text style={styles.textNumber1}>{t("receivedBook.t2")}</Text>
+            <Text style={styles.textNumber2}>{t("receivedBook.t3")}</Text>
           </View>
           <View style={styles.daysLeftAndBtnReturnBlock}>
             <View style={styles.iconAndDaysLeftBlock}>
@@ -58,10 +65,19 @@ const ReceivedBook = () => {
                 color="#FF383C"
                 style={styles.alertIcon}
               />
-              <Text style={styles.daysLeft}>2 {t("receivedBook.t5")}</Text>
+              <Text style={[styles.daysLeft, dynamicStyles.daysLeft]}>
+                2 {t("receivedBook.t5")}
+              </Text>
             </View>
             <Pressable style={styles.btnReturnTheBook}>
-              <Text style={styles.btnTextReturnTheBook}>{t("receivedBook.t6")}</Text>
+              <Text
+                style={[
+                  styles.btnTextReturnTheBook,
+                  dynamicStyles.btnTextReturnTheBook,
+                ]}
+              >
+                {t("receivedBook.t6")}
+              </Text>
             </Pressable>
           </View>
           <View style={styles.otherBooksContainer}>

@@ -1,6 +1,7 @@
 import { Entypo, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   Pressable,
@@ -12,6 +13,8 @@ import {
 
 const HistoryBook = () => {
   const navigation: any = useNavigation();
+
+  const { t } = useTranslation();
 
   return (
     <View style={styles.historyBookComponent}>
@@ -25,7 +28,7 @@ const HistoryBook = () => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.titleHistoryBookComponent}>History book</Text>
+          <Text style={styles.titleHistoryBookComponent}>{t("historyBook.t1")}</Text>
         </View>
         <ScrollView
           contentContainerStyle={styles.sectionHistoryBookComponentScrollView}
@@ -83,7 +86,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -145,7 +148,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -206,7 +209,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -267,7 +270,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -328,7 +331,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -389,7 +392,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>
@@ -450,7 +453,7 @@ const HistoryBook = () => {
                       />
                       <View style={styles.numberAndTextReadersBlock}>
                         <Text style={styles.numberOfReaders}>24</Text>
-                        <Text style={styles.titleOfReaders}>readers</Text>
+                        <Text style={styles.titleOfReaders}>{t("historyBook.t3")}</Text>
                       </View>
                     </View>
                     {/* <View style={styles.forwardIconBlock}>

@@ -1,5 +1,4 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "expo-router";
 import { Formik } from "formik";
 import {
@@ -23,195 +22,184 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Selector } from "rn-selector";
 import * as Yup from "yup";
 
 // @ts-ignore: Module 'country-telephone-data' has no type declarations
 import { allCountries } from "country-telephone-data";
-
-// Tajik SIM card prefixes and operators data
-const TAJIK_PREFIXES = {
-  "90": "MegaFon Tajikistan",
-  "55": "MegaFon Tajikistan",
-  "41": "MegaFon Tajikistan",
-  "88": "MegaFon Tajikistan",
-  "00": "MegaFon Tajikistan",
-  "01": "MegaFon Tajikistan",
-  "02": "MegaFon Tajikistan",
-  "07": "MegaFon Tajikistan",
-  "97": "MegaFon Tajikistan",
-  "12": "MegaFon Tajikistan",
-  "21": "MegaFon Tajikistan",
-  "27": "MegaFon Tajikistan",
-  "91": "ZET-Mobile",
-  "40": "ZET-Mobile",
-  "80": "ZET-Mobile",
-  "33": "ZET-Mobile",
-  "81": "ZET-Mobile",
-  "03": "ZET-Mobile",
-  "04": "ZET-Mobile",
-  "08": "ZET-Mobile",
-  "05": "ZET-Mobile",
-  "09": "ZET-Mobile",
-  "06": "ZET-Mobile",
-  "18": "ZET-Mobile",
-  "19": "ZET-Mobile",
-  "66": "ZET-Mobile",
-  "38": "ZET-Mobile",
-  "92": "Tcell",
-  "93": "Tcell",
-  "50": "Tcell",
-  "77": "Tcell",
-  "70": "Tcell",
-  "99": "Tcell",
-  "11": "Tcell",
-  "10": "O-Mobile",
-  "20": "O-Mobile",
-  "22": "O-Mobile",
-  "30": "O-Mobile",
-  "78": "Anor",
-  "87": "Anor",
-  "98": "Babilon-Mobile",
-  "94": "Babilon-Mobile",
-  "71": "Babilon-Mobile",
-  "17": "Babilon-Mobile",
-  "75": "Babilon-Mobile",
-  "440": "ZET-Mobile",
-  "444": "ZET-Mobile",
-  "030": "ZET-Mobile",
-  "040": "ZET-Mobile",
-  "080": "ZET-Mobile",
-  "442": "ZET-Mobile",
-  "443": "ZET-Mobile",
-  "447": "ZET-Mobile",
-  "449": "ZET-Mobile",
-  "918": "Babilon-Mobile",
-};
-
-// Get all countries from the library and format for rn-selector
-const COUNTRIES_DATA = allCountries.map((country: any) => ({
-  value: country.iso2,
-  label: `${country.name} (+${country.dialCode})`,
-  emoji: country.emoji,
-  dialCode: country.dialCode,
-  name: country.name,
-}));
-
-// Validation schema for feedback
-const FeedbackSchema = Yup.object().shape({
-  phoneNumber: Yup.string()
-    .required("Phone number is required")
-    .test("is-valid-phone", "Invalid phone number", function (value) {
-      if (!value) return false;
-
-      const cleanNumber = value.replace(/[^\d+]/g, "");
-
-      if (!cleanNumber.startsWith("+")) return false;
-
-      try {
-        const phoneNumber = parsePhoneNumberFromString(cleanNumber);
-        if (!phoneNumber || !phoneNumber.isValid()) return false;
-
-        if (phoneNumber.country === "TJ") {
-          const nationalNumber = phoneNumber.nationalNumber;
-
-          const threeDigitPrefix = nationalNumber.substring(0, 3);
-          if (TAJIK_PREFIXES[threeDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
-            return true;
-          }
-
-          const twoDigitPrefix = nationalNumber.substring(0, 2);
-          if (TAJIK_PREFIXES[twoDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
-            return true;
-          }
-
-          return this.createError({
-            message: "Invalid Tajik mobile operator prefix",
-          });
-        }
-
-        return true;
-      } catch (error) {
-        return false;
-      }
-    })
-    .test(
-      "min-length",
-      "Phone number must be at least 8 digits",
-      function (value) {
-        if (!value) return false;
-        const digits = value.replace(/\D/g, "");
-        return digits.length >= 8;
-      },
-    ),
-  email: Yup.string()
-    .required("Email is required")
-    .email("Invalid email format")
-    .max(254, "Email must not exceed 254 characters")
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Please enter a valid email address",
-    )
-    .test("email-domain", "Please use a valid email domain", (value) => {
-      if (!value) return true;
-      const domain = value.split("@")[1];
-      const invalidDomains = [
-        "tempmail.com",
-        "temp-mail.org",
-        "guerrillamail.com",
-        "mailinator.com",
-        "yopmail.com",
-        "10minutemail.com",
-        "throwaway.com",
-        "fakeinbox.com",
-        "maildrop.cc",
-        "getnada.com",
-      ];
-      return !invalidDomains.includes(domain?.toLowerCase() || "");
-    }),
-  review: Yup.string()
-    .required("Review is required")
-    .min(20, "Review must be at least 20 characters")
-    .max(1000, "Review must not exceed 1000 characters")
-    .test(
-      "no-excessive-capitals",
-      "Review contains too many capital letters",
-      (value) => {
-        if (!value) return true;
-        const capitalCount = (value.match(/[A-Z]/g) || []).length;
-        const capitalRatio = capitalCount / value.length;
-        return capitalRatio <= 0.5;
-      },
-    )
-    .test(
-      "no-excessive-spaces",
-      "Review contains too many consecutive spaces",
-      (value) => {
-        if (!value) return true;
-        return !/\s{4,}/.test(value);
-      },
-    )
-    .test(
-      "no-excessive-punctuation",
-      "Review contains too many repeated punctuation marks",
-      (value) => {
-        if (!value) return true;
-        return !/[!?.,]{4,}/.test(value);
-      },
-    )
-    .test("no-html", "Review contains invalid characters", (value) => {
-      if (!value) return true;
-      return !/<[^>]*>/.test(value);
-    }),
-});
+import { useTranslation } from "react-i18next";
 
 const Feedback = () => {
   const navigation: any = useNavigation();
+  const { t } = useTranslation();
 
   const [phoneError, setPhoneError] = useState("");
   const [detectedOperator, setDetectedOperator] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string>("tj");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  ////////////////////////////////////////////////////////////////////
+  // Tajik SIM card prefixes and operators data
+  const TAJIK_PREFIXES = {
+    "90": "MegaFon Tajikistan",
+    "55": "MegaFon Tajikistan",
+    "41": "MegaFon Tajikistan",
+    "88": "MegaFon Tajikistan",
+    "00": "MegaFon Tajikistan",
+    "01": "MegaFon Tajikistan",
+    "02": "MegaFon Tajikistan",
+    "07": "MegaFon Tajikistan",
+    "97": "MegaFon Tajikistan",
+    "12": "MegaFon Tajikistan",
+    "21": "MegaFon Tajikistan",
+    "27": "MegaFon Tajikistan",
+    "91": "ZET-Mobile",
+    "40": "ZET-Mobile",
+    "80": "ZET-Mobile",
+    "33": "ZET-Mobile",
+    "81": "ZET-Mobile",
+    "03": "ZET-Mobile",
+    "04": "ZET-Mobile",
+    "08": "ZET-Mobile",
+    "05": "ZET-Mobile",
+    "09": "ZET-Mobile",
+    "06": "ZET-Mobile",
+    "18": "ZET-Mobile",
+    "19": "ZET-Mobile",
+    "66": "ZET-Mobile",
+    "38": "ZET-Mobile",
+    "92": "Tcell",
+    "93": "Tcell",
+    "50": "Tcell",
+    "77": "Tcell",
+    "70": "Tcell",
+    "99": "Tcell",
+    "11": "Tcell",
+    "10": "O-Mobile",
+    "20": "O-Mobile",
+    "22": "O-Mobile",
+    "30": "O-Mobile",
+    "78": "Anor",
+    "87": "Anor",
+    "98": "Babilon-Mobile",
+    "94": "Babilon-Mobile",
+    "71": "Babilon-Mobile",
+    "17": "Babilon-Mobile",
+    "75": "Babilon-Mobile",
+    "440": "ZET-Mobile",
+    "444": "ZET-Mobile",
+    "030": "ZET-Mobile",
+    "040": "ZET-Mobile",
+    "080": "ZET-Mobile",
+    "442": "ZET-Mobile",
+    "443": "ZET-Mobile",
+    "447": "ZET-Mobile",
+    "449": "ZET-Mobile",
+    "918": "Babilon-Mobile",
+  };
+
+  // Get all countries from the library and format for rn-selector
+  const COUNTRIES_DATA = allCountries.map((country: any) => ({
+    value: country.iso2,
+    label: `${country.name} (+${country.dialCode})`,
+    emoji: country.emoji,
+    dialCode: country.dialCode,
+    name: country.name,
+  }));
+
+  // Validation schema for feedback
+  const FeedbackSchema = Yup.object().shape({
+    phoneNumber: Yup.string()
+      .required(t("feedback.t9"))
+      .test("is-valid-phone", t("feedback.t10"), function (value) {
+        if (!value) return false;
+
+        const cleanNumber = value.replace(/[^\d+]/g, "");
+
+        if (!cleanNumber.startsWith("+")) return false;
+
+        try {
+          const phoneNumber = parsePhoneNumberFromString(cleanNumber);
+          if (!phoneNumber || !phoneNumber.isValid()) return false;
+
+          if (phoneNumber.country === "TJ") {
+            const nationalNumber = phoneNumber.nationalNumber;
+
+            const threeDigitPrefix = nationalNumber.substring(0, 3);
+            if (
+              TAJIK_PREFIXES[threeDigitPrefix as keyof typeof TAJIK_PREFIXES]
+            ) {
+              return true;
+            }
+
+            const twoDigitPrefix = nationalNumber.substring(0, 2);
+            if (TAJIK_PREFIXES[twoDigitPrefix as keyof typeof TAJIK_PREFIXES]) {
+              return true;
+            }
+
+            return this.createError({
+              message: t("feedback.t11"),
+            });
+          }
+
+          return true;
+        } catch (error) {
+          return false;
+        }
+      })
+      .test("min-length", t("feedback.t12"), function (value) {
+        if (!value) return false;
+        const digits = value.replace(/\D/g, "");
+        return digits.length >= 8;
+      }),
+    email: Yup.string()
+      .required(t("feedback.t13"))
+      .email(t("feedback.t14"))
+      .max(254, t("feedback.t15"))
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        t("feedback.t16"),
+      )
+      .test("email-domain", t("feedback.t17"), (value) => {
+        if (!value) return true;
+        const domain = value.split("@")[1];
+        const invalidDomains = [
+          "tempmail.com",
+          "temp-mail.org",
+          "guerrillamail.com",
+          "mailinator.com",
+          "yopmail.com",
+          "10minutemail.com",
+          "throwaway.com",
+          "fakeinbox.com",
+          "maildrop.cc",
+          "getnada.com",
+        ];
+        return !invalidDomains.includes(domain?.toLowerCase() || "");
+      }),
+    review: Yup.string()
+      .required(t("feedback.t18"))
+      .min(20, t("feedback.t19"))
+      .max(1000, t("feedback.t20"))
+      .test("no-excessive-capitals", t("feedback.t21"), (value) => {
+        if (!value) return true;
+        const capitalCount = (value.match(/[A-Z]/g) || []).length;
+        const capitalRatio = capitalCount / value.length;
+        return capitalRatio <= 0.5;
+      })
+      .test("no-excessive-spaces", t("feedback.t22"), (value) => {
+        if (!value) return true;
+        return !/\s{4,}/.test(value);
+      })
+      .test("no-excessive-punctuation", t("feedback.t23"), (value) => {
+        if (!value) return true;
+        return !/[!?.,]{4,}/.test(value);
+      })
+      .test("no-html", t("feedback.t24"), (value) => {
+        if (!value) return true;
+        return !/<[^>]*>/.test(value);
+      }),
+  });
+  ////////////////////////////////////////////////////////////////////
 
   // Detect Tajik mobile operator
   const detectTajikOperator = (phoneNumber: string): string => {
@@ -261,7 +249,7 @@ const Feedback = () => {
         return detectedCountry;
       }
     } catch (error) {
-      console.log("Error parsing phone number:", error);
+      console.log(`${t("feedback.t25")}:`, error);
     }
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
@@ -371,20 +359,20 @@ const Feedback = () => {
           if (cleanNumber.length >= 11) {
             const operator = detectTajikOperator(phoneNumber);
             if (!operator) {
-              setError("Invalid Tajik mobile prefix");
+              setError(t("feedback.t26"));
             }
           }
         }
       } else {
         const cleanNumber = phoneNumber.replace(/[^\d]/g, "");
         if (cleanNumber.length >= 8) {
-          setError("Please enter a valid phone number");
+          setError(t("feedback.t27"));
         }
       }
     } catch (error) {
       const cleanNumber = phoneNumber.replace(/[^\d]/g, "");
       if (cleanNumber.length >= 8) {
-        setError("Please enter a valid phone number");
+        setError(t("feedback.t27"));
       }
     }
   };
@@ -417,29 +405,21 @@ const Feedback = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      Alert.alert(
-        "Thank You!",
-        "Your feedback has been submitted successfully!",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              resetForm();
-              setSelectedCountry("tj");
-              setDetectedOperator("");
-              setPhoneError("");
-              navigation.goBack();
-            },
+      Alert.alert(`${t("feedback.t28")}!`, `${t("feedback.t29")}!`, [
+        {
+          text: "OK",
+          onPress: () => {
+            resetForm();
+            setSelectedCountry("tj");
+            setDetectedOperator("");
+            setPhoneError("");
+            navigation.goBack();
           },
-        ],
-      );
+        },
+      ]);
     } catch (error) {
-      Alert.alert(
-        "Connection Error",
-        "Unable to submit feedback. Please check your internet connection and try again.",
-        [{ text: "OK" }],
-      );
-      console.error("Submission error:", error);
+      Alert.alert(t("feedback.t30"), `${t("feedback.t31")}.`, [{ text: "OK" }]);
+      console.error(`Submission error:`, error);
     } finally {
       setIsSubmitting(false);
     }
@@ -457,7 +437,7 @@ const Feedback = () => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.titleFeedbackComponent}>History book</Text>
+          <Text style={styles.titleFeedbackComponent}>{t("feedback.t1")}</Text>
         </View>
         <View style={styles.sectionFeedbackComponent}>
           <View style={styles.userImgFullnameAndEmailBlock}>
@@ -513,18 +493,18 @@ const Feedback = () => {
                         ]}
                       >
                         <Text style={[styles.label, styles.labelNumberPhone]}>
-                          Number Phone
+                          {t("feedback.t2")}
                         </Text>
 
                         {/* Country Selector */}
-                        <View style={styles.countrySelectorContainer}>
+                        {/* <View style={styles.countrySelectorContainer}>
                           <Selector
                             options={COUNTRIES_DATA}
                             selectedValue={selectedCountry}
                             onValueChange={(countryCode) =>
                               handleCountrySelect(countryCode, setFieldValue)
                             }
-                            placeholder="Select Country"
+                            placeholder={t("feedback.t33")}
                             searchable={true}
                             primaryColor="#007AFF"
                             customArrow={
@@ -534,7 +514,7 @@ const Feedback = () => {
                                 color="#666"
                               />
                             }
-                            searchPlaceholder="Search countries..."
+                            searchPlaceholder=`${t("feedback.t34")}...`
                             textStyle={{ color: "#000", fontSize: 14 }}
                             style={styles.selectorStyle}
                             optionStyle={styles.optionStyle}
@@ -542,7 +522,7 @@ const Feedback = () => {
                             searchInputStyle={styles.searchInputStyle}
                             disabled={isSubmitting}
                           />
-                        </View>
+                        </View> */}
 
                         <View style={styles.phoneInputContainer}>
                           <TextInput
@@ -580,17 +560,17 @@ const Feedback = () => {
                           <Text style={styles.errorText}>{phoneError}</Text>
                         ) : null}
 
-                        {detectedOperator && (
+                        {/* {detectedOperator && (
                           <Text style={styles.operatorText}>
-                            Operator: {detectedOperator}
+                            {t("feedback.t35")}: {detectedOperator}
                           </Text>
-                        )}
+                        )} */}
 
-                        <Text style={styles.phoneHint}>
+                        {/* <Text style={styles.phoneHint}>
                           {selectedCountry === "tj"
-                            ? "Start with +992. Supported prefixes: 90, 91, 92, 93, 94, 98, 99, etc."
-                            : "Start with + or select country."}
-                        </Text>
+                            ? t("feedback.t36")
+                            : `${t("feedback.t37")}.`}
+                        </Text> */}
                       </View>
 
                       {/* Email */}
@@ -601,7 +581,7 @@ const Feedback = () => {
                         ]}
                       >
                         <Text style={[styles.label, styles.labelEmail]}>
-                          Email
+                          {t("feedback.t4")}
                         </Text>
                         <TextInput
                           style={[
@@ -615,7 +595,7 @@ const Feedback = () => {
                           onChangeText={handleChange("email")}
                           onBlur={handleBlur("email")}
                           value={values.email}
-                          placeholder="example@gmail.com"
+                          placeholder={t("feedback.t5")}
                           placeholderTextColor={"#6C6C6C"}
                           keyboardType="email-address"
                           autoCapitalize="none"
@@ -635,7 +615,7 @@ const Feedback = () => {
                         ]}
                       >
                         <Text style={[styles.label, styles.labelReview]}>
-                          Add Detailed Review
+                          {t("feedback.t6")}
                         </Text>
                         <TextInput
                           style={[
@@ -651,7 +631,7 @@ const Feedback = () => {
                           onChangeText={handleChange("review")}
                           onBlur={handleBlur("review")}
                           value={values.review}
-                          placeholder="Enter your review (minimum 20 characters)"
+                          placeholder={t("feedback.t7")}
                           multiline
                           numberOfLines={7}
                           textAlignVertical="top"
@@ -662,7 +642,7 @@ const Feedback = () => {
                         {/* Character counter */}
                         {values.review.length > 0 && (
                           <Text style={styles.charCounter}>
-                            {values.review.length}/1000 characters
+                            {values.review.length}/1000 t("feedback.t38")
                           </Text>
                         )}
 
@@ -671,7 +651,7 @@ const Feedback = () => {
                         ) : values.review.length > 0 &&
                           values.review.length < 20 ? (
                           <Text style={styles.warningText}>
-                            {20 - values.review.length} more characters needed
+                            {20 - values.review.length} t("feedback.t39")
                           </Text>
                         ) : null}
                       </View>
@@ -690,7 +670,9 @@ const Feedback = () => {
                           {isSubmitting ? (
                             <ActivityIndicator color="#fff" size="small" />
                           ) : (
-                            <Text style={styles.btnTextSubmit}>Submit</Text>
+                            <Text style={styles.btnTextSubmit}>
+                              {t("feedback.t8")}
+                            </Text>
                           )}
                         </Pressable>
                       </View>
@@ -728,7 +710,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   sectionFeedbackComponent: {
-    flex:1,
+    flex: 1,
   },
   userImgFullnameAndEmailBlock: {
     justifyContent: "center",
@@ -755,7 +737,7 @@ const styles = StyleSheet.create({
   },
 
   keyboardAvoidingView: {
-    flex:1
+    flex: 1,
   },
 
   formFeedbackScrollView: {

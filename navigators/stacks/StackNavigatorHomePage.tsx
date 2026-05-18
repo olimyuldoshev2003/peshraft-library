@@ -2,16 +2,15 @@ import Book from "@/screens/application/Book";
 import Home from "@/screens/application/Home";
 import Notifications from "@/screens/application/Notifications";
 import ReceivedBook from "@/screens/application/ReceivedBook";
-import { getToken } from "@/utils/token";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 
 const StackNavigatorHomePage = () => {
   const Stack = createNativeStackNavigator();
 
-  console.log(getToken());
-
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -29,6 +28,7 @@ const StackNavigatorHomePage = () => {
         name="Notifications"
         component={Notifications}
         options={{
+          title: t("notifications.t1"),
           headerShown: true,
           animation: "ios_from_right",
         }}
