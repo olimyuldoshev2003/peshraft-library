@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "",
+    "name": "peshraft-library",
     "slug": "peshraft-library",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/peshraft-library/android/app-img.jpg",
+    "icon": "./assets/peshraft-library/android/app-img.png",
     "scheme": "peshraftlibrary",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,23 +14,24 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/peshraft-library/android/app-img.jpg",
-        "backgroundImage": "./assets/peshraft-library/android/app-img.jpg",
-        "monochromeImage": "./assets/peshraft-library/android/app-img.jpg"
+        "foregroundImage": "./assets/peshraft-library/android/app-img.png",
+        "backgroundImage": "./assets/peshraft-library/android/app-img.png",
+        "monochromeImage": "./assets/peshraft-library/android/app-img.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.olim_yuldoshev_ooo3.peshraftlibrary"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/peshraft-library/android/app-img.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/peshraft-library/android/app-img.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -43,6 +44,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "82d913d6-cb4e-4025-bd86-b55c54164afd"
+      }
+    },
+    "owner": "olim_yuldoshev_ooo3"
   }
 }
