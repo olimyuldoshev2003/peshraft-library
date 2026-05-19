@@ -30,7 +30,6 @@ const Profile = ({
   const navigation: any = useNavigation();
 
   const { t, i18n } = useTranslation();
-  console.log(i18n);
 
   const [loading, setLoading] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);

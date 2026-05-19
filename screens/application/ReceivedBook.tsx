@@ -19,10 +19,10 @@ const ReceivedBook = () => {
 
   const dynamicStyles = StyleSheet.create({
     daysLeft: {
-      fontSize: i18n.language === "ru" ? 16 : 20,
+      fontSize: i18n.language === "ru" || i18n.language === "tj" ? 15 : 20,
     },
     btnTextReturnTheBook: {
-      fontSize: i18n.language === "ru" ? 15 : 18,
+      fontSize: i18n.language === "ru" || i18n.language === "tj" ? 13 : 18,
     },
   });
 

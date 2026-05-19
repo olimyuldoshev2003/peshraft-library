@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 const EditUser = () => {
   const navigation: any = useNavigation();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [userImage, setUserImage] = useState<string | null>(
     require("../../assets/peshraft-library/profile/profile-img.jpg"),
@@ -190,13 +190,10 @@ const EditUser = () => {
       password,
     );
 
-    if (!hasUpperCase)
-      errors.push(t("editProfile.t20"));
-    if (!hasLowerCase)
-      errors.push(t("editProfile.t21"));
+    if (!hasUpperCase) errors.push(t("editProfile.t20"));
+    if (!hasLowerCase) errors.push(t("editProfile.t21"));
     if (!hasNumbers) errors.push(t("editProfile.t22"));
-    if (!hasSpecialChar)
-      errors.push(t("editProfile.t23"));
+    if (!hasSpecialChar) errors.push(t("editProfile.t23"));
 
     const sequentialPatterns = [
       "12345678",
@@ -290,20 +287,16 @@ const EditUser = () => {
       .required(t("editProfile.t28"))
       .min(3, t("editProfile.t29"))
       .max(50, t("editProfile.t30"))
-      .test(
-        "no-special-chars",
-        t("editProfile.t31"),
-        (value) => {
-          if (!value) return true;
-          return /^[a-zA-Z\s\-'.]*$/.test(value);
-        },
-      ),
+      .test("no-special-chars", t("editProfile.t31"), (value) => {
+        if (!value) return true;
+        return /^[a-zA-Z\s\-'.]*$/.test(value);
+      }),
     dateOfBirth: Yup.string()
       .required(t("editProfile.t32"))
       .test(
         "is-valid-date",
         t("editProfile.t33"),
-        
+
         function (value) {
           if (!value) return false;
           return validateDateOfBirth(value);
@@ -333,14 +326,10 @@ const EditUser = () => {
       }),
     jobTitle: Yup.string()
       .max(100, t("editProfile.t35"))
-      .test(
-        "job-title-format",
-        t("editProfile.t36"),
-        (value) => {
-          if (!value) return true;
-          return /^[a-zA-Z\s\-'.&,()]*$/.test(value);
-        },
-      ),
+      .test("job-title-format", t("editProfile.t36"), (value) => {
+        if (!value) return true;
+        return /^[a-zA-Z\s\-'.&,()]*$/.test(value);
+      }),
     phoneNumber: Yup.string()
       .required(t("editProfile.t37"))
       .test("is-valid-phone", t("editProfile.t38"), function (value) {
@@ -397,22 +386,16 @@ const EditUser = () => {
     password: Yup.string()
       .min(8, t("editProfile.t43"))
       .max(128, t("editProfile.t44"))
-      .test(
-        "password-strength",
-        t("editProfile.t45"),
-        function (value) {
-          if (!value) return true;
-          const validation = validatePasswordStrength(value);
-          if (!validation.isValid) {
-            return this.createError({
-              message:
-                validation.errors[0] ||
-                t("editProfile.t46"),
-            });
-          }
-          return true;
-        },
-      ),
+      .test("password-strength", t("editProfile.t45"), function (value) {
+        if (!value) return true;
+        const validation = validatePasswordStrength(value);
+        if (!validation.isValid) {
+          return this.createError({
+            message: validation.errors[0] || t("editProfile.t46"),
+          });
+        }
+        return true;
+      }),
     confirmPassword: Yup.string().oneOf(
       [Yup.ref("password")],
       t("editProfile.t47"),
@@ -746,11 +729,9 @@ const EditUser = () => {
         },
       ]);
     } catch (error) {
-      Alert.alert(
-        `${t("editProfile.t61")}`,
-        `${t("editProfile.t62")}`,
-        [{ text: "OK" }],
-      );
+      Alert.alert(`${t("editProfile.t61")}`, `${t("editProfile.t62")}`, [
+        { text: "OK" },
+      ]);
       console.error("Update error:", error);
     } finally {
       setIsSubmitting(false);
@@ -766,10 +747,7 @@ const EditUser = () => {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert(
-          `${t("editProfile.t63")}`,
-          `${t("editProfile.t64")}`,
-        );
+        Alert.alert(`${t("editProfile.t63")}`, `${t("editProfile.t64")}`);
         return;
       }
 
@@ -788,10 +766,7 @@ const EditUser = () => {
         const allowedTypes = ["jpg", "jpeg", "png", "heic", "heif"];
 
         if (!fileExtension || !allowedTypes.includes(fileExtension)) {
-          Alert.alert(
-            `${t("editProfile.t65")}`,
-            `${t("editProfile.t66")}`,
-          );
+          Alert.alert(`${t("editProfile.t65")}`, `${t("editProfile.t66")}`);
           return;
         }
 
@@ -799,10 +774,7 @@ const EditUser = () => {
           selectedImage.fileSize &&
           selectedImage.fileSize > 10 * 1024 * 1024
         ) {
-          Alert.alert(
-            `${t("editProfile.t67")}`,
-            `${t("editProfile.t68")}`,
-          );
+          Alert.alert(`${t("editProfile.t67")}`, `${t("editProfile.t68")}`);
           return;
         }
 
@@ -828,10 +800,7 @@ const EditUser = () => {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert(
-          `${t("editProfile.t74")}`,
-          `${t("editProfile.t75")}`,
-        );
+        Alert.alert(`${t("editProfile.t74")}`, `${t("editProfile.t75")}`);
         return;
       }
 
@@ -877,29 +846,34 @@ const EditUser = () => {
 
   const removeImage = () => {
     if (userImage && typeof userImage === "string") {
-      Alert.alert(
-        `${t("editProfile.t84")}`,
-        `${t("editProfile.t85")}`,
-        [
-          {
-            text: `${t("editProfile.t83")}`,
-            style: "cancel",
-          },
-          {
-            text: `${t("editProfile.t86")}`,
-            style: "destructive",
-            onPress: () => {
-              setUserImage(
-                require("../../assets/peshraft-library/profile/profile-img.jpg"),
-              );
+      Alert.alert(`${t("editProfile.t84")}`, `${t("editProfile.t85")}`, [
+        {
+          text: `${t("editProfile.t83")}`,
+          style: "cancel",
+        },
+        {
+          text: `${t("editProfile.t86")}`,
+          style: "destructive",
+          onPress: () => {
+            setUserImage(
+              require("../../assets/peshraft-library/profile/profile-img.jpg"),
+            );
 
-              Alert.alert(`${t("editProfile.t69")}`, `${t("editProfile.t87")}`);
-            },
+            Alert.alert(`${t("editProfile.t69")}`, `${t("editProfile.t87")}`);
           },
-        ],
-      );
+        },
+      ]);
     }
   };
+
+  const dynamicStyles = StyleSheet.create({
+    titleEditUserComponent: {
+      fontSize: i18n.language === "ru" ? 18 : 23,
+    },
+    btnTextImgUserChange: {
+      fontSize: i18n.language === "tj" ? 14 : 16,
+    },
+  });
 
   return (
     <View style={styles.editUserComponent}>
@@ -913,7 +887,15 @@ const EditUser = () => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.titleEditUserComponent}>{t("editProfile.t1")}</Text>
+          <Text
+            style={[
+              styles.titleEditUserComponent,
+              dynamicStyles.titleEditUserComponent,
+            ]}
+          >
+            {t("editProfile.t1")}
+          </Text>
+          <View></View>
         </View>
 
         <KeyboardAvoidingView
@@ -939,7 +921,10 @@ const EditUser = () => {
                     }
                     style={styles.userImg}
                     onError={() => {
-                      Alert.alert(`${t("editProfile.t88")}`, `${t("editProfile.t89")}`);
+                      Alert.alert(
+                        `${t("editProfile.t88")}`,
+                        `${t("editProfile.t89")}`,
+                      );
                       setUserImage(
                         require("../../assets/peshraft-library/profile/profile-img.jpg"),
                       );
@@ -964,7 +949,12 @@ const EditUser = () => {
                     {isLoading ? (
                       <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                      <Text style={styles.btnTextImgUserChange}>
+                      <Text
+                        style={[
+                          styles.btnTextImgUserChange,
+                          dynamicStyles.btnTextImgUserChange,
+                        ]}
+                      >
                         {t("editProfile.t2")}
                       </Text>
                     )}
@@ -979,7 +969,9 @@ const EditUser = () => {
                       onPress={removeImage}
                       disabled={isLoading}
                     >
-                      <Text style={styles.btnTextRemoveImage}>{t("editProfile.t90")}</Text>
+                      <Text style={styles.btnTextRemoveImage}>
+                        {t("editProfile.t90")}
+                      </Text>
                     </Pressable>
                   )}
                 </View>
@@ -1334,7 +1326,8 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {values.password.length >= 8 ? "✓" : "•"} {t("editProfile.t102")}
+                                {values.password.length >= 8 ? "✓" : "•"}{" "}
+                                {t("editProfile.t102")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1345,7 +1338,8 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/[A-Z]/.test(values.password) ? "✓" : "•"} {t("editProfile.t103")}
+                                {/[A-Z]/.test(values.password) ? "✓" : "•"}{" "}
+                                {t("editProfile.t103")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1356,7 +1350,8 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/[a-z]/.test(values.password) ? "✓" : "•"} {t("editProfile.t104")}
+                                {/[a-z]/.test(values.password) ? "✓" : "•"}{" "}
+                                {t("editProfile.t104")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1367,7 +1362,8 @@ const EditUser = () => {
                                     styles.requirementMet,
                                 ]}
                               >
-                                {/\d/.test(values.password) ? "✓" : "•"} {t("editProfile.t105")}
+                                {/\d/.test(values.password) ? "✓" : "•"}{" "}
+                                {t("editProfile.t105")}
                               </Text>
                             </View>
                             <View style={styles.requirementItem}>
@@ -1499,7 +1495,9 @@ const EditUser = () => {
                         {isSubmitting ? (
                           <ActivityIndicator color="#fff" size="small" />
                         ) : (
-                          <Text style={styles.btnTextSave}>{t("editProfile.t17")}</Text>
+                          <Text style={styles.btnTextSave}>
+                            {t("editProfile.t17")}
+                          </Text>
                         )}
                       </Pressable>
                     </View>
@@ -1529,7 +1527,7 @@ const styles = StyleSheet.create({
   headerEditUserComponent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 101,
+    justifyContent: "space-between",
   },
   titleEditUserComponent: {
     fontSize: 23,

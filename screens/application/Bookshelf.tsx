@@ -77,7 +77,9 @@ const Bookshelf = () => {
         <View style={styles.headerBookshelfComponent}>
           <View style={styles.titleAndIconNotifications}>
             <Text style={styles.titleOfComponent}>{t("bookshelf.t1")}</Text>
-            <MaterialIcons name="notifications-none" size={35} color="black" />
+            <MaterialIcons name="notifications-none" size={35} color="black" onPress={() => {
+              navigation.navigate("Duetime")
+            }}/>
           </View>
           <View style={styles.searchBlock}>
             <Ionicons

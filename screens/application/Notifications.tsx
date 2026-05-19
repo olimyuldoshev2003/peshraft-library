@@ -6,14 +6,14 @@ import {
   NavigationContainer,
   NavigationIndependentTree,
 } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import Duetime from "./Duetime";
 import News from "./News";
-import { useTranslation } from "react-i18next";
 
 const Notifications = () => {
   const Tab = createMaterialTopTabNavigator();
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <NavigationIndependentTree>
@@ -32,8 +32,20 @@ const Notifications = () => {
             },
           }}
         >
-          <Tab.Screen name={t("notifications.t2")} component={Duetime} />
-          <Tab.Screen name={t("notifications.t3")} component={News} />
+          <Tab.Screen
+            name="Duetime"
+            options={{
+              title: t("notifications.t2"),
+            }}
+            component={Duetime}
+          />
+          <Tab.Screen
+            name="News"
+            options={{
+              title: t("notifications.t3"),
+            }}
+            component={News}
+          />
         </Tab.Navigator>
       </NavigationContainer>
     </NavigationIndependentTree>
