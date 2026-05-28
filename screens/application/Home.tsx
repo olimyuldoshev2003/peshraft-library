@@ -1,4 +1,5 @@
 import ModalSearch from "@/components/home/ModalSearch";
+import { axiosRequest } from "@/utils/axiosRequest";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -6,7 +7,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Image,
@@ -50,73 +51,6 @@ const receivedBooksData = [
   },
 ];
 
-const allBooksData = [
-  {
-    id: 1,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 2,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 3,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 4,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 5,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 6,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 7,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-  {
-    id: 8,
-    name: "Tojikon",
-    author: "Bobojon Ghafurov",
-    rating: "4.0",
-    readers: "5",
-    image: require("../../assets/peshraft-library/home/tojikon.jpg"),
-  },
-];
-
 const filterButtons = [
   { id: 1, title: "All", active: true },
   { id: 2, title: "Best book", active: false },
@@ -128,7 +62,34 @@ const Home = () => {
   const navigation: any = useNavigation();
   const [modalSearch, setModalSearch] = useState<boolean>(false);
 
+  // Books
+  const [books, setBooks] = useState<any>([]);
+  const [loadingBooks, setLoadingBooks] = useState<boolean>(false);
+
   const { t } = useTranslation();
+
+  async function getAllBooks() {
+    try {
+      setLoadingBooks(true);
+      const { data } = await axiosRequest.get(`/books`);
+      if (data && data.data) {
+        setBooks(data.data);
+      } else if (data && Array.isArray(data)) {
+        setBooks(data);
+      } else {
+        setBooks([]);
+      }
+    } catch (error) {
+      // Silently catch error - do nothing, just set empty array
+      setBooks([]);
+    } finally {
+      setLoadingBooks(false);
+    }
+  }
+
+  useEffect(() => {
+    getAllBooks();
+  }, []);
 
   return (
     <View style={styles.homeComponent}>
@@ -269,7 +230,10 @@ const Home = () => {
           <View style={styles.allBooks}>
             <Text style={styles.allBooksTitle}>{t("home.t6")}</Text>
             <View style={styles.allBooksBlock}>
-              {allBooksData.map((book) => (
+              {loadingBooks === false && books.length === 0 && (
+                <Text style={styles.noBooksText}>Books not found</Text>
+              )}
+              {books.map((book: any) => (
                 <Pressable
                   key={book.id}
                   style={styles.bookContainer}
@@ -284,12 +248,19 @@ const Home = () => {
                       color="#939393"
                       style={styles.heartIcon}
                     />
-                    <Image source={book.image} style={styles.bookImg} />
+                    <Image
+                      source={
+                        book.image_url
+                          ? { uri: book.image_url }
+                          : require("../../assets/peshraft-library/home/tojikon.jpg")
+                      }
+                      style={styles.bookImg}
+                    />
                   </View>
                   <View style={styles.bookContainerBlock2}>
                     <View style={styles.nameAndAuthorAndRateOfBookBlock}>
                       <View style={styles.nameAndAuthorOfBookBlock}>
-                        <Text style={styles.nameOfBook}>{book.name}</Text>
+                        <Text style={styles.nameOfBook}>{book.title}</Text>
                         <Text style={styles.authorOfBook}>{book.author}</Text>
                       </View>
                       <View style={styles.rateOfBookBlock}>
@@ -299,7 +270,9 @@ const Home = () => {
                           color="orange"
                           style={styles.rateStarIcon}
                         />
-                        <Text style={styles.rateInNumber}>{book.rating}</Text>
+                        <Text style={styles.rateInNumber}>
+                          {book.rating || "0"}
+                        </Text>
                       </View>
                     </View>
                     <View style={styles.numberOfReadersAndForwardIconBlock}>
@@ -312,7 +285,7 @@ const Home = () => {
                         />
                         <View style={styles.numberAndTextReadersBlock}>
                           <Text style={styles.numberOfReaders}>
-                            {book.readers}
+                            {book.readers || "0"}
                           </Text>
                           <Text style={styles.titleOfReaders}>
                             {t("home.t8")}
@@ -331,6 +304,9 @@ const Home = () => {
                   </View>
                 </Pressable>
               ))}
+              {loadingBooks && (
+                <Text style={styles.loadingText}>Loading books...</Text>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -455,8 +431,6 @@ const styles = StyleSheet.create({
   },
   receivedBooksBlock: {},
 
-  // Received Books (Styles with the same name)
-  ////////////////////////////////////////////////
   receivedBookContainer: {
     width: "60%",
     height: 170,
@@ -534,7 +508,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#404066",
   },
-  ////////////////////////////////////////////////
   allBooks: {
     marginTop: 30,
     paddingHorizontal: 10,
@@ -553,8 +526,6 @@ const styles = StyleSheet.create({
     gap: 35,
   },
 
-  // All Books (Styles with the same name)
-  ////////////////////////////////////////////////
   bookContainer: {
     width: "45%",
     shadowColor: "#000",
@@ -648,5 +619,19 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   forwardIcon: {},
-  ////////////////////////////////////////////////
+
+  noBooksText: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "#515151",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "#515151",
+    textAlign: "center",
+    marginTop: 20,
+  },
 });

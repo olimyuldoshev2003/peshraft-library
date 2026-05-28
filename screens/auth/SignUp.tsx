@@ -100,35 +100,35 @@ const COUNTRIES_DATA = allCountries.map((country: any) => ({
   name: country.name,
 }));
 
-// Date formatting function
+// Date formatting function (DD-MM-YYYY)
 const formatDateOfBirth = (text: string): string => {
   // Remove all non-digit characters
   const cleaned = text.replace(/\D/g, "");
 
-  // Limit to 8 digits (YYYYMMDD)
+  // Limit to 8 digits (DDMMYYYY)
   const limited = cleaned.slice(0, 8);
 
   // Apply formatting
-  if (limited.length <= 4) {
-    return limited; // YYYY
-  } else if (limited.length <= 6) {
-    return `${limited.slice(0, 4)}-${limited.slice(4, 6)}`; // YYYY-MM
+  if (limited.length <= 2) {
+    return limited; // DD
+  } else if (limited.length <= 4) {
+    return `${limited.slice(0, 2)}-${limited.slice(2, 4)}`; // DD-MM
   } else {
-    return `${limited.slice(0, 4)}-${limited.slice(4, 6)}-${limited.slice(
-      6,
+    return `${limited.slice(0, 2)}-${limited.slice(2, 4)}-${limited.slice(
+      4,
       8,
-    )}`; // YYYY-MM-DD
+    )}`; // DD-MM-YYYY
   }
 };
 
-// Validate date of birth
+// Validate date of birth (DD-MM-YYYY)
 const validateDateOfBirth = (date: string): boolean => {
   if (!date || date.length !== 10) return false;
 
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  const regex = /^\d{2}-\d{2}-\d{4}$/;
   if (!regex.test(date)) return false;
 
-  const [year, month, day] = date.split("-").map(Number);
+  const [day, month, year] = date.split("-").map(Number);
 
   // Check month
   if (month < 1 || month > 12) return false;
@@ -142,7 +142,7 @@ const validateDateOfBirth = (date: string): boolean => {
   if (year < 1900 || year > currentYear) return false;
 
   // Check if date is not in the future
-  const inputDate = new Date(date);
+  const inputDate = new Date(year, month - 1, day);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return inputDate <= today;
@@ -193,7 +193,7 @@ const SignUpSchema = Yup.object().shape({
     .required("Date of Birth is required")
     .test(
       "is-valid-date",
-      "Invalid date format (YYYY-MM-DD)",
+      "Invalid date format (DD-MM-YYYY)",
       function (value) {
         if (!value) return false;
         return validateDateOfBirth(value);
@@ -204,7 +204,8 @@ const SignUpSchema = Yup.object().shape({
       "You must be at least 13 years old to sign up",
       function (value) {
         if (!value) return false;
-        const birthDate = new Date(value);
+        const [day, month, year] = value.split("-").map(Number);
+        const birthDate = new Date(year, month - 1, day);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
@@ -504,7 +505,7 @@ const SignUp = () => {
     }
   };
 
-  // Handle date of birth change with formatting
+  // Handle date of birth change with formatting (DD-MM-YYYY)
   const handleDateOfBirthChange = (text: string, setFieldValue: any) => {
     const formatted = formatDateOfBirth(text);
     setFieldValue("dateOfBirth", formatted);
@@ -516,9 +517,13 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
+      // Convert date from DD-MM-YYYY to YYYY-MM-DD for API
+      const [day, month, year] = values.dateOfBirth.split("-");
+      const formattedDateForApi = `${year}-${month}-${day}`;
+
       const userData = {
         name: values.fullName.trim(),
-        date_of_birth: values.dateOfBirth,
+        date_of_birth: formattedDateForApi,
         phone: values.phoneNumber.trim(),
         email: values.email.trim().toLowerCase(),
         password: values.password,
@@ -655,7 +660,7 @@ const SignUp = () => {
                         }
                         onBlur={handleBlur("dateOfBirth")}
                         value={values.dateOfBirth}
-                        placeholder="YYYY-MM-DD"
+                        placeholder="DD-MM-YYYY"
                         keyboardType="numeric"
                         returnKeyType="next"
                         editable={!isSubmitting}
