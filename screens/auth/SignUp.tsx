@@ -544,8 +544,7 @@ const SignUp = () => {
         Alert.alert("Success", "Registered successfully!");
       }
     } catch (error) {
-      Alert.alert("Error", "Registration failed");
-      console.error(error);
+      Alert.alert("Error", "Registration failed. This user already exists.");
     } finally {
       setIsSubmitting(false);
     }

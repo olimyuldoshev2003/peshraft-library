@@ -91,6 +91,196 @@ const Home = () => {
     getAllBooks();
   }, []);
 
+  // Mobile Side
+  ////////////////////////////////////////////////////////////////
+  // Home Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Received books
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     image_url: "",
+  //     title: "",
+  //     author: ""
+  //     borrow_date: "",
+  //     due_date: "",
+  //   }
+  // ]
+
+  // 2. Filters
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     filter_name: "",
+  //   }
+  //   ...
+  // ]
+
+  // 3. Books
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     image_url: "",
+  //     title: "",
+  //     author: "",
+  //     rating: 4, This is is the average rating of this book, which is calculated by the added ratings of users
+  //     readers: 20, This one is the length of users, who received this book (book_id in received_users data)
+  //     isFavoriteBook: true, Favorite Book Data
+  //   }
+  // ]
+  ////////////////////////////////////////////////////////////////
+
+  // Notifications Page
+  ////////////////////////////////////////////////////////////////
+  // Filter by notification type (duetime, news) is so important
+  // 1. Notifications (duetime)
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     type: "duetime",
+  //     date: "",
+  //     [
+  //       {
+  //         notification_image_url: "",
+  //         title: "",
+  //         description: "",
+  //         time: "",
+  //       }
+  //      ...
+  //     ];
+  //   }
+  //   ...
+  // ]
+
+  // 2. Notifications (news)
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     type: "news",
+  //     date: "",
+  //     [
+  //       {
+  //         notification_image_url: "",
+  //         title: "",
+  //         description: "",
+  //         time: "",
+  //       }
+  //      ...
+  //     ];
+  //   }
+  //   ...
+  // ]
+  ////////////////////////////////////////////////////////////////
+
+  // Bookshelf Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Received books
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     image_url: "",
+  //     title: "",
+  //     author: ""
+  //     borrow_date: "",
+  //     due_date: "",
+  //   }
+  //   ...
+  // ]
+  ////////////////////////////////////////////////////////////////
+
+  // Favorite Books Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Favorite Books
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     image_url: "",
+  //     title: "",
+  //     author: ""
+  //     rating: 4, This is is the average rating of this book, which is calculated by the added ratings of users
+  //     readers: 20, This one is the length of users, who received this book (book_id in received_users data),
+  //     isFavoriteBook: true, Favorite Book Data
+  //   }
+  //   ...
+  // ]
+  ////////////////////////////////////////////////////////////////
+
+  // Profile Page
+  ////////////////////////////////////////////////////////////////
+  // 1. User Data
+  // get()
+  // {
+  //   id: "",
+  //   member_image_url: "",
+  //   name: "",
+  //   email: ""
+  // }
+  ////////////////////////////////////////////////////////////////
+
+  // Edit User Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Edit User
+  // put() (edit)
+  // {
+  //   id: "",
+  //   member_image_url: "",
+  //   name: "",
+  //   date_of_birth: "",
+  //   phone: "",
+  //   email: "",
+  // }
+  ////////////////////////////////////////////////////////////////
+
+  // Change Password Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Change password
+  // put() (edit)
+  // {
+  //   old_password: "",
+  //   new_password: "",
+  //   confirm_new_password: "",
+  // }
+  ////////////////////////////////////////////////////////////////
+
+  // Feedback Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Feedback
+  // post()
+  // {
+  //   id: "",
+  //   phone: "",
+  //   email: "",
+  //   feedback: "",
+  // }
+  ////////////////////////////////////////////////////////////////
+
+  // Book Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Book
+  // get()
+  // {
+  //   id: "",
+  //   bg_image_url: "",
+  //   image_url: "",
+  //   title: "",
+  //   author: "",
+  //   rating: 4, This is is the average rating of this book, which is calculated by the added ratings of users
+  //   category: "",
+  //   book_page: "",
+  //   year: 2005 (type number),
+  //   language: "",
+  //   available_copies: 3 (type number),
+  //   description: ""
+  // }
+  ////////////////////////////////////////////////////////////////
+
   return (
     <View style={styles.homeComponent}>
       <View style={styles.homeComponentBlock}>

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "peshraft-library",
+    "name": "Peshraft Library",
     "slug": "peshraft-library",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,7 +33,7 @@
         {
           "image": "./assets/peshraft-library/android/app-img.png",
           "imageWidth": 200,
-          "resizeMode": "contain",
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff",
           "dark": {
             "backgroundColor": "#000000"

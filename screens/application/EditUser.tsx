@@ -1068,7 +1068,7 @@ const EditUser = () => {
                     </View>
 
                     {/* Job Title */}
-                    <View
+                    {/* <View
                       style={[
                         styles.labelAndInputBlock,
                         styles.labelAndInputJobTitleBlock,
@@ -1098,7 +1098,7 @@ const EditUser = () => {
                       {errors.jobTitle && touched.jobTitle && (
                         <Text style={styles.errorText}>{errors.jobTitle}</Text>
                       )}
-                    </View>
+                    </View> */}
 
                     {/* Phone Number */}
                     <View
@@ -1232,7 +1232,7 @@ const EditUser = () => {
                         styles.labelAndInputPasswordBlock,
                       ]}
                     >
-                      <Text style={[styles.label, styles.labelPassword]}>
+                      {/* <Text style={[styles.label, styles.labelPassword]}>
                         {t("editProfile.t13")}
                       </Text>
                       <View style={styles.iconAndInputPasswordBlock}>
@@ -1279,7 +1279,7 @@ const EditUser = () => {
                             }
                           />
                         )}
-                      </View>
+                      </View> */}
 
                       {/* Password Strength Indicator */}
                       {values.password.length > 0 && (
@@ -1412,7 +1412,7 @@ const EditUser = () => {
                     </View>
 
                     {/* Confirm Password */}
-                    <View
+                    {/* <View
                       style={[
                         styles.labelAndInputBlock,
                         styles.labelAndInputPasswordBlock,
@@ -1479,7 +1479,7 @@ const EditUser = () => {
                             ✓ {t("editProfile.t108")}
                           </Text>
                         )}
-                    </View>
+                    </View> */}
 
                     {/* Save Button */}
                     <View style={styles.saveButtonContainer}>
