@@ -279,6 +279,102 @@ const Home = () => {
   //   available_copies: 3 (type number),
   //   description: ""
   // }
+
+  // 2. Add to favorite book (like icon)
+  // put()
+  // Adds to favorite books and removes from favorite books (true / false)
+
+  // 3. Receive book
+  // post()
+  // {
+  //   id: "", (id of member, who wants to receive the book)
+  //   member_id: "",
+  //   member_image_url: "",
+  //   receiver_name: "",
+  //   phone:"",
+  //   email:  ""
+  //   request_date: "",
+  //   borrow_date: "",
+  //   due_date: "",
+  //   book_title:"",
+  //   author:  ""
+  // }
+
+  // 4. Reviews (feedbacks) of book
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     book_id: "",
+  //     member_image_url: "",
+  //     name: "",
+  //     rating: 4,
+  //     review: "",
+  //     review_category: "",
+  //     is_review_liked: false,
+  //     review_date: "",
+  //   }
+  //   ...
+  // ]
+
+  // 5. Add the review of book
+  // post()
+  // {
+  //   id: "",
+  //   book_id: "",
+  //   rating: 4,
+  //   review: "",
+  //   review_category: "",
+  //   review_date: "",
+  // }
+  ////////////////////////////////////////////////////////////////
+
+  // Return Book Page
+  ////////////////////////////////////////////////////////////////
+  // 1. Return book
+  // get() (by receive book id)
+  // {
+  //   id: "",
+  //   image_url: "", (image of book) 
+  //   title: "", (name of book) 
+  //   author: "", (author of book) 
+  //   borrow_date: "",
+  //   due_date: "",
+  //   phone:"",
+  // }
+
+  // post()
+  // {
+  //   id: "", (id of member, who wants to return the book)
+  //   member_image_url: "",
+  //   returner_name: "",
+  //   phone:"",
+  //   email:  ""
+  //   borrowed_date: "",
+  //   due_date: "",
+  //   request_date: "",
+  //   book_title:"",
+  //   author:  ""
+  // } - Goes to return book requests
+  ////////////////////////////////////////////////////////////////
+  
+  // History Page
+  ////////////////////////////////////////////////////////////////
+  // 1. History of the person, who already returned book
+  // get()
+  // [
+  //   {
+  //     id: "",
+  //     image_url: "",
+  //     title: "",
+  //     author: "",
+  //     return_date: "", (from the date, when the book was returned)
+  //   }
+  //   ...
+  // ]
+  ////////////////////////////////////////////////////////////////
+  
+
   ////////////////////////////////////////////////////////////////
 
   return (

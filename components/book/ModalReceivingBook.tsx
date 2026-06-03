@@ -356,7 +356,7 @@ const ModalReceivingBook = ({
             showsVerticalScrollIndicator={false}
           >
             {/* Full name */}
-            <View
+            {/* <View
               style={[
                 styles.labelAndInputFullNameBlock,
                 styles.labelAndInputBlock,
@@ -381,10 +381,10 @@ const ModalReceivingBook = ({
               {touched.fullName && errors.fullName && (
                 <Text style={styles.errorText}>{errors.fullName}</Text>
               )}
-            </View>
+            </View> */}
 
             {/*Job title  */}
-            <View
+            {/* <View
               style={[
                 styles.labelAndInputJobTitleBlock,
                 styles.labelAndInputBlock,
@@ -409,7 +409,7 @@ const ModalReceivingBook = ({
               {touched.jobTitle && errors.jobTitle && (
                 <Text style={styles.errorText}>{errors.jobTitle}</Text>
               )}
-            </View>
+            </View> */}
 
             {/* Book name */}
             <View
